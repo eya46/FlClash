@@ -10,6 +10,7 @@ import (
 	"github.com/metacubex/mihomo/common/utils"
 	"github.com/metacubex/mihomo/component/mmdb"
 	"github.com/metacubex/mihomo/component/resolver"
+	TS "github.com/metacubex/mihomo/component/tailscale"
 	"github.com/metacubex/mihomo/component/updater"
 	"github.com/metacubex/mihomo/config"
 	"github.com/metacubex/mihomo/constant"
@@ -52,18 +53,26 @@ func handleInitClash(paramsString string) bool {
 func handleStartListener() bool {
 	runLock.Lock()
 	defer runLock.Unlock()
+	wasRunning := isRunning
 	isRunning = true
 	updateListeners()
 	resolver.ResetConnection()
+	if !wasRunning {
+		reconnectTailscaleIfEnabled()
+	}
 	return true
 }
 
 func handleStopListener() bool {
 	runLock.Lock()
 	defer runLock.Unlock()
+	wasRunning := isRunning
 	isRunning = false
 	listener.StopListener()
 	resolver.ResetConnection()
+	if wasRunning {
+		reconnectTailscaleIfEnabled()
+	}
 	return true
 }
 
@@ -81,6 +90,7 @@ func handleForceGC() {
 
 func handleShutdown() bool {
 	stopListeners()
+	closeTailscale()
 	executor.Shutdown()
 	handleForceGC()
 	isInit = false
@@ -478,6 +488,14 @@ func handleGetMemory(fn func(value string)) {
 	}()
 }
 
+func handleGetTailscaleState() string {
+	data, err := json.Marshal(TS.Snapshot())
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
 func handleGetConfig(path string) (*config.RawConfig, error) {
 	bytes, err := readFile(path)
 	if err != nil {
@@ -500,7 +518,10 @@ func handleUpdateConfig(bytes []byte) string {
 	if err != nil {
 		return err.Error()
 	}
-	updateConfig(params)
+	err = updateConfig(params)
+	if err != nil {
+		return err.Error()
+	}
 	return ""
 }
 

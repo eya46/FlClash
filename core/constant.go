@@ -19,6 +19,7 @@ type InitParams struct {
 type SetupParams struct {
 	SelectedMap map[string]string `json:"selected-map"`
 	TestURL     string            `json:"test-url"`
+	Tailscale   *tailscaleSchema  `json:"tailscale"`
 }
 
 type UpdateParams struct {
@@ -34,6 +35,7 @@ type UpdateParams struct {
 	ExternalController *string            `json:"external-controller"`
 	Interface          *string            `json:"interface-name"`
 	UnifiedDelay       *bool              `json:"unified-delay"`
+	Tailscale          *tailscaleSchema   `json:"tailscale"`
 }
 
 type tunSchema struct {
@@ -43,6 +45,15 @@ type tunSchema struct {
 	DNSHijack    *[]string          `yaml:"dns-hijack" json:"dns-hijack"`
 	AutoRoute    *bool              `yaml:"auto-route" json:"auto-route"`
 	RouteAddress *[]netip.Prefix    `yaml:"route-address" json:"route-address,omitempty"`
+}
+
+type tailscaleSchema struct {
+	Enable         bool      `json:"enable"`
+	AcceptRoutes   *bool     `json:"accept-routes"`
+	Hostname       *string   `json:"hostname"`
+	AuthKey        *string   `json:"auth-key"`
+	ControlURL     *string   `json:"control-url"`
+	DisabledRoutes *[]string `json:"disabled-routes"`
 }
 
 type ChangeProxyParams struct {
@@ -93,6 +104,8 @@ const (
 	getExternalProviderMethod      Method = "getExternalProvider"
 	getCountryCodeMethod           Method = "getCountryCode"
 	getMemoryMethod                Method = "getMemory"
+	getTailscaleStateMethod        Method = "getTailscaleState"
+	reconnectTailscaleMethod       Method = "reconnectTailscale"
 	updateGeoDataMethod            Method = "updateGeoData"
 	updateExternalProviderMethod   Method = "updateExternalProvider"
 	sideLoadExternalProviderMethod Method = "sideLoadExternalProvider"

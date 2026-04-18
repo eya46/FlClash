@@ -2,7 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"unsafe"
+
+	"github.com/metacubex/mihomo/log"
 )
 
 type Action struct {
@@ -177,6 +180,26 @@ func handleAction(action *Action, result ActionResult) {
 		handleGetMemory(func(value string) {
 			result.success(value)
 		})
+		return
+	case getTailscaleStateMethod:
+		result.success(handleGetTailscaleState())
+		return
+	case reconnectTailscaleMethod:
+		go func() {
+			defer func() {
+				if r := recover(); r != nil {
+					log.Errorln("[TAILSCALE] panic in reconnect: %v", r)
+					result.success(fmt.Sprintf("panic: %v", r))
+				}
+			}()
+			tailscaleApplyMu.Lock()
+			defer tailscaleApplyMu.Unlock()
+			if err := reconnectTailscale(); err != nil {
+				result.success(err.Error())
+			} else {
+				result.success("")
+			}
+		}()
 		return
 	case crashMethod:
 		result.success(true)

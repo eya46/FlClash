@@ -177,7 +177,7 @@ func readFile(path string) ([]byte, error) {
 	return data, err
 }
 
-func updateConfig(params *UpdateParams) {
+func updateConfig(params *UpdateParams) error {
 	runLock.Lock()
 	defer runLock.Unlock()
 	general := currentConfig.General
@@ -233,6 +233,10 @@ func updateConfig(params *UpdateParams) {
 	}
 
 	updateListeners()
+	if params.Tailscale != nil {
+		applyTailscaleAsync(params.Tailscale)
+	}
+	return nil
 }
 
 func applyConfig(params *SetupParams) error {
@@ -248,6 +252,9 @@ func applyConfig(params *SetupParams) error {
 	hub.ApplyConfig(currentConfig)
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()
+	if params.Tailscale != nil {
+		applyTailscaleAsync(params.Tailscale)
+	}
 	return err
 }
 
