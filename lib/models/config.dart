@@ -31,6 +31,7 @@ const defaultBypassDomain = [
 const defaultAppSettingProps = AppSettingProps();
 const defaultVpnProps = VpnProps();
 const defaultNetworkProps = NetworkProps();
+const defaultTailscaleProps = TailscaleProps();
 const defaultProxiesStyleProps = ProxiesStyleProps();
 const defaultWindowProps = WindowProps();
 const defaultAccessControlProps = AccessControlProps();
@@ -173,6 +174,21 @@ abstract class NetworkProps with _$NetworkProps {
 }
 
 @freezed
+abstract class TailscaleProps with _$TailscaleProps {
+  const factory TailscaleProps({
+    @Default(false) bool enable,
+    @JsonKey(name: 'accept-routes') @Default(true) bool acceptRoutes,
+    @Default('') String hostname,
+    @JsonKey(name: 'auth-key') @Default('') String authKey,
+    @JsonKey(name: 'control-url') @Default('') String controlUrl,
+    @JsonKey(name: 'disabled-routes') @Default([]) List<String> disabledRoutes,
+  }) = _TailscaleProps;
+
+  factory TailscaleProps.fromJson(Map<String, Object?>? json) =>
+      json == null ? defaultTailscaleProps : _$TailscalePropsFromJson(json);
+}
+
+@freezed
 abstract class ProxiesStyleProps with _$ProxiesStyleProps {
   const factory ProxiesStyleProps({
     @Default(ProxiesType.tab) ProxiesType type,
@@ -236,6 +252,7 @@ abstract class Config with _$Config {
     DAVProps? davProps,
     @Default(defaultNetworkProps) NetworkProps networkProps,
     @Default(defaultVpnProps) VpnProps vpnProps,
+    @Default(defaultTailscaleProps) TailscaleProps tailscaleProps,
     @JsonKey(fromJson: ThemeProps.safeFromJson) required ThemeProps themeProps,
     @Default(defaultProxiesStyleProps) ProxiesStyleProps proxiesStyleProps,
     @Default(defaultWindowProps) WindowProps windowProps,

@@ -192,6 +192,30 @@ const _$RouteModeEnumMap = {
   RouteMode.config: 'config',
 };
 
+_TailscaleProps _$TailscalePropsFromJson(Map<String, dynamic> json) =>
+    _TailscaleProps(
+      enable: json['enable'] as bool? ?? false,
+      acceptRoutes: json['accept-routes'] as bool? ?? true,
+      hostname: json['hostname'] as String? ?? '',
+      authKey: json['auth-key'] as String? ?? '',
+      controlUrl: json['control-url'] as String? ?? '',
+      disabledRoutes:
+          (json['disabled-routes'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$TailscalePropsToJson(_TailscaleProps instance) =>
+    <String, dynamic>{
+      'enable': instance.enable,
+      'accept-routes': instance.acceptRoutes,
+      'hostname': instance.hostname,
+      'auth-key': instance.authKey,
+      'control-url': instance.controlUrl,
+      'disabled-routes': instance.disabledRoutes,
+    };
+
 _ProxiesStyleProps _$ProxiesStylePropsFromJson(Map<String, dynamic> json) =>
     _ProxiesStyleProps(
       type:
@@ -326,6 +350,11 @@ _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   vpnProps: json['vpnProps'] == null
       ? defaultVpnProps
       : VpnProps.fromJson(json['vpnProps'] as Map<String, dynamic>?),
+  tailscaleProps: json['tailscaleProps'] == null
+      ? defaultTailscaleProps
+      : TailscaleProps.fromJson(
+          json['tailscaleProps'] as Map<String, dynamic>?,
+        ),
   themeProps: ThemeProps.safeFromJson(
     json['themeProps'] as Map<String, Object?>?,
   ),
@@ -350,6 +379,7 @@ Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
   'davProps': instance.davProps,
   'networkProps': instance.networkProps,
   'vpnProps': instance.vpnProps,
+  'tailscaleProps': instance.tailscaleProps,
   'themeProps': instance.themeProps,
   'proxiesStyleProps': instance.proxiesStyleProps,
   'windowProps': instance.windowProps,

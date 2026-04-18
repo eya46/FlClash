@@ -10,6 +10,7 @@ abstract class SetupParams with _$SetupParams {
   const factory SetupParams({
     @JsonKey(name: 'selected-map') required Map<String, String> selectedMap,
     @JsonKey(name: 'test-url') required String testUrl,
+    required TailscaleProps tailscale,
   }) = _SetupParams;
 
   factory SetupParams.fromJson(Map<String, dynamic> json) =>
@@ -31,6 +32,7 @@ abstract class UpdateParams with _$UpdateParams {
     @JsonKey(name: 'external-controller')
     required ExternalControllerStatus externalController,
     @JsonKey(name: 'unified-delay') required bool unifiedDelay,
+    required TailscaleProps tailscale,
   }) = _UpdateParams;
 
   factory UpdateParams.fromJson(Map<String, dynamic> json) =>
@@ -54,6 +56,62 @@ abstract class VpnOptions with _$VpnOptions {
 
   factory VpnOptions.fromJson(Map<String, Object?> json) =>
       _$VpnOptionsFromJson(json);
+}
+
+class TailscaleState {
+  final bool enable;
+  final bool acceptRoutes;
+  final String backendState;
+  final String authUrl;
+  final List<String> tailscaleIps;
+  final List<String> routes;
+  final List<String> disabledRoutes;
+  final String tailnet;
+  final String magicDnsSuffix;
+  final String error;
+  final int peerCount;
+  final int onlinePeerCount;
+  final String lastHandshake;
+
+  const TailscaleState({
+    required this.enable,
+    required this.acceptRoutes,
+    required this.backendState,
+    required this.authUrl,
+    required this.tailscaleIps,
+    required this.routes,
+    required this.disabledRoutes,
+    required this.tailnet,
+    required this.magicDnsSuffix,
+    required this.error,
+    required this.peerCount,
+    required this.onlinePeerCount,
+    required this.lastHandshake,
+  });
+
+  factory TailscaleState.fromJson(Map<String, dynamic> json) {
+    List<String> readList(String key) {
+      return (json[key] as List<dynamic>? ?? const [])
+          .map((item) => item as String)
+          .toList(growable: false);
+    }
+
+    return TailscaleState(
+      enable: json['enable'] as bool? ?? false,
+      acceptRoutes: json['accept-routes'] as bool? ?? false,
+      backendState: json['backend-state'] as String? ?? '',
+      authUrl: json['auth-url'] as String? ?? '',
+      tailscaleIps: readList('tailscale-ips'),
+      routes: readList('routes'),
+      disabledRoutes: readList('disabled-routes'),
+      tailnet: json['tailnet'] as String? ?? '',
+      magicDnsSuffix: json['magic-dns-suffix'] as String? ?? '',
+      error: json['error'] as String? ?? '',
+      peerCount: json['peer-count'] as int? ?? 0,
+      onlinePeerCount: json['online-peer-count'] as int? ?? 0,
+      lastHandshake: json['last-handshake'] as String? ?? '',
+    );
+  }
 }
 
 @freezed

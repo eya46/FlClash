@@ -9,12 +9,16 @@ part of '../core.dart';
 _SetupParams _$SetupParamsFromJson(Map<String, dynamic> json) => _SetupParams(
   selectedMap: Map<String, String>.from(json['selected-map'] as Map),
   testUrl: json['test-url'] as String,
+  tailscale: TailscaleProps.fromJson(
+    json['tailscale'] as Map<String, dynamic>?,
+  ),
 );
 
 Map<String, dynamic> _$SetupParamsToJson(_SetupParams instance) =>
     <String, dynamic>{
       'selected-map': instance.selectedMap,
       'test-url': instance.testUrl,
+      'tailscale': instance.tailscale,
     };
 
 _UpdateParams _$UpdateParamsFromJson(Map<String, dynamic> json) =>
@@ -35,6 +39,9 @@ _UpdateParams _$UpdateParamsFromJson(Map<String, dynamic> json) =>
         json['external-controller'],
       ),
       unifiedDelay: json['unified-delay'] as bool,
+      tailscale: TailscaleProps.fromJson(
+        json['tailscale'] as Map<String, dynamic>?,
+      ),
     );
 
 Map<String, dynamic> _$UpdateParamsToJson(_UpdateParams instance) =>
@@ -50,6 +57,7 @@ Map<String, dynamic> _$UpdateParamsToJson(_UpdateParams instance) =>
       'external-controller':
           _$ExternalControllerStatusEnumMap[instance.externalController]!,
       'unified-delay': instance.unifiedDelay,
+      'tailscale': instance.tailscale,
     };
 
 const _$FindProcessModeEnumMap = {
@@ -287,6 +295,7 @@ const _$ActionMethodEnumMap = {
   ActionMethod.stopListener: 'stopListener',
   ActionMethod.getCountryCode: 'getCountryCode',
   ActionMethod.getMemory: 'getMemory',
+  ActionMethod.getTailscaleState: 'getTailscaleState',
   ActionMethod.crash: 'crash',
   ActionMethod.setupConfig: 'setupConfig',
   ActionMethod.deleteFile: 'deleteFile',
