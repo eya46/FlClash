@@ -251,7 +251,12 @@ extension StateControllerExt on AppController {
     final testUrl = _ref.read(
       appSettingProvider.select((state) => state.testUrl),
     );
-    return SetupParams(selectedMap: selectedMap, testUrl: testUrl);
+    final tailscale = _ref.read(tailscaleSettingProvider);
+    return SetupParams(
+      selectedMap: selectedMap,
+      testUrl: testUrl,
+      tailscale: tailscale,
+    );
   }
 
   List<Group> getCurrentGroups() {
@@ -1048,6 +1053,8 @@ extension BackupControllerExt on AppController {
       _ref.read(themeSettingProvider.notifier).value = config.themeProps;
       _ref.read(windowSettingProvider.notifier).value = config.windowProps;
       _ref.read(vpnSettingProvider.notifier).value = config.vpnProps;
+      _ref.read(tailscaleSettingProvider.notifier).value =
+          config.tailscaleProps;
       _ref.read(proxiesStyleSettingProvider.notifier).value =
           config.proxiesStyleProps;
       _ref.read(overrideDnsProvider.notifier).value = config.overrideDns;

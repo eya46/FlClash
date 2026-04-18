@@ -56,6 +56,10 @@ mixin CoreInterface {
 
   FutureOr<String> getMemory();
 
+  FutureOr<String> getTailscaleState();
+
+  FutureOr<String> reconnectTailscale();
+
   FutureOr<void> resetTraffic();
 
   FutureOr<void> startLog();
@@ -345,5 +349,15 @@ abstract class CoreHandlerInterface with CoreInterface {
   @override
   Future<String> getMemory() async {
     return await _invoke<String>(method: ActionMethod.getMemory) ?? '';
+  }
+
+  @override
+  Future<String> getTailscaleState() async {
+    return await _invoke<String>(method: ActionMethod.getTailscaleState) ?? '';
+  }
+
+  @override
+  Future<String> reconnectTailscale() async {
+    return await _invoke<String>(method: ActionMethod.reconnectTailscale) ?? '';
   }
 }

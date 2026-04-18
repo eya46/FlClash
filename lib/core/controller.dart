@@ -244,6 +244,18 @@ class CoreController {
     return int.parse(value);
   }
 
+  Future<TailscaleState?> getTailscaleState() async {
+    final value = await _interface.getTailscaleState();
+    if (value.isEmpty) {
+      return null;
+    }
+    return TailscaleState.fromJson(json.decode(value));
+  }
+
+  Future<String> reconnectTailscale() async {
+    return await _interface.reconnectTailscale();
+  }
+
   void resetTraffic() {
     _interface.resetTraffic();
   }
