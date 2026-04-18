@@ -48,6 +48,24 @@ class AppPath {
   }
 
   String get helperPath {
+    if (system.isWindows) {
+      final repoHelperPath = normalize(
+        join(
+          executableDirPath,
+          '..',
+          '..',
+          '..',
+          '..',
+          '..',
+          'libclash',
+          'windows',
+          '$appHelperService$executableExtension',
+        ),
+      );
+      if (File(repoHelperPath).existsSync()) {
+        return repoHelperPath;
+      }
+    }
     return join(executableDirPath, '$appHelperService$executableExtension');
   }
 

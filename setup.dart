@@ -213,10 +213,16 @@ class Build {
       } else {
         env['CGO_ENABLED'] = '0';
       }
+      // On Windows, build core.exe as a GUI subsystem binary (-H=windowsgui)
+      // so that launching it from a Flutter GUI app does not pop up a console
+      // window. stdout/stderr piping via Process.start still works fine.
+      final ldflags = (item.target.os == 'windows' && !isLib)
+          ? '-w -s -H=windowsgui'
+          : '-w -s';
       final execLines = [
         'go',
         'build',
-        '-ldflags=-w -s',
+        '-ldflags=$ldflags',
         '-tags=$tags',
         if (isLib) '-buildmode=c-shared',
         '-o',
@@ -418,10 +424,17 @@ class BuildCommand extends Command {
     required String env,
   }) async {
     await Build.getDistributor();
+    final distributorDir = join(
+      current,
+      'plugins',
+      'flutter_distributor',
+      'packages',
+      'flutter_distributor',
+    );
     await Build.exec(
       name: name,
       Build.getExecutable(
-        'flutter_distributor package --skip-clean --platform ${target.name} --targets $targets --flutter-build-args=verbose,dart-define-from-file=env.json$args',
+        'dart $distributorDir/bin/main.dart package --skip-clean --platform ${target.name} --targets $targets --flutter-build-args=verbose,dart-define-from-file=env.json$args',
       ),
     );
   }
@@ -459,7 +472,7 @@ class BuildCommand extends Command {
 
     String? coreSha256;
 
-    if (Platform.isWindows) {
+    if (Platform.isWindows && target == Target.windows) {
       coreSha256 = await Build.calcSha256(corePaths.first);
       await Build.buildHelper(target, coreSha256);
     }
