@@ -13,6 +13,34 @@ import 'database.dart';
 
 part 'generated/state.g.dart';
 
+const _tailscaleProxyBypassPrivatePatterns = {
+  '10.*',
+  '172.16.*',
+  '172.17.*',
+  '172.18.*',
+  '172.19.*',
+  '172.2*',
+  '172.30.*',
+  '172.31.*',
+  '192.168.*',
+};
+
+List<String> _effectiveProxyBypassDomain(
+  List<String> bypassDomain,
+  TailscaleProps tailscale,
+) {
+  if (!tailscale.enable || !tailscale.acceptRoutes) {
+    return bypassDomain;
+  }
+  return bypassDomain
+      .where((item) {
+        return !_tailscaleProxyBypassPrivatePatterns.contains(
+          item.trim().toLowerCase(),
+        );
+      })
+      .toList(growable: false);
+}
+
 @riverpod
 GroupsState currentGroupsState(Ref ref) {
   final mode = ref.watch(
@@ -79,21 +107,20 @@ UpdateParams updateParams(Ref ref) {
   final routeMode = ref.watch(
     networkSettingProvider.select((state) => state.routeMode),
   );
-  return ref.watch(
-    patchClashConfigProvider.select(
-      (state) => UpdateParams(
-        tun: state.tun.getRealTun(routeMode),
-        allowLan: state.allowLan,
-        findProcessMode: state.findProcessMode,
-        mode: state.mode,
-        logLevel: state.logLevel,
-        ipv6: state.ipv6,
-        tcpConcurrent: state.tcpConcurrent,
-        externalController: state.externalController,
-        unifiedDelay: state.unifiedDelay,
-        mixedPort: state.mixedPort,
-      ),
-    ),
+  final tailscale = ref.watch(tailscaleSettingProvider);
+  final patchClashConfig = ref.watch(patchClashConfigProvider);
+  return UpdateParams(
+    tun: patchClashConfig.tun.getRealTun(routeMode),
+    allowLan: patchClashConfig.allowLan,
+    findProcessMode: patchClashConfig.findProcessMode,
+    mode: patchClashConfig.mode,
+    logLevel: patchClashConfig.logLevel,
+    ipv6: patchClashConfig.ipv6,
+    tcpConcurrent: patchClashConfig.tcpConcurrent,
+    externalController: patchClashConfig.externalController,
+    unifiedDelay: patchClashConfig.unifiedDelay,
+    mixedPort: patchClashConfig.mixedPort,
+    tailscale: tailscale,
   );
 }
 
@@ -105,13 +132,14 @@ ProxyState proxyState(Ref ref) {
       (state) => VM2(state.systemProxy, state.bypassDomain),
     ),
   );
+  final tailscale = ref.watch(tailscaleSettingProvider);
   final mixedPort = ref.watch(
     patchClashConfigProvider.select((state) => state.mixedPort),
   );
   return ProxyState(
     isStart: isStart,
     systemProxy: vm2.a,
-    bassDomain: vm2.b,
+    bassDomain: _effectiveProxyBypassDomain(vm2.b, tailscale),
     port: mixedPort,
   );
 }
@@ -609,6 +637,7 @@ SharedState sharedState(Ref ref) {
     ),
   );
   final vpnSetting = ref.watch(vpnSettingProvider);
+  final tailscale = ref.watch(tailscaleSettingProvider);
   final currentProfileName = currentProfileVM2.a;
   final selectedMap = currentProfileVM2.b;
   final onlyStatisticsProxy = appSettingVM3.a;
@@ -623,7 +652,11 @@ SharedState sharedState(Ref ref) {
     crashlytics: crashlytics,
     stopTip: appLocalizations.stopVpn,
     startTip: appLocalizations.startVpn,
-    setupParams: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
+    setupParams: SetupParams(
+      selectedMap: selectedMap,
+      testUrl: testUrl,
+      tailscale: tailscale,
+    ),
     vpnOptions: VpnOptions(
       enable: vpnSetting.enable,
       stack: stack,

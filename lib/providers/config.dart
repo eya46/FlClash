@@ -39,6 +39,14 @@ class NetworkSetting extends _$NetworkSetting with AutoDisposeNotifierMixin {
 }
 
 @riverpod
+class TailscaleSetting extends _$TailscaleSetting with AutoDisposeNotifierMixin {
+  @override
+  TailscaleProps build() {
+    return TailscaleProps();
+  }
+}
+
+@riverpod
 class ThemeSetting extends _$ThemeSetting with AutoDisposeNotifierMixin {
   @override
   ThemeProps build() {
@@ -103,6 +111,7 @@ Config _config(Ref ref) {
   final windowProps = ref.watch(windowSettingProvider);
   final vpnProps = ref.watch(vpnSettingProvider);
   final networkProps = ref.watch(networkSettingProvider);
+  final tailscaleProps = ref.watch(tailscaleSettingProvider);
   final themeProps = ref.watch(themeSettingProvider);
   final currentProfileId = ref.watch(currentProfileIdProvider);
   final davProps = ref.watch(davSettingProvider);
@@ -115,6 +124,7 @@ Config _config(Ref ref) {
     windowProps: windowProps,
     vpnProps: vpnProps,
     networkProps: networkProps,
+    tailscaleProps: tailscaleProps,
     themeProps: themeProps,
     currentProfileId: currentProfileId,
     davProps: davProps,
@@ -131,6 +141,7 @@ List<Override> buildConfigOverrides(Config config) {
     windowSettingProvider.overrideWithBuild((_, _) => config.windowProps),
     vpnSettingProvider.overrideWithBuild((_, _) => config.vpnProps),
     networkSettingProvider.overrideWithBuild((_, _) => config.networkProps),
+    tailscaleSettingProvider.overrideWithBuild((_, _) => config.tailscaleProps),
     themeSettingProvider.overrideWithBuild((_, _) => config.themeProps),
     currentProfileIdProvider.overrideWithBuild(
       (_, _) => config.currentProfileId,

@@ -187,7 +187,7 @@ final class UpdateParamsProvider
   }
 }
 
-String _$updateParamsHash() => r'012df72ab0e769a51c573f4692031506d7b1f1b4';
+String _$updateParamsHash() => r'e3dc7255782d18aa092ba2289de0c233654d6a3f';
 
 @ProviderFor(proxyState)
 const proxyStateProvider = ProxyStateProvider._();
@@ -228,7 +228,7 @@ final class ProxyStateProvider
   }
 }
 
-String _$proxyStateHash() => r'3df11daa70bd06de32da43e9b3e09a74389264b2';
+String _$proxyStateHash() => r'a3dcd652aa083645c7ce33b7684ba1315a4c9b65';
 
 @ProviderFor(trayState)
 const trayStateProvider = TrayStateProvider._();
@@ -2177,7 +2177,7 @@ final class SharedStateProvider
   }
 }
 
-String _$sharedStateHash() => r'864fdf3f750fb6d1beadcb5f9226a614a9cb2caa';
+String _$sharedStateHash() => r'2f8b429421c46527989b62a6e920cea96937d75b';
 
 @ProviderFor(overlayTopOffset)
 const overlayTopOffsetProvider = OverlayTopOffsetProvider._();
