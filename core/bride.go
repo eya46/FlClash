@@ -19,6 +19,11 @@ func resolveProcess(callback unsafe.Pointer, protocol int, source, target string
 	return takeCString(res)
 }
 
+func networkInterfacesJSON() string {
+	res := C.network_interfaces_json()
+	return takeCString(res)
+}
+
 func invokeResult(callback unsafe.Pointer, data string) {
 	s := C.CString(data)
 	defer C.free(unsafe.Pointer(s))
@@ -30,6 +35,9 @@ func releaseObject(callback unsafe.Pointer) {
 }
 
 func takeCString(s *C.char) string {
+	if s == nil {
+		return ""
+	}
 	defer C.free_string(s)
 	return C.GoString(s)
 }

@@ -24,6 +24,11 @@ import kotlin.coroutines.resume
 
 class RemoteService : Service(),
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
+    override fun onCreate() {
+        super.onCreate()
+        Core.initContext(applicationContext)
+    }
+
     private fun handleStopService(result: IResultInterface) {
         launch {
             runLock.withLock {

@@ -10,12 +10,18 @@ char* (*resolve_process_func)(void *tun_interface,int protocol, const char *sour
 
 void (*result_func)(void *invoke_Interface, const char *data);
 
+char* (*network_interfaces_json_func)(void);
+
 void protect(void *tun_interface, int fd) {
     protect_func(tun_interface, fd);
 }
 
 char* resolve_process(void *tun_interface, int protocol, const char *source, const char *target, int uid) {
     return resolve_process_func(tun_interface, protocol, source, target, uid);
+}
+
+char* network_interfaces_json(void) {
+    return network_interfaces_json_func();
 }
 
 void release_object(void *obj) {

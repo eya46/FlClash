@@ -1,4 +1,5 @@
 #include <jni.h>
+#include <cstring>
 
 #ifdef LIBCLASH
 
@@ -82,6 +83,8 @@ Java_com_follow_clash_core_Core_quickSetup(JNIEnv *env, jobject thiz, jstring in
 static jmethodID m_tun_interface_protect;
 static jmethodID m_tun_interface_resolve_process;
 static jmethodID m_invoke_interface_result;
+static jclass c_core;
+static jmethodID m_core_get_network_interfaces_json;
 
 
 static void release_jni_object_impl(void *obj) {
@@ -123,6 +126,17 @@ static void call_invoke_interface_result_impl(void *invoke_interface, const char
                         new_string(data));
 }
 
+static char *call_core_get_network_interfaces_json_impl() {
+    ATTACH_JNI();
+    const auto payload = reinterpret_cast<jstring>(env->CallStaticObjectMethod(
+            c_core,
+            m_core_get_network_interfaces_json));
+    if (jni_catch_exception(env) || payload == nullptr) {
+        return strdup("");
+    }
+    return get_string(payload);
+}
+
 extern "C"
 JNIEXPORT jint JNICALL
 JNI_OnLoad(JavaVM *vm, void *) {
@@ -133,6 +147,8 @@ JNI_OnLoad(JavaVM *vm, void *) {
 
     initialize_jni(vm, env);
 
+    c_core = reinterpret_cast<jclass>(new_global(find_class("com/follow/clash/core/Core")));
+
     const auto c_tun_interface = find_class("com/follow/clash/core/TunInterface");
 
     const auto c_invoke_interface = find_class("com/follow/clash/core/InvokeInterface");
@@ -142,11 +158,15 @@ JNI_OnLoad(JavaVM *vm, void *) {
                                                   "(ILjava/lang/String;Ljava/lang/String;I)Ljava/lang/String;");
     m_invoke_interface_result = find_method(c_invoke_interface, "onResult",
                                             "(Ljava/lang/String;)V");
+    m_core_get_network_interfaces_json = env->GetStaticMethodID(c_core,
+                                                                "getNetworkInterfacesJson",
+                                                                "()Ljava/lang/String;");
 
 
     protect_func = &call_tun_interface_protect_impl;
     resolve_process_func = &call_tun_interface_resolve_process_impl;
     result_func = &call_invoke_interface_result_impl;
+    network_interfaces_json_func = &call_core_get_network_interfaces_json_impl;
     release_object_func = &release_jni_object_impl;
     free_string_func = &free_string_impl;
 
