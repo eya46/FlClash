@@ -2,11 +2,12 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::VecDeque;
-use std::fs::File;
-use std::io::{BufRead, Error, Read};
+use std::fs::{File, OpenOptions};
+use std::io::{BufRead, Error, Read, Write};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
-use std::{io, thread};
+use std::time::Duration;
+use std::{env, io, thread};
 use warp::{Filter, Reply};
 
 const LISTEN_PORT: u16 = 47890;
@@ -34,9 +35,18 @@ fn sha256_file(path: &str) -> Result<String, Error> {
 }
 
 static LOGS: Lazy<Arc<Mutex<VecDeque<String>>>> =
-    Lazy::new(|| Arc::new(Mutex::new(VecDeque::with_capacity(100))));
+    Lazy::new(|| Arc::new(Mutex::new(VecDeque::with_capacity(500))));
 static PROCESS: Lazy<Arc<Mutex<Option<std::process::Child>>>> =
     Lazy::new(|| Arc::new(Mutex::new(None)));
+static STDERR_LOG: Lazy<Arc<Mutex<Option<File>>>> = Lazy::new(|| {
+    let path = env::temp_dir().join("flclash_stderr.log");
+    let file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&path)
+        .ok();
+    Arc::new(Mutex::new(file))
+});
 
 fn start(start_params: StartParams) -> impl Reply {
     let sha256 = sha256_file(start_params.path.as_str()).unwrap_or("".to_string());
@@ -46,28 +56,27 @@ fn start(start_params: StartParams) -> impl Reply {
     stop();
     let mut process = PROCESS.lock().unwrap();
     match Command::new(&start_params.path)
+        .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .arg(&start_params.arg)
         .spawn()
     {
         Ok(child) => {
+            let pid = child.id();
             *process = Some(child);
+            log_message(format!(
+                "[helper] core started pid={} path={} arg={}",
+                pid, start_params.path, start_params.arg
+            ));
             if let Some(ref mut child) = *process {
-                let stderr = child.stderr.take().unwrap();
-                let reader = io::BufReader::new(stderr);
-                thread::spawn(move || {
-                    for line in reader.lines() {
-                        match line {
-                            Ok(output) => {
-                                log_message(output);
-                            }
-                            Err(_) => {
-                                break;
-                            }
-                        }
-                    }
-                });
+                if let Some(stdout) = child.stdout.take() {
+                    spawn_log_reader(stdout, "stdout");
+                }
+                if let Some(stderr) = child.stderr.take() {
+                    spawn_log_reader(stderr, "stderr");
+                }
             }
+            spawn_exit_monitor(pid);
             "".to_string()
         }
         Err(e) => {
@@ -89,10 +98,69 @@ fn stop() -> impl Reply {
 
 fn log_message(message: String) {
     let mut log_buffer = LOGS.lock().unwrap();
-    if log_buffer.len() == 100 {
+    if log_buffer.len() == 500 {
         log_buffer.pop_front();
     }
     log_buffer.push_back(format!("{}\n", message));
+    drop(log_buffer);
+    if let Ok(mut guard) = STDERR_LOG.lock() {
+        if let Some(ref mut f) = *guard {
+            let _ = writeln!(f, "{}", message);
+            let _ = f.flush();
+        }
+    }
+}
+
+fn spawn_log_reader<R>(reader: R, stream: &'static str)
+where
+    R: Read + Send + 'static,
+{
+    let reader = io::BufReader::new(reader);
+    thread::spawn(move || {
+        for line in reader.lines() {
+            match line {
+                Ok(output) => {
+                    log_message(format!("[helper:{}] {}", stream, output));
+                }
+                Err(err) => {
+                    log_message(format!("[helper:{}] reader error: {}", stream, err));
+                    break;
+                }
+            }
+        }
+        log_message(format!("[helper:{}] reader exited", stream));
+    });
+}
+
+fn spawn_exit_monitor(pid: u32) {
+    thread::spawn(move || loop {
+        thread::sleep(Duration::from_millis(500));
+        let mut process = PROCESS.lock().unwrap();
+        let Some(child) = process.as_mut() else {
+            break;
+        };
+        if child.id() != pid {
+            break;
+        }
+        match child.try_wait() {
+            Ok(Some(status)) => {
+                log_message(format!(
+                    "[helper] core exited pid={} success={} code={:?}",
+                    pid,
+                    status.success(),
+                    status.code()
+                ));
+                *process = None;
+                break;
+            }
+            Ok(None) => {}
+            Err(err) => {
+                log_message(format!("[helper] core wait failed pid={} err={}", pid, err));
+                *process = None;
+                break;
+            }
+        }
+    });
 }
 
 fn get_logs() -> impl Reply {
