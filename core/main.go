@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	redirectStderr()
+
 	args := os.Args
 	if len(args) <= 1 {
 		fmt.Println("Arguments error")
