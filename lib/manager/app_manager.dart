@@ -9,7 +9,6 @@ import 'package:fl_clash/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class AppStateManager extends ConsumerStatefulWidget {
   final Widget child;
@@ -211,7 +210,7 @@ class AppSidebarContainer extends ConsumerWidget {
                                 .map(
                                   (e) => NavigationRailDestination(
                                     icon: e.icon,
-                                    label: Text(Intl.message(e.label.name)),
+                                    label: Text(navigationLabelText(e.label)),
                                   ),
                                 )
                                 .toList(),

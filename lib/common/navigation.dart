@@ -1,7 +1,16 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/views/views.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+String navigationLabelText(PageLabel label) {
+  return switch (label) {
+    PageLabel.tailscale => 'Tailscale',
+    _ => Intl.message(label.name),
+  };
+}
 
 class Navigation {
   static Navigation? _instance;
@@ -32,6 +41,13 @@ class Navigation {
         label: PageLabel.profiles,
         builder: (_) =>
             const ProfilesView(key: GlobalObjectKey(PageLabel.profiles)),
+      ),
+      NavigationItem(
+        icon: const TailscaleIcon(),
+        label: PageLabel.tailscale,
+        builder: (_) =>
+            const TailscaleView(key: GlobalObjectKey(PageLabel.tailscale)),
+        description: 'Manage Tailscale subnet routes',
       ),
       NavigationItem(
         icon: Icon(Icons.view_timeline),

@@ -248,6 +248,153 @@ class DNSHijackingItem extends ConsumerWidget {
   }
 }
 
+class TailscaleEnableItem extends ConsumerWidget {
+  const TailscaleEnableItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final enable = ref.watch(
+      tailscaleSettingProvider.select((state) => state.enable),
+    );
+    return ListItem.switchItem(
+      title: const Text('Enable Tailscale'),
+      subtitle: const Text('Use tsnet for Tailscale subnet routes.'),
+      delegate: SwitchDelegate(
+        value: enable,
+        onChanged: (bool value) async {
+          ref
+              .read(tailscaleSettingProvider.notifier)
+              .update((state) => state.copyWith(enable: value));
+        },
+      ),
+    );
+  }
+}
+
+class TailscaleAcceptRoutesItem extends ConsumerWidget {
+  const TailscaleAcceptRoutesItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final acceptRoutes = ref.watch(
+      tailscaleSettingProvider.select((state) => state.acceptRoutes),
+    );
+    return ListItem.switchItem(
+      title: const Text('Accept Tailscale Routes'),
+      subtitle: const Text(
+        'Advertised subnet routes are handled by Tailscale instead of Mihomo.',
+      ),
+      delegate: SwitchDelegate(
+        value: acceptRoutes,
+        onChanged: (bool value) async {
+          ref
+              .read(tailscaleSettingProvider.notifier)
+              .update((state) => state.copyWith(acceptRoutes: value));
+        },
+      ),
+    );
+  }
+}
+
+class TailscaleHostnameItem extends ConsumerWidget {
+  const TailscaleHostnameItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final hostname = ref.watch(
+      tailscaleSettingProvider.select((state) => state.hostname),
+    );
+    return ListItem.input(
+      title: const Text('Tailscale Hostname'),
+      subtitle: Text(
+        hostname.isEmpty ? appLocalizations.defaultText : hostname,
+      ),
+      delegate: InputDelegate(
+        title: 'Tailscale Hostname',
+        value: hostname,
+        resetValue: '',
+        onChanged: (String? value) {
+          if (value == null) {
+            return;
+          }
+          ref
+              .read(tailscaleSettingProvider.notifier)
+              .update((state) => state.copyWith(hostname: value));
+        },
+      ),
+    );
+  }
+}
+
+class TailscaleAuthKeyItem extends ConsumerWidget {
+  const TailscaleAuthKeyItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final authKey = ref.watch(
+      tailscaleSettingProvider.select((state) => state.authKey),
+    );
+    return ListItem.input(
+      title: const Text('Tailscale Auth Key'),
+      subtitle: Text(
+        authKey.isEmpty ? appLocalizations.defaultText : 'Configured',
+      ),
+      delegate: InputDelegate(
+        title: 'Tailscale Auth Key',
+        value: authKey,
+        resetValue: '',
+        onChanged: (String? value) {
+          if (value == null) {
+            return;
+          }
+          ref
+              .read(tailscaleSettingProvider.notifier)
+              .update((state) => state.copyWith(authKey: value));
+        },
+      ),
+    );
+  }
+}
+
+class TailscaleControlUrlItem extends ConsumerWidget {
+  const TailscaleControlUrlItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final controlUrl = ref.watch(
+      tailscaleSettingProvider.select((state) => state.controlUrl),
+    );
+    return ListItem.input(
+      title: const Text('Tailscale Control URL'),
+      subtitle: Text(
+        controlUrl.isEmpty ? appLocalizations.defaultText : controlUrl,
+      ),
+      delegate: InputDelegate(
+        title: 'Tailscale Control URL',
+        value: controlUrl,
+        resetValue: '',
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return null;
+          }
+          if (!value.isUrl) {
+            return appLocalizations.urlTip('Control URL');
+          }
+          return null;
+        },
+        onChanged: (String? value) {
+          if (value == null) {
+            return;
+          }
+          ref
+              .read(tailscaleSettingProvider.notifier)
+              .update((state) => state.copyWith(controlUrl: value));
+        },
+      ),
+    );
+  }
+}
+
 class RouteModeItem extends ConsumerWidget {
   const RouteModeItem({super.key});
 

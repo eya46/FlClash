@@ -8,7 +8,6 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 typedef OnSelected = void Function(int index);
 
@@ -37,7 +36,7 @@ class HomePage extends StatelessWidget {
                       .map(
                         (e) => NavigationDestination(
                           icon: e.icon,
-                          label: Intl.message(e.label.name),
+                          label: navigationLabelText(e.label),
                         ),
                       )
                       .toList(),

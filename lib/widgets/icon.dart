@@ -107,3 +107,70 @@ class _ImageCacheWidgetState extends State<ImageCacheWidget> {
     );
   }
 }
+
+class TailscaleIcon extends Icon {
+  const TailscaleIcon({super.key, super.size, super.color, super.semanticLabel})
+    : super(null);
+
+  @override
+  Widget build(BuildContext context) {
+    final iconTheme = IconTheme.of(context);
+    final resolvedSize = size ?? iconTheme.size ?? 24;
+    final resolvedColor =
+        color ??
+        iconTheme.color ??
+        Theme.of(context).iconTheme.color ??
+        Colors.black;
+
+    return Semantics(
+      label: semanticLabel,
+      child: SizedBox.square(
+        dimension: resolvedSize,
+        child: CustomPaint(
+          painter: _TailscaleIconPainter(color: resolvedColor),
+        ),
+      ),
+    );
+  }
+}
+
+class _TailscaleIconPainter extends CustomPainter {
+  final Color color;
+
+  const _TailscaleIconPainter({required this.color});
+
+  static const _viewBoxSize = Size(23, 23);
+  static const _circles = <({Offset center, double radius, double opacity})>[
+    (center: Offset(3.4, 3.25), radius: 2.7, opacity: 0.2),
+    (center: Offset(3.4, 11.3), radius: 2.7, opacity: 1),
+    (center: Offset(3.4, 19.5), radius: 2.7, opacity: 0.2),
+    (center: Offset(11.5, 11.3), radius: 2.7, opacity: 1),
+    (center: Offset(11.5, 19.5), radius: 2.7, opacity: 1),
+    (center: Offset(11.5, 3.25), radius: 2.7, opacity: 0.2),
+    (center: Offset(19.5, 3.25), radius: 2.7, opacity: 0.2),
+    (center: Offset(19.5, 11.3), radius: 2.7, opacity: 1),
+    (center: Offset(19.5, 19.5), radius: 2.7, opacity: 0.2),
+  ];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scale = Size(
+      size.width / _viewBoxSize.width,
+      size.height / _viewBoxSize.height,
+    );
+
+    for (final circle in _circles) {
+      final paint = Paint()..color = color.withValues(alpha: circle.opacity);
+      canvas.drawCircle(
+        Offset(circle.center.dx * scale.width, circle.center.dy * scale.height),
+        circle.radius * scale.shortestSide,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TailscaleIconPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}

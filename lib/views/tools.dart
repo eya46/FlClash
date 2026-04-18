@@ -32,7 +32,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
   Widget _buildNavigationMenuItem(NavigationItem navigationItem) {
     return ListItem.open(
       leading: navigationItem.icon,
-      title: Text(Intl.message(navigationItem.label.name)),
+      title: Text(navigationLabelText(navigationItem.label)),
       subtitle: navigationItem.description != null
           ? Text(Intl.message(navigationItem.description!))
           : null,
