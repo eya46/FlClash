@@ -204,6 +204,9 @@ _TailscaleProps _$TailscalePropsFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      routeControlPlaneViaProxy:
+          json['route-control-plane-via-proxy'] as bool? ?? false,
+      routeDerpViaProxy: json['route-derp-via-proxy'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$TailscalePropsToJson(_TailscaleProps instance) =>
@@ -214,6 +217,8 @@ Map<String, dynamic> _$TailscalePropsToJson(_TailscaleProps instance) =>
       'auth-key': instance.authKey,
       'control-url': instance.controlUrl,
       'disabled-routes': instance.disabledRoutes,
+      'route-control-plane-via-proxy': instance.routeControlPlaneViaProxy,
+      'route-derp-via-proxy': instance.routeDerpViaProxy,
     };
 
 _ProxiesStyleProps _$ProxiesStylePropsFromJson(Map<String, dynamic> json) =>

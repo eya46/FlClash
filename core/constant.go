@@ -48,12 +48,14 @@ type tunSchema struct {
 }
 
 type tailscaleSchema struct {
-	Enable         bool      `json:"enable"`
-	AcceptRoutes   *bool     `json:"accept-routes"`
-	Hostname       *string   `json:"hostname"`
-	AuthKey        *string   `json:"auth-key"`
-	ControlURL     *string   `json:"control-url"`
-	DisabledRoutes *[]string `json:"disabled-routes"`
+	Enable                    bool      `json:"enable"`
+	AcceptRoutes              *bool     `json:"accept-routes"`
+	Hostname                  *string   `json:"hostname"`
+	AuthKey                   *string   `json:"auth-key"`
+	ControlURL                *string   `json:"control-url"`
+	DisabledRoutes            *[]string `json:"disabled-routes"`
+	RouteControlPlaneViaProxy *bool     `json:"route-control-plane-via-proxy"`
+	RouteDERPViaProxy         *bool     `json:"route-derp-via-proxy"`
 }
 
 type ChangeProxyParams struct {

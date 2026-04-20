@@ -395,6 +395,58 @@ class TailscaleControlUrlItem extends ConsumerWidget {
   }
 }
 
+class TailscaleRouteControlPlaneViaProxyItem extends ConsumerWidget {
+  const TailscaleRouteControlPlaneViaProxyItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final enabled = ref.watch(
+      tailscaleSettingProvider.select(
+        (state) => state.routeControlPlaneViaProxy,
+      ),
+    );
+    return ListItem.switchItem(
+      title: const Text('Route control plane via proxy'),
+      subtitle: const Text(
+        'Off (recommended): control-plane traffic bypasses all rules and goes out the physical NIC, so a broken proxy node cannot stall Tailscale.',
+      ),
+      delegate: SwitchDelegate(
+        value: enabled,
+        onChanged: (bool value) async {
+          ref.read(tailscaleSettingProvider.notifier).update(
+                (state) => state.copyWith(routeControlPlaneViaProxy: value),
+              );
+        },
+      ),
+    );
+  }
+}
+
+class TailscaleRouteDerpViaProxyItem extends ConsumerWidget {
+  const TailscaleRouteDerpViaProxyItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final enabled = ref.watch(
+      tailscaleSettingProvider.select((state) => state.routeDerpViaProxy),
+    );
+    return ListItem.switchItem(
+      title: const Text('Route DERP via proxy'),
+      subtitle: const Text(
+        'Off (recommended): DERP relay traffic bypasses rules. Turn on only if your proxy path to a DERP region is reliably faster than the direct one.',
+      ),
+      delegate: SwitchDelegate(
+        value: enabled,
+        onChanged: (bool value) async {
+          ref
+              .read(tailscaleSettingProvider.notifier)
+              .update((state) => state.copyWith(routeDerpViaProxy: value));
+        },
+      ),
+    );
+  }
+}
+
 class RouteModeItem extends ConsumerWidget {
   const RouteModeItem({super.key});
 

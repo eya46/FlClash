@@ -155,6 +155,12 @@ func toTailscaleConfig(schema *tailscaleSchema) (TS.Config, error) {
 	if schema != nil && schema.DisabledRoutes != nil {
 		config.DisabledRoutes = append([]string(nil), (*schema.DisabledRoutes)...)
 	}
+	if schema != nil && schema.RouteControlPlaneViaProxy != nil {
+		config.RouteControlPlaneViaProxy = *schema.RouteControlPlaneViaProxy
+	}
+	if schema != nil && schema.RouteDERPViaProxy != nil {
+		config.RouteDERPViaProxy = *schema.RouteDERPViaProxy
+	}
 	if !config.Enable {
 		return config, nil
 	}
@@ -221,6 +227,14 @@ func cloneTailscaleSchema(schema *tailscaleSchema) *tailscaleSchema {
 	if schema.DisabledRoutes != nil {
 		value := append([]string(nil), (*schema.DisabledRoutes)...)
 		cloned.DisabledRoutes = &value
+	}
+	if schema.RouteControlPlaneViaProxy != nil {
+		value := *schema.RouteControlPlaneViaProxy
+		cloned.RouteControlPlaneViaProxy = &value
+	}
+	if schema.RouteDERPViaProxy != nil {
+		value := *schema.RouteDERPViaProxy
+		cloned.RouteDERPViaProxy = &value
 	}
 	return &cloned
 }

@@ -1483,7 +1483,7 @@ as bool,
 /// @nodoc
 mixin _$TailscaleProps {
 
- bool get enable;@JsonKey(name: 'accept-routes') bool get acceptRoutes; String get hostname;@JsonKey(name: 'auth-key') String get authKey;@JsonKey(name: 'control-url') String get controlUrl;@JsonKey(name: 'disabled-routes') List<String> get disabledRoutes;
+ bool get enable;@JsonKey(name: 'accept-routes') bool get acceptRoutes; String get hostname;@JsonKey(name: 'auth-key') String get authKey;@JsonKey(name: 'control-url') String get controlUrl;@JsonKey(name: 'disabled-routes') List<String> get disabledRoutes;@JsonKey(name: 'route-control-plane-via-proxy') bool get routeControlPlaneViaProxy;@JsonKey(name: 'route-derp-via-proxy') bool get routeDerpViaProxy;
 /// Create a copy of TailscaleProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1496,16 +1496,16 @@ $TailscalePropsCopyWith<TailscaleProps> get copyWith => _$TailscalePropsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleProps&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&const DeepCollectionEquality().equals(other.disabledRoutes, disabledRoutes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleProps&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&const DeepCollectionEquality().equals(other.disabledRoutes, disabledRoutes)&&(identical(other.routeControlPlaneViaProxy, routeControlPlaneViaProxy) || other.routeControlPlaneViaProxy == routeControlPlaneViaProxy)&&(identical(other.routeDerpViaProxy, routeDerpViaProxy) || other.routeDerpViaProxy == routeDerpViaProxy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enable,acceptRoutes,hostname,authKey,controlUrl,const DeepCollectionEquality().hash(disabledRoutes));
+int get hashCode => Object.hash(runtimeType,enable,acceptRoutes,hostname,authKey,controlUrl,const DeepCollectionEquality().hash(disabledRoutes),routeControlPlaneViaProxy,routeDerpViaProxy);
 
 @override
 String toString() {
-  return 'TailscaleProps(enable: $enable, acceptRoutes: $acceptRoutes, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, disabledRoutes: $disabledRoutes)';
+  return 'TailscaleProps(enable: $enable, acceptRoutes: $acceptRoutes, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, disabledRoutes: $disabledRoutes, routeControlPlaneViaProxy: $routeControlPlaneViaProxy, routeDerpViaProxy: $routeDerpViaProxy)';
 }
 
 
@@ -1516,7 +1516,7 @@ abstract mixin class $TailscalePropsCopyWith<$Res>  {
   factory $TailscalePropsCopyWith(TailscaleProps value, $Res Function(TailscaleProps) _then) = _$TailscalePropsCopyWithImpl;
 @useResult
 $Res call({
- bool enable,@JsonKey(name: 'accept-routes') bool acceptRoutes, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl,@JsonKey(name: 'disabled-routes') List<String> disabledRoutes
+ bool enable,@JsonKey(name: 'accept-routes') bool acceptRoutes, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl,@JsonKey(name: 'disabled-routes') List<String> disabledRoutes,@JsonKey(name: 'route-control-plane-via-proxy') bool routeControlPlaneViaProxy,@JsonKey(name: 'route-derp-via-proxy') bool routeDerpViaProxy
 });
 
 
@@ -1533,7 +1533,7 @@ class _$TailscalePropsCopyWithImpl<$Res>
 
 /// Create a copy of TailscaleProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? acceptRoutes = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? disabledRoutes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? acceptRoutes = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? disabledRoutes = null,Object? routeControlPlaneViaProxy = null,Object? routeDerpViaProxy = null,}) {
   return _then(_self.copyWith(
 enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
@@ -1541,7 +1541,9 @@ as bool,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_n
 as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
 as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
 as String,disabledRoutes: null == disabledRoutes ? _self.disabledRoutes : disabledRoutes // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<String>,routeControlPlaneViaProxy: null == routeControlPlaneViaProxy ? _self.routeControlPlaneViaProxy : routeControlPlaneViaProxy // ignore: cast_nullable_to_non_nullable
+as bool,routeDerpViaProxy: null == routeDerpViaProxy ? _self.routeDerpViaProxy : routeDerpViaProxy // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -1626,10 +1628,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes, @JsonKey(name: 'route-control-plane-via-proxy')  bool routeControlPlaneViaProxy, @JsonKey(name: 'route-derp-via-proxy')  bool routeDerpViaProxy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TailscaleProps() when $default != null:
-return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes);case _:
+return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes,_that.routeControlPlaneViaProxy,_that.routeDerpViaProxy);case _:
   return orElse();
 
 }
@@ -1647,10 +1649,10 @@ return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes, @JsonKey(name: 'route-control-plane-via-proxy')  bool routeControlPlaneViaProxy, @JsonKey(name: 'route-derp-via-proxy')  bool routeDerpViaProxy)  $default,) {final _that = this;
 switch (_that) {
 case _TailscaleProps():
-return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes);case _:
+return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes,_that.routeControlPlaneViaProxy,_that.routeDerpViaProxy);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1667,10 +1669,10 @@ return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes, @JsonKey(name: 'route-control-plane-via-proxy')  bool routeControlPlaneViaProxy, @JsonKey(name: 'route-derp-via-proxy')  bool routeDerpViaProxy)?  $default,) {final _that = this;
 switch (_that) {
 case _TailscaleProps() when $default != null:
-return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes);case _:
+return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes,_that.routeControlPlaneViaProxy,_that.routeDerpViaProxy);case _:
   return null;
 
 }
@@ -1682,7 +1684,7 @@ return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_th
 @JsonSerializable()
 
 class _TailscaleProps implements TailscaleProps {
-  const _TailscaleProps({this.enable = false, @JsonKey(name: 'accept-routes') this.acceptRoutes = true, this.hostname = '', @JsonKey(name: 'auth-key') this.authKey = '', @JsonKey(name: 'control-url') this.controlUrl = '', @JsonKey(name: 'disabled-routes') final  List<String> disabledRoutes = const []}): _disabledRoutes = disabledRoutes;
+  const _TailscaleProps({this.enable = false, @JsonKey(name: 'accept-routes') this.acceptRoutes = true, this.hostname = '', @JsonKey(name: 'auth-key') this.authKey = '', @JsonKey(name: 'control-url') this.controlUrl = '', @JsonKey(name: 'disabled-routes') final  List<String> disabledRoutes = const [], @JsonKey(name: 'route-control-plane-via-proxy') this.routeControlPlaneViaProxy = false, @JsonKey(name: 'route-derp-via-proxy') this.routeDerpViaProxy = false}): _disabledRoutes = disabledRoutes;
   factory _TailscaleProps.fromJson(Map<String, dynamic> json) => _$TailscalePropsFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -1697,6 +1699,8 @@ class _TailscaleProps implements TailscaleProps {
   return EqualUnmodifiableListView(_disabledRoutes);
 }
 
+@override@JsonKey(name: 'route-control-plane-via-proxy') final  bool routeControlPlaneViaProxy;
+@override@JsonKey(name: 'route-derp-via-proxy') final  bool routeDerpViaProxy;
 
 /// Create a copy of TailscaleProps
 /// with the given fields replaced by the non-null parameter values.
@@ -1711,16 +1715,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleProps&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&const DeepCollectionEquality().equals(other._disabledRoutes, _disabledRoutes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleProps&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&const DeepCollectionEquality().equals(other._disabledRoutes, _disabledRoutes)&&(identical(other.routeControlPlaneViaProxy, routeControlPlaneViaProxy) || other.routeControlPlaneViaProxy == routeControlPlaneViaProxy)&&(identical(other.routeDerpViaProxy, routeDerpViaProxy) || other.routeDerpViaProxy == routeDerpViaProxy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enable,acceptRoutes,hostname,authKey,controlUrl,const DeepCollectionEquality().hash(_disabledRoutes));
+int get hashCode => Object.hash(runtimeType,enable,acceptRoutes,hostname,authKey,controlUrl,const DeepCollectionEquality().hash(_disabledRoutes),routeControlPlaneViaProxy,routeDerpViaProxy);
 
 @override
 String toString() {
-  return 'TailscaleProps(enable: $enable, acceptRoutes: $acceptRoutes, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, disabledRoutes: $disabledRoutes)';
+  return 'TailscaleProps(enable: $enable, acceptRoutes: $acceptRoutes, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, disabledRoutes: $disabledRoutes, routeControlPlaneViaProxy: $routeControlPlaneViaProxy, routeDerpViaProxy: $routeDerpViaProxy)';
 }
 
 
@@ -1731,7 +1735,7 @@ abstract mixin class _$TailscalePropsCopyWith<$Res> implements $TailscalePropsCo
   factory _$TailscalePropsCopyWith(_TailscaleProps value, $Res Function(_TailscaleProps) _then) = __$TailscalePropsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enable,@JsonKey(name: 'accept-routes') bool acceptRoutes, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl,@JsonKey(name: 'disabled-routes') List<String> disabledRoutes
+ bool enable,@JsonKey(name: 'accept-routes') bool acceptRoutes, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl,@JsonKey(name: 'disabled-routes') List<String> disabledRoutes,@JsonKey(name: 'route-control-plane-via-proxy') bool routeControlPlaneViaProxy,@JsonKey(name: 'route-derp-via-proxy') bool routeDerpViaProxy
 });
 
 
@@ -1748,7 +1752,7 @@ class __$TailscalePropsCopyWithImpl<$Res>
 
 /// Create a copy of TailscaleProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enable = null,Object? acceptRoutes = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? disabledRoutes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? enable = null,Object? acceptRoutes = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? disabledRoutes = null,Object? routeControlPlaneViaProxy = null,Object? routeDerpViaProxy = null,}) {
   return _then(_TailscaleProps(
 enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
@@ -1756,7 +1760,9 @@ as bool,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_n
 as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
 as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
 as String,disabledRoutes: null == disabledRoutes ? _self._disabledRoutes : disabledRoutes // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<String>,routeControlPlaneViaProxy: null == routeControlPlaneViaProxy ? _self.routeControlPlaneViaProxy : routeControlPlaneViaProxy // ignore: cast_nullable_to_non_nullable
+as bool,routeDerpViaProxy: null == routeDerpViaProxy ? _self.routeDerpViaProxy : routeDerpViaProxy // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

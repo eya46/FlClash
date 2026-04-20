@@ -182,6 +182,12 @@ abstract class TailscaleProps with _$TailscaleProps {
     @JsonKey(name: 'auth-key') @Default('') String authKey,
     @JsonKey(name: 'control-url') @Default('') String controlUrl,
     @JsonKey(name: 'disabled-routes') @Default([]) List<String> disabledRoutes,
+    @JsonKey(name: 'route-control-plane-via-proxy')
+    @Default(false)
+    bool routeControlPlaneViaProxy,
+    @JsonKey(name: 'route-derp-via-proxy')
+    @Default(false)
+    bool routeDerpViaProxy,
   }) = _TailscaleProps;
 
   factory TailscaleProps.fromJson(Map<String, Object?>? json) =>

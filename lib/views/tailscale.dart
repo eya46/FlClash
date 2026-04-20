@@ -413,6 +413,13 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
         title: 'Advertised Routes',
         items: _buildRouteItems(_tailscaleState, tailscaleProps),
       ),
+      ...generateSection(
+        title: 'Routing',
+        items: const [
+          TailscaleRouteControlPlaneViaProxyItem(),
+          TailscaleRouteDerpViaProxyItem(),
+        ],
+      ),
     ];
 
     return CommonScaffold(
