@@ -481,12 +481,14 @@ class BuildCommand extends Command {
       return;
     }
 
+    final artifactTpl =
+        '{{name}}-{{build_name}}+{{build_number}}-{{platform}}-$archName.{{ext}}';
     switch (target) {
       case Target.windows:
         _buildDistributor(
           target: target,
           targets: 'exe,zip',
-          args: ' --artifact-name $archName',
+          args: ' --artifact-name $artifactTpl',
           env: env,
         );
         return;
@@ -503,7 +505,7 @@ class BuildCommand extends Command {
           target: target,
           targets: targets,
           args:
-              ' --artifact-name $archName --build-target-platform $defaultTarget',
+              ' --artifact-name $artifactTpl --build-target-platform $defaultTarget',
           env: env,
         );
         return;
@@ -531,7 +533,7 @@ class BuildCommand extends Command {
         _buildDistributor(
           target: target,
           targets: 'dmg',
-          args: ' --artifact-name $archName',
+          args: ' --artifact-name $artifactTpl',
           env: env,
         );
         return;
