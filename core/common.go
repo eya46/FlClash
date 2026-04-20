@@ -137,8 +137,24 @@ func stopListeners() {
 	listener.StopListener()
 }
 
+// proxiesWithProviders returns the merged set of proxies and
+// provider-owned proxies keyed by name. Replaces mihomo's removed
+// tunnel.ProxiesWithProviders (see upstream 0c995a2).
+func proxiesWithProviders() map[string]constant.Proxy {
+	proxies := make(map[string]constant.Proxy)
+	for name, p := range tunnel.Proxies() {
+		proxies[name] = p
+	}
+	for _, pd := range tunnel.Providers() {
+		for _, p := range pd.Proxies() {
+			proxies[p.Name()] = p
+		}
+	}
+	return proxies
+}
+
 func patchSelectGroup(mapping map[string]string) {
-	for name, proxy := range tunnel.ProxiesWithProviders() {
+	for name, proxy := range proxiesWithProviders() {
 		outbound, ok := proxy.(*adapter.Proxy)
 		if !ok {
 			continue
