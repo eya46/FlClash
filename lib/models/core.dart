@@ -72,6 +72,8 @@ class TailscaleState {
   final int peerCount;
   final int onlinePeerCount;
   final String lastHandshake;
+  final List<TailscalePeerInfo> peers;
+  final List<TailscaleDerpInfo> derp;
 
   const TailscaleState({
     required this.enable,
@@ -87,6 +89,8 @@ class TailscaleState {
     required this.peerCount,
     required this.onlinePeerCount,
     required this.lastHandshake,
+    required this.peers,
+    required this.derp,
   });
 
   factory TailscaleState.fromJson(Map<String, dynamic> json) {
@@ -95,6 +99,20 @@ class TailscaleState {
           .map((item) => item as String)
           .toList(growable: false);
     }
+
+    final peersRaw = json['peers'] as List<dynamic>? ?? const [];
+    final peers = peersRaw
+        .whereType<Map>()
+        .map((item) =>
+            TailscalePeerInfo.fromJson(item.cast<String, dynamic>()))
+        .toList(growable: false);
+
+    final derpRaw = json['derp'] as List<dynamic>? ?? const [];
+    final derp = derpRaw
+        .whereType<Map>()
+        .map((item) =>
+            TailscaleDerpInfo.fromJson(item.cast<String, dynamic>()))
+        .toList(growable: false);
 
     return TailscaleState(
       enable: json['enable'] as bool? ?? false,
@@ -110,6 +128,124 @@ class TailscaleState {
       peerCount: json['peer-count'] as int? ?? 0,
       onlinePeerCount: json['online-peer-count'] as int? ?? 0,
       lastHandshake: json['last-handshake'] as String? ?? '',
+      peers: peers,
+      derp: derp,
+    );
+  }
+}
+
+enum TailscalePeerConnectionType { direct, derp, idle, offline, unknown }
+
+class TailscaleDerpInfo {
+  final int regionId;
+  final String regionCode;
+  final String regionName;
+  final List<String> nodes;
+  final bool avoid;
+  final bool custom;
+  final bool preferred;
+  final bool inUse;
+  final int latencyMs;
+
+  const TailscaleDerpInfo({
+    required this.regionId,
+    required this.regionCode,
+    required this.regionName,
+    required this.nodes,
+    required this.avoid,
+    required this.custom,
+    required this.preferred,
+    required this.inUse,
+    required this.latencyMs,
+  });
+
+  factory TailscaleDerpInfo.fromJson(Map<String, dynamic> json) {
+    final nodesRaw = json['nodes'] as List<dynamic>? ?? const [];
+    return TailscaleDerpInfo(
+      regionId: (json['region-id'] as num?)?.toInt() ?? 0,
+      regionCode: json['region-code'] as String? ?? '',
+      regionName: json['region-name'] as String? ?? '',
+      nodes: nodesRaw.map((item) => item as String).toList(growable: false),
+      avoid: json['avoid'] as bool? ?? false,
+      custom: json['custom'] as bool? ?? false,
+      preferred: json['preferred'] as bool? ?? false,
+      inUse: json['in-use'] as bool? ?? false,
+      latencyMs: (json['latency-ms'] as num?)?.toInt() ?? -1,
+    );
+  }
+}
+
+class TailscalePeerInfo {
+  final String hostName;
+  final String dnsName;
+  final List<String> tailscaleIps;
+  final List<String> primaryRoutes;
+  final bool online;
+  final bool active;
+  final bool exitNode;
+  final bool exitNodeOption;
+  final TailscalePeerConnectionType connectionType;
+  final String curAddr;
+  final String relay;
+  final String lastHandshake;
+  final int rxBytes;
+  final int txBytes;
+
+  const TailscalePeerInfo({
+    required this.hostName,
+    required this.dnsName,
+    required this.tailscaleIps,
+    required this.primaryRoutes,
+    required this.online,
+    required this.active,
+    required this.exitNode,
+    required this.exitNodeOption,
+    required this.connectionType,
+    required this.curAddr,
+    required this.relay,
+    required this.lastHandshake,
+    required this.rxBytes,
+    required this.txBytes,
+  });
+
+  String get displayName {
+    if (hostName.isNotEmpty) return hostName;
+    if (dnsName.isNotEmpty) return dnsName;
+    if (tailscaleIps.isNotEmpty) return tailscaleIps.first;
+    return 'peer';
+  }
+
+  factory TailscalePeerInfo.fromJson(Map<String, dynamic> json) {
+    List<String> readList(String key) {
+      return (json[key] as List<dynamic>? ?? const [])
+          .map((item) => item as String)
+          .toList(growable: false);
+    }
+
+    final typeRaw = (json['connection-type'] as String? ?? '').toLowerCase();
+    final type = switch (typeRaw) {
+      'direct' => TailscalePeerConnectionType.direct,
+      'derp' => TailscalePeerConnectionType.derp,
+      'idle' => TailscalePeerConnectionType.idle,
+      'offline' => TailscalePeerConnectionType.offline,
+      _ => TailscalePeerConnectionType.unknown,
+    };
+
+    return TailscalePeerInfo(
+      hostName: json['host-name'] as String? ?? '',
+      dnsName: json['dns-name'] as String? ?? '',
+      tailscaleIps: readList('tailscale-ips'),
+      primaryRoutes: readList('primary-routes'),
+      online: json['online'] as bool? ?? false,
+      active: json['active'] as bool? ?? false,
+      exitNode: json['exit-node'] as bool? ?? false,
+      exitNodeOption: json['exit-node-option'] as bool? ?? false,
+      connectionType: type,
+      curAddr: json['cur-addr'] as String? ?? '',
+      relay: json['relay'] as String? ?? '',
+      lastHandshake: json['last-handshake'] as String? ?? '',
+      rxBytes: (json['rx-bytes'] as num?)?.toInt() ?? 0,
+      txBytes: (json['tx-bytes'] as num?)?.toInt() ?? 0,
     );
   }
 }
