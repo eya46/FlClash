@@ -486,7 +486,7 @@ class BuildCommand extends Command {
         _buildDistributor(
           target: target,
           targets: 'exe,zip',
-          args: ' --description $archName',
+          args: ' --artifact-name $archName',
           env: env,
         );
         return;
@@ -503,7 +503,7 @@ class BuildCommand extends Command {
           target: target,
           targets: targets,
           args:
-              ' --description $archName --build-target-platform $defaultTarget',
+              ' --artifact-name $archName --build-target-platform $defaultTarget',
           env: env,
         );
         return;
@@ -531,7 +531,7 @@ class BuildCommand extends Command {
         _buildDistributor(
           target: target,
           targets: 'dmg',
-          args: ' --description $archName',
+          args: ' --artifact-name $archName',
           env: env,
         );
         return;
