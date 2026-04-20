@@ -141,6 +141,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./dist/*
+          files: ./dist/**
           body_path: './release.md'
           prerelease: ${{ env.IS_STABLE != 'true' }}
