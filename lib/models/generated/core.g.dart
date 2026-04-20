@@ -296,6 +296,7 @@ const _$ActionMethodEnumMap = {
   ActionMethod.getCountryCode: 'getCountryCode',
   ActionMethod.getMemory: 'getMemory',
   ActionMethod.getTailscaleState: 'getTailscaleState',
+  ActionMethod.reconnectTailscale: 'reconnectTailscale',
   ActionMethod.crash: 'crash',
   ActionMethod.setupConfig: 'setupConfig',
   ActionMethod.deleteFile: 'deleteFile',
