@@ -397,7 +397,7 @@ class BuildCommand extends Command {
     );
     await Build.exec(Build.getExecutable('sudo apt install -y locate'));
     if (arch == Arch.amd64) {
-      await Build.exec(Build.getExecutable('sudo apt install -y rpm patchelf'));
+      await Build.exec(Build.getExecutable('sudo apt install -y patchelf'));
       await Build.exec(Build.getExecutable('sudo apt install -y libfuse2'));
 
       final downloadName = arch == Arch.amd64 ? 'x86_64' : 'aarch64';
@@ -497,7 +497,6 @@ class BuildCommand extends Command {
         final targets = [
           'deb',
           if (arch == Arch.amd64) 'appimage',
-          if (arch == Arch.amd64) 'rpm',
         ].join(',');
         final defaultTarget = targetMap[arch];
         await _getLinuxDependencies(arch!);
