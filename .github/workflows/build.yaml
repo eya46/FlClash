@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-env:
-  IS_STABLE: ${{ !contains(github.ref, '-') }}
 
 jobs:
   build:
@@ -84,7 +82,7 @@ jobs:
           flutter pub get
 
       - name: Setup
-        run: dart setup.dart ${{ matrix.platform }} ${{ matrix.arch && format('--arch {0}', matrix.arch) }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }}
+        run: dart setup.dart ${{ matrix.platform }} ${{ matrix.arch && format('--arch {0}', matrix.arch) }} --env stable
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -143,4 +141,4 @@ jobs:
         with:
           files: ./dist/**
           body_path: './release.md'
-          prerelease: ${{ env.IS_STABLE != 'true' }}
+          prerelease: false
