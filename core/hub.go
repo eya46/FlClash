@@ -53,26 +53,26 @@ func handleInitClash(paramsString string) bool {
 func handleStartListener() bool {
 	runLock.Lock()
 	defer runLock.Unlock()
-	wasRunning := isRunning
 	isRunning = true
 	updateListeners()
 	resolver.ResetConnection()
-	if !wasRunning {
-		reconnectTailscaleIfEnabled()
-	}
+	// Intentionally does NOT kick tsnet. Starting the proxy listener is
+	// not a network event — tsnet already watches interface/DNS changes
+	// via netmon. Forcing a tsnet reconnect here tears down a Running
+	// session just as the user turned the proxy on, leaving tsnet stuck
+	// in Connecting and all TAILSCALE routes effectively dead for the
+	// first several seconds of the VPN lifetime.
 	return true
 }
 
 func handleStopListener() bool {
 	runLock.Lock()
 	defer runLock.Unlock()
-	wasRunning := isRunning
 	isRunning = false
 	listener.StopListener()
 	resolver.ResetConnection()
-	if wasRunning {
-		reconnectTailscaleIfEnabled()
-	}
+	// Same reason as handleStartListener: don't churn tsnet just
+	// because the proxy listener is stopping.
 	return true
 }
 

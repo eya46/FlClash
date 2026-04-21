@@ -80,35 +80,6 @@ func reconnectTailscale() error {
 	return nil
 }
 
-func reconnectTailscaleIfEnabled() {
-	go func() {
-		defer func() {
-			if r := recover(); r != nil {
-				log.Errorln("[TAILSCALE] panic in reconnectTailscaleIfEnabled: %v", r)
-			}
-		}()
-		snapshot := TS.Snapshot()
-		if !snapshot.Enable {
-			return
-		}
-		// Only reconnect when tsnet is fully Running. If it's still Starting,
-		// NeedsLogin, NoState, etc., it either hasn't established any connections
-		// yet (so nothing to "reconnect") or is in a user-action-required state
-		// that reconnect won't fix. Reconnecting a not-yet-Running tsnet would
-		// just tear down and restart it for no reason, delaying startup.
-		if snapshot.BackendState != "Running" {
-			log.Infoln("[TAILSCALE] skip reconnect, backendState=%s", snapshot.BackendState)
-			return
-		}
-		log.Infoln("[TAILSCALE] listener state changed, triggering reconnect")
-		tailscaleApplyMu.Lock()
-		defer tailscaleApplyMu.Unlock()
-		if err := reconnectTailscale(); err != nil {
-			log.Warnln("[TAILSCALE] reconnect on listener change: %s", err.Error())
-		}
-	}()
-}
-
 func applyTailscaleAsync(schema *tailscaleSchema) {
 	snapshot := cloneTailscaleSchema(schema)
 	go func() {
