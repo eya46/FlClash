@@ -248,6 +248,15 @@ class _CoreStatus extends _$CoreStatus with AutoDisposeNotifierMixin {
   }
 }
 
+@Riverpod(keepAlive: true)
+class TailscaleRuntimeRoutes extends _$TailscaleRuntimeRoutes
+    with AutoDisposeNotifierMixin {
+  @override
+  List<String> build() {
+    return const [];
+  }
+}
+
 @riverpod
 class Query extends _$Query with AutoDisposeNotifierMixin {
   @override

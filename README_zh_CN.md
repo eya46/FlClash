@@ -57,6 +57,29 @@ on Mobile:
     com.follow.clash.action.TOGGLE
    ```
 
+## Tailscale (tsnet) — 已知限制
+
+本分支通过 tsnet 集成 Tailscale，使用前请注意以下已知问题：
+
+1. **Android VPN 路由只能在启动时设置一次。** Android 的
+   `VpnService.Builder` 在 `establish()` 之后无法再动态修改路由。
+   VPN 启动时 FlClash 会在最多 6 秒内 poll tsnet，读取当前 peer
+   广告的子网（如 `192.168.100.0/24`）并注入到 VPN 路由表。若
+   tsnet 在该窗口内未进入 `Running`，子网不会被注入——等
+   Tailscale 页面显示 `Running` 后重新开关一次 VPN 即可生效。
+2. **VPN 启动后新上线 peer 的子网需要重启 VPN 才能路由。**
+   若 VPN 已运行时有 peer 上线并广告了新子网，该子网不会被
+   路由，需要关闭 VPN 再重新开启。
+3. **Tile / 广播拉起的冷启动依赖磁盘缓存。**
+   当 FlClash 在没有 Flutter 引擎的情况下被拉起（例如快捷面板
+   磁贴或广播 Intent），VpnOptions 会从磁盘上上次保存的
+   sharedState 读取。第一次无头启动可能需要先经过一次 UI 启动
+   以便把 Tailscale 路由缓存下来。
+4. **应用启动后立即开启代理，tsnet 有时会卡在 `Connecting`。**
+   偶发情况下，Tailscale 在应用启动时自动连接，紧接着开启
+   代理会导致 tsnet 被断开并一直停留在 `Connecting`。临时方法：
+   把 Tailscale 的 **Enable** 开关关闭后再打开即可。
+
 ## Download
 
 <a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" width="200px"/></a> <a href="https://github.com/chen08209/FlClash/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>

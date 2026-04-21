@@ -638,6 +638,7 @@ SharedState sharedState(Ref ref) {
   );
   final vpnSetting = ref.watch(vpnSettingProvider);
   final tailscale = ref.watch(tailscaleSettingProvider);
+  final tsRoutes = ref.watch(tailscaleRuntimeRoutesProvider);
   final currentProfileName = currentProfileVM2.a;
   final selectedMap = currentProfileVM2.b;
   final onlyStatisticsProxy = appSettingVM3.a;
@@ -667,8 +668,42 @@ SharedState sharedState(Ref ref) {
       accessControlProps: vpnSetting.accessControlProps,
       allowBypass: vpnSetting.allowBypass,
       bypassDomain: bypassDomain,
+      routeAddress: _mergeTailscaleVpnRoutes(tsRoutes),
     ),
   );
+}
+
+// Whether this tsnet advertised route requires an explicit Android
+// VpnService addRoute to actually reach the TUN. IPv4 subnets with
+// prefix < 32 need it because Android's route table prefers the more
+// specific WiFi local link route over our 0.0.0.0/0 default. Peer /32s
+// are already covered by 0.0.0.0/0 and all IPv6 is covered by ::/0.
+bool isTailscaleSubnetNeedingVpnRoute(String cidr) {
+  final slash = cidr.indexOf('/');
+  if (slash < 0) return false;
+  final addr = cidr.substring(0, slash);
+  final bits = int.tryParse(cidr.substring(slash + 1));
+  if (bits == null) return false;
+  if (addr.contains(':')) return false;
+  if (bits <= 0 || bits >= 32) return false;
+  return true;
+}
+
+// Build the Android VpnService routeAddress list so that peer-advertised
+// Tailscale subnets (e.g. 192.168.100.0/24) are explicitly routed into
+// the TUN interface.
+//
+// Returns an empty list when there is nothing to inject so the Kotlin side
+// falls back to its original catch-all (addRoute 0.0.0.0/0 + ::/0) behavior.
+List<String> _mergeTailscaleVpnRoutes(List<String> tsRoutes) {
+  if (tsRoutes.isEmpty) return const [];
+  final ipv4Subnets = tsRoutes
+      .where(isTailscaleSubnetNeedingVpnRoute)
+      .toSet();
+  if (ipv4Subnets.isEmpty) return const [];
+  // Non-empty list replaces the catch-all on the Kotlin side, so put
+  // 0.0.0.0/0 back in to keep VPN capturing everything else.
+  return ['0.0.0.0/0', ...ipv4Subnets];
 }
 
 @riverpod

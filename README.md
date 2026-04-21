@@ -57,6 +57,35 @@ Support the following actions
     com.follow.clash.action.TOGGLE
    ```
 
+## Tailscale (tsnet) — known limitations
+
+This fork integrates Tailscale via tsnet. A few rough edges are worth
+knowing about before filing a report:
+
+1. **Android VPN routes are set once at startup.** Android's
+   `VpnService.Builder` cannot reconfigure routes after `establish()`.
+   On VPN start FlClash polls tsnet for up to 6 seconds, reads the
+   current peer-advertised subnets (e.g. `192.168.100.0/24`), and
+   injects them into the VPN route table. If tsnet has not reached
+   `Running` within that window, the subnets won't be injected — toggle
+   the VPN off and on once the Tailscale page shows `Running` to pick
+   them up.
+2. **New peer subnets discovered after VPN start require a VPN
+   restart.** If a peer comes online with a new subnet while the VPN
+   is already running, that subnet won't be routed until the VPN is
+   toggled off and on.
+3. **Tile / broadcast-receiver cold starts rely on cached state.**
+   When FlClash is launched without a Flutter engine (e.g. from the
+   Quick Settings tile or a broadcast intent), VPN options are read
+   from the last persisted sharedState on disk. The very first
+   headless start may need a prior UI-based start so the Tailscale
+   routes get cached.
+4. **tsnet can get stuck in `Connecting` when the proxy is enabled
+   right after app launch.** Occasionally, if Tailscale auto-connects
+   on launch and the proxy is then turned on, tsnet is disconnected
+   and stays in `Connecting`. Workaround: toggle the Tailscale
+   **Enable** switch off and back on.
+
 ## Download
 
 <a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" width="200px"/></a> <a href="https://github.com/chen08209/FlClash/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>

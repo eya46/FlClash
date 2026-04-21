@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
@@ -771,7 +772,62 @@ extension SetupControllerExt on AppController {
     if (message.isNotEmpty) {
       throw message;
     }
+    await _refreshTailscaleRuntimeRoutes(
+      tailscaleEnabled: _ref.read(tailscaleSettingProvider).enable,
+    );
     addCheckIp();
+  }
+
+  // Populate [tailscaleRuntimeRoutesProvider] with the current tsnet
+  // advertised routes so that the sharedState provider can surface them as
+  // Android VpnService.routeAddress before the VPN actually starts.
+  //
+  // Waits (polls) for a short window to give the freshly-applied tsnet
+  // config a chance to reach Running and discover peers. If the deadline
+  // expires without Running, leaves the routes list unchanged — the user
+  // can restart the VPN later to pick up the routes.
+  Future<void> _refreshTailscaleRuntimeRoutes({
+    required bool tailscaleEnabled,
+  }) async {
+    if (!system.isAndroid) return;
+    final notifier = _ref.read(tailscaleRuntimeRoutesProvider.notifier);
+    if (!tailscaleEnabled) {
+      if (_ref.read(tailscaleRuntimeRoutesProvider).isNotEmpty) {
+        notifier.value = const [];
+      }
+      return;
+    }
+    final deadline = DateTime.now().add(const Duration(seconds: 6));
+    while (DateTime.now().isBefore(deadline)) {
+      final state = await coreController.getTailscaleState();
+      if (state != null && state.enable && state.backendState == 'Running') {
+        final current = _ref.read(tailscaleRuntimeRoutesProvider);
+        final next = state.routes;
+        if (!_listEquals(current, next)) {
+          notifier.value = List<String>.unmodifiable(next);
+          // Force-sync the updated sharedState to the Android side now, so
+          // the VPN that's about to start on the next line sees the fresh
+          // vpnOptions.routeAddress instead of racing against the listener
+          // in android_manager.
+          await service?.syncState(this.sharedState.needSyncSharedState);
+        }
+        return;
+      }
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    commonPrint.log(
+      '[Tailscale] routes not ready before VPN start; user may need to '
+      'toggle the VPN once tsnet is Running to pick up peer subnet routes',
+    );
+  }
+
+  bool _listEquals(List<String> a, List<String> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 }
 

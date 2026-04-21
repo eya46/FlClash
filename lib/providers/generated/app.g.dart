@@ -1331,6 +1331,60 @@ abstract class _$CoreStatus extends $Notifier<CoreStatus> {
   }
 }
 
+@ProviderFor(TailscaleRuntimeRoutes)
+const tailscaleRuntimeRoutesProvider = TailscaleRuntimeRoutesProvider._();
+
+final class TailscaleRuntimeRoutesProvider
+    extends $NotifierProvider<TailscaleRuntimeRoutes, List<String>> {
+  const TailscaleRuntimeRoutesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'tailscaleRuntimeRoutesProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$tailscaleRuntimeRoutesHash();
+
+  @$internal
+  @override
+  TailscaleRuntimeRoutes create() => TailscaleRuntimeRoutes();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<String>>(value),
+    );
+  }
+}
+
+String _$tailscaleRuntimeRoutesHash() =>
+    r'df8e6d564ddaf95ce607bafd7238193e0490844c';
+
+abstract class _$TailscaleRuntimeRoutes extends $Notifier<List<String>> {
+  List<String> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<List<String>, List<String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<String>, List<String>>,
+              List<String>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(Query)
 const queryProvider = QueryFamily._();
 

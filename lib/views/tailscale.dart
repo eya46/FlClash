@@ -347,6 +347,7 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
   List<Widget> _buildRouteItems(
     TailscaleState? tailscaleState,
     TailscaleProps tailscaleProps,
+    Set<String> appliedVpnRoutes,
   ) {
     final routes = tailscaleState?.routes ?? const <String>[];
     if (routes.isEmpty) {
@@ -365,12 +366,41 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
     return routes
         .map((route) {
           final enabled = !disabledRoutes.contains(route);
+          final pending = Platform.isAndroid &&
+              isTailscaleSubnetNeedingVpnRoute(route) &&
+              !appliedVpnRoutes.contains(route);
+          final baseSubtitle = enabled
+              ? 'Handled by tsnet when matched.'
+              : 'Excluded from tsnet matching.';
           return ListItem.checkbox(
-            title: Text(route),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(child: Text(route)),
+                if (pending) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'Pending VPN restart',
+                      style: TextStyle(fontSize: 11, color: Colors.orange),
+                    ),
+                  ),
+                ],
+              ],
+            ),
             subtitle: Text(
-              enabled
-                  ? 'Handled by tsnet when matched.'
-                  : 'Excluded from tsnet matching.',
+              pending
+                  ? '$baseSubtitle Toggle the VPN off/on so Android picks '
+                      'up this subnet.'
+                  : baseSubtitle,
             ),
             delegate: CheckboxDelegate(
               value: enabled,
@@ -390,6 +420,8 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
   @override
   Widget build(BuildContext context) {
     final tailscaleProps = ref.watch(tailscaleSettingProvider);
+    final appliedVpnRoutes =
+        ref.watch(tailscaleRuntimeRoutesProvider).toSet();
     final isEnabled = tailscaleProps.enable;
 
     final items = <Widget>[
@@ -411,7 +443,11 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
       ),
       ...generateSection(
         title: 'Advertised Routes',
-        items: _buildRouteItems(_tailscaleState, tailscaleProps),
+        items: _buildRouteItems(
+          _tailscaleState,
+          tailscaleProps,
+          appliedVpnRoutes,
+        ),
       ),
       ...generateSection(
         title: 'Routing',
