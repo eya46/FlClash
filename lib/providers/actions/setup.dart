@@ -972,13 +972,12 @@ class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
 
   Future<void> _poll() async {
     final seq = ++_pollSeq;
-    final previous = state;
     try {
       final snapshot = await _core.getTailscaleAccountsState();
       if (seq != _pollSeq || !ref.mounted || snapshot == null) {
         return;
       }
-      _absorb(snapshot, previous);
+      _absorb(snapshot, state);
       _restartTicker();
     } catch (error) {
       commonPrint.log(
