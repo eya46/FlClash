@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -233,11 +232,7 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
               ),
               title: Text(appLocalizations.tailscaleUnappliedChanges),
               trailing: _applying
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                  ? const CommonCircleLoading(size: 20)
                   : const GlyphIcon(AppGlyphs.check),
               onTap: _applying ? null : _applyChanges,
             ),
@@ -407,7 +402,9 @@ class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
   }
 
   Future<void> _handleLogin() async {
-    final error = await coreController.startTailscaleLogin(widget.accountId);
+    final error = await ref
+        .read(coreHandlerProvider)
+        .startTailscaleLogin(widget.accountId);
     if (!mounted) {
       return;
     }
@@ -417,7 +414,9 @@ class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
   }
 
   Future<void> _handleLogout() async {
-    final error = await coreController.logoutTailscale(widget.accountId);
+    final error = await ref
+        .read(coreHandlerProvider)
+        .logoutTailscale(widget.accountId);
     if (!mounted) {
       return;
     }

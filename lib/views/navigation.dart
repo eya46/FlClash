@@ -3,15 +3,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/ui/icons/app_glyphs.dart';
 import 'package:fl_clash/views/views.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
-
-String navigationLabelText(PageLabel label) {
-  return switch (label) {
-    PageLabel.tailscale => 'Tailscale',
-    _ => Intl.message(label.name),
-  };
-}
 
 class Navigation implements NavigationPort {
   static Navigation? _instance;
