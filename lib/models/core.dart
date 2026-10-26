@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -11,7 +13,7 @@ abstract class SetupParams with _$SetupParams {
     @JsonKey(name: 'selected-map') required Map<String, String> selectedMap,
     @JsonKey(name: 'test-url') required String testUrl,
     @Default(false) @JsonKey(name: 'skip-cert-verify') bool skipCertVerify,
-    @JsonKey(includeIfNull: false) TailscaleProps? tailscale,
+    @JsonKey(includeIfNull: false) TailscaleAccountsSchema? tailscale,
     @JsonKey(includeIfNull: false) SetupBase? base,
   }) = _SetupParams;
 
@@ -64,7 +66,7 @@ abstract class UpdateParams with _$UpdateParams {
     @Default(24) @JsonKey(name: 'geo-update-interval') int geoUpdateInterval,
     @Default({}) @JsonKey(name: 'geox-url') Map<String, String> geoXUrl,
     @Default(false) @JsonKey(name: 'skip-cert-verify') bool skipCertVerify,
-    @JsonKey(includeIfNull: false) TailscaleProps? tailscale,
+    @JsonKey(includeIfNull: false) TailscaleAccountsSchema? tailscale,
   }) = _UpdateParams;
 
   factory UpdateParams.fromJson(Map<String, dynamic> json) =>
@@ -94,42 +96,202 @@ abstract class VpnOptions with _$VpnOptions {
       _$VpnOptionsFromJson(json);
 }
 
-class TailscaleState {
-  final bool enable;
-  final bool acceptRoutes;
+/// Account order is the user's order; the literal lists are sorted so an
+/// unchanged model never triggers a replay.
+@freezed
+abstract class TailscaleAccountsSchema with _$TailscaleAccountsSchema {
+  const factory TailscaleAccountsSchema({
+    @JsonKey(name: 'legacy-alias') @Default(false) bool legacyAlias,
+    @Default([]) List<TailscaleAccountSchema> accounts,
+  }) = _TailscaleAccountsSchema;
+
+  factory TailscaleAccountsSchema.fromJson(Map<String, dynamic> json) =>
+      _$TailscaleAccountsSchemaFromJson(json);
+}
+
+@freezed
+abstract class TailscaleAccountSchema with _$TailscaleAccountSchema {
+  const factory TailscaleAccountSchema({
+    @Default('') String id,
+    @Default('') String label,
+    @Default(true) bool enable,
+    @JsonKey(name: 'state-dir') @Default('') String stateDir,
+    @Default('') String hostname,
+    @JsonKey(name: 'auth-key') @Default('') String authKey,
+    @JsonKey(name: 'control-url') @Default('') String controlUrl,
+    @Default(false) bool ephemeral,
+    @Default(true) bool udp,
+    @JsonKey(name: 'accept-routes') @Default(true) bool acceptRoutes,
+    @JsonKey(name: 'exit-node') @Default('') String exitNode,
+    @JsonKey(name: 'exit-node-allow-lan-access')
+    @Default(false)
+    bool exitNodeAllowLanAccess,
+    @JsonKey(name: 'dialer-proxy') @Default('') String dialerProxy,
+    @JsonKey(name: 'peer-cidrs') @Default([]) List<String> peerCidrs,
+    @JsonKey(name: 'peer-domains') @Default([]) List<String> peerDomains,
+    @JsonKey(name: 'route-cidrs') @Default([]) List<String> routeCidrs,
+    @JsonKey(name: 'extra-rules') @Default([]) List<String> extraRules,
+  }) = _TailscaleAccountSchema;
+
+  factory TailscaleAccountSchema.fromJson(Map<String, dynamic> json) =>
+      _$TailscaleAccountSchemaFromJson(json);
+}
+
+List<String> _sortedLiterals(Iterable<String> values) =>
+    {...values}.toList()..sort();
+
+extension TailscaleAccountPropsSchemaExt on TailscaleAccountProps {
+  String get outboundName => 'TAILNET-${sanitizeTailscaleLabel(label)}';
+
+  TailscaleAccountSchema get schema => TailscaleAccountSchema(
+    id: id,
+    label: label,
+    enable: enable,
+    stateDir: stateDir,
+    hostname: hostname,
+    authKey: authKey,
+    controlUrl: controlUrl,
+    ephemeral: ephemeral,
+    udp: udp,
+    acceptRoutes: acceptRoutes,
+    exitNode: exitNode,
+    exitNodeAllowLanAccess: exitNodeAllowLanAccess,
+    dialerProxy: dialerProxy,
+    peerCidrs: _sortedLiterals([
+      for (final peer in peers)
+        if (peer.enabled)
+          for (final ip in peer.tailscaleIps)
+            ip.contains(':') ? '$ip/128' : '$ip/32',
+    ]),
+    peerDomains: _sortedLiterals([
+      for (final peer in peers)
+        if (peer.enabled && peer.dnsName.isNotEmpty) peer.dnsName,
+      if (magicDnsSuffix.isNotEmpty) magicDnsSuffix,
+    ]),
+    routeCidrs: _sortedLiterals([
+      for (final route in routes)
+        if (route.enabled) route.cidr,
+    ]),
+    extraRules: [...extraRules]..sort(),
+  );
+}
+
+extension TailscaleAccountsSchemaExt on TailscaleAccounts {
+  TailscaleAccountsSchema get schema => TailscaleAccountsSchema(
+    legacyAlias: legacyAlias,
+    accounts: [for (final account in accounts) account.schema],
+  );
+
+  /// Suffix -> that account's outbound; the first account wins a shared one.
+  Map<String, String> get nameserverPolicy => {
+    for (final account in accounts)
+      if (account.enable && account.magicDnsSuffix.isNotEmpty)
+        account.magicDnsSuffix: 'tailscale://${account.outboundName}',
+  };
+
+  /// What the Android VpnService route list and the private-bypass decision
+  /// consume.
+  List<String> get enabledRouteCidrs => _sortedLiterals([
+    for (final account in accounts)
+      if (account.enable)
+        for (final route in account.routes)
+          if (route.enabled) route.cidr,
+  ]);
+
+  bool get hasEnabledPrivateRoute =>
+      enabledRouteCidrs.any(_touchesPrivateRoute);
+}
+
+const _privateV4RouteSpaces = ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'];
+
+({BigInt start, BigInt end})? _cidrRange(String cidr) {
+  final slash = cidr.indexOf('/');
+  if (slash < 0) {
+    return null;
+  }
+  final address = InternetAddress.tryParse(cidr.substring(0, slash).trim());
+  if (address == null) {
+    return null;
+  }
+  final bits = address.type == InternetAddressType.IPv4 ? 32 : 128;
+  final prefix = int.tryParse(cidr.substring(slash + 1).trim());
+  if (prefix == null || prefix < 0 || prefix > bits) {
+    return null;
+  }
+  var value = BigInt.zero;
+  for (final byte in address.rawAddress) {
+    value = (value << 8) | BigInt.from(byte);
+  }
+  final hostBits = bits - prefix;
+  final start = value >> hostBits << hostBits;
+  return (start: start, end: start | ((BigInt.one << hostBits) - BigInt.one));
+}
+
+bool _touchesPrivateRoute(String cidr) {
+  final range = _cidrRange(cidr);
+  if (range == null) {
+    return false;
+  }
+  return _privateV4RouteSpaces.any((space) {
+    final other = _cidrRange(space)!;
+    return range.start <= other.end && other.start <= range.end;
+  });
+}
+
+class TailscaleAccountsState {
+  final List<TailscaleAccountState> accounts;
+
+  const TailscaleAccountsState({required this.accounts});
+
+  factory TailscaleAccountsState.fromJson(Map<String, dynamic> json) {
+    final raw = json['accounts'] as List<dynamic>? ?? const [];
+    return TailscaleAccountsState(
+      accounts: raw
+          .whereType<Map>()
+          .map(
+            (item) =>
+                TailscaleAccountState.fromJson(item.cast<String, dynamic>()),
+          )
+          .toList(growable: false),
+    );
+  }
+}
+
+class TailscaleAccountState {
+  final String id;
+  final String name;
+  final bool present;
   final String backendState;
   final String authUrl;
-  final List<String> tailscaleIps;
-  final List<String> routes;
-  final List<String> disabledRoutes;
   final String tailnet;
   final String magicDnsSuffix;
-  final String error;
+  final List<String> tailscaleIps;
+  final List<String> selfRoutes;
   final int peerCount;
   final int onlinePeerCount;
-  final String lastHandshake;
   final List<TailscalePeerInfo> peers;
-  final List<TailscaleDerpInfo> derp;
+  final String error;
 
-  const TailscaleState({
-    required this.enable,
-    required this.acceptRoutes,
+  const TailscaleAccountState({
+    required this.id,
+    required this.name,
+    required this.present,
     required this.backendState,
     required this.authUrl,
-    required this.tailscaleIps,
-    required this.routes,
-    required this.disabledRoutes,
     required this.tailnet,
     required this.magicDnsSuffix,
-    required this.error,
+    required this.tailscaleIps,
+    required this.selfRoutes,
     required this.peerCount,
     required this.onlinePeerCount,
-    required this.lastHandshake,
     required this.peers,
-    required this.derp,
+    required this.error,
   });
 
-  factory TailscaleState.fromJson(Map<String, dynamic> json) {
+  /// Outside Running the snapshot carries no peer data worth merging.
+  bool get isRunning => present && error.isEmpty && backendState == 'Running';
+
+  factory TailscaleAccountState.fromJson(Map<String, dynamic> json) {
     List<String> readList(String key) {
       return (json[key] as List<dynamic>? ?? const [])
           .map((item) => item as String)
@@ -139,77 +301,28 @@ class TailscaleState {
     final peersRaw = json['peers'] as List<dynamic>? ?? const [];
     final peers = peersRaw
         .whereType<Map>()
-        .map((item) =>
-            TailscalePeerInfo.fromJson(item.cast<String, dynamic>()))
+        .map((item) => TailscalePeerInfo.fromJson(item.cast<String, dynamic>()))
         .toList(growable: false);
 
-    final derpRaw = json['derp'] as List<dynamic>? ?? const [];
-    final derp = derpRaw
-        .whereType<Map>()
-        .map((item) =>
-            TailscaleDerpInfo.fromJson(item.cast<String, dynamic>()))
-        .toList(growable: false);
-
-    return TailscaleState(
-      enable: json['enable'] as bool? ?? false,
-      acceptRoutes: json['accept-routes'] as bool? ?? false,
+    return TailscaleAccountState(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      present: json['present'] as bool? ?? false,
       backendState: json['backend-state'] as String? ?? '',
       authUrl: json['auth-url'] as String? ?? '',
-      tailscaleIps: readList('tailscale-ips'),
-      routes: readList('routes'),
-      disabledRoutes: readList('disabled-routes'),
       tailnet: json['tailnet'] as String? ?? '',
       magicDnsSuffix: json['magic-dns-suffix'] as String? ?? '',
-      error: json['error'] as String? ?? '',
+      tailscaleIps: readList('tailscale-ips'),
+      selfRoutes: readList('self-routes'),
       peerCount: json['peer-count'] as int? ?? 0,
       onlinePeerCount: json['online-peer-count'] as int? ?? 0,
-      lastHandshake: json['last-handshake'] as String? ?? '',
       peers: peers,
-      derp: derp,
+      error: json['error'] as String? ?? '',
     );
   }
 }
 
 enum TailscalePeerConnectionType { direct, derp, idle, offline, unknown }
-
-class TailscaleDerpInfo {
-  final int regionId;
-  final String regionCode;
-  final String regionName;
-  final List<String> nodes;
-  final bool avoid;
-  final bool custom;
-  final bool preferred;
-  final bool inUse;
-  final int latencyMs;
-
-  const TailscaleDerpInfo({
-    required this.regionId,
-    required this.regionCode,
-    required this.regionName,
-    required this.nodes,
-    required this.avoid,
-    required this.custom,
-    required this.preferred,
-    required this.inUse,
-    required this.latencyMs,
-  });
-
-  factory TailscaleDerpInfo.fromJson(Map<String, dynamic> json) {
-    final nodesRaw = json['nodes'] as List<dynamic>? ?? const [];
-    return TailscaleDerpInfo(
-      regionId: (json['region-id'] as num?)?.toInt() ?? 0,
-      regionCode: json['region-code'] as String? ?? '',
-      regionName: json['region-name'] as String? ?? '',
-      nodes: nodesRaw.map((item) => item as String).toList(growable: false),
-      avoid: json['avoid'] as bool? ?? false,
-      custom: json['custom'] as bool? ?? false,
-      preferred: json['preferred'] as bool? ?? false,
-      inUse: json['in-use'] as bool? ?? false,
-      latencyMs: (json['latency-ms'] as num?)?.toInt() ?? -1,
-    );
-  }
-}
 
 class TailscalePeerInfo {
   final String hostName;
@@ -244,11 +357,28 @@ class TailscalePeerInfo {
     required this.txBytes,
   });
 
+  /// The merge key: the normalized dns-name, or the first Tailscale IP.
+  String get mergeKey {
+    if (dnsName.isNotEmpty) return dnsName;
+    if (tailscaleIps.isNotEmpty) return tailscaleIps.first;
+    return '';
+  }
+
   String get displayName {
     if (hostName.isNotEmpty) return hostName;
     if (dnsName.isNotEmpty) return dnsName;
     if (tailscaleIps.isNotEmpty) return tailscaleIps.first;
     return 'peer';
+  }
+
+  TailscalePeerEntry toEntry({required bool enabled}) {
+    return TailscalePeerEntry(
+      key: mergeKey,
+      dnsName: dnsName,
+      tailscaleIps: tailscaleIps,
+      exitNodeOption: exitNodeOption,
+      enabled: enabled,
+    );
   }
 
   factory TailscalePeerInfo.fromJson(Map<String, dynamic> json) {
@@ -284,6 +414,36 @@ class TailscalePeerInfo {
       txBytes: (json['tx-bytes'] as num?)?.toInt() ?? 0,
     );
   }
+}
+
+/// Keeps toggles, new entries arrive enabled, gone entries drop; outside
+/// Running the model is untouched.
+TailscaleAccountProps mergeTailscaleAccount(
+  TailscaleAccountProps account,
+  TailscaleAccountState? snapshot,
+) {
+  if (snapshot == null || !snapshot.isRunning) {
+    return account;
+  }
+  final peersByKey = {for (final peer in account.peers) peer.key: peer};
+  final routesByCidr = {for (final route in account.routes) route.cidr: route};
+  return account.copyWith(
+    magicDnsSuffix: snapshot.magicDnsSuffix,
+    peers: [
+      for (final peer in snapshot.peers)
+        if (peer.mergeKey.isNotEmpty)
+          peer.toEntry(enabled: peersByKey[peer.mergeKey]?.enabled ?? true),
+    ],
+    routes: [
+      for (final cidr in _sortedLiterals(
+        snapshot.peers.expand((peer) => peer.primaryRoutes),
+      ))
+        TailscaleRouteEntry(
+          cidr: cidr,
+          enabled: routesByCidr[cidr]?.enabled ?? true,
+        ),
+    ],
+  );
 }
 
 extension VpnOptionsExt on VpnOptions {

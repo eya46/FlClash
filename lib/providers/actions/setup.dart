@@ -70,7 +70,7 @@ class SetupAction extends _$SetupAction {
       selectedMap: selectedMap,
       testUrl: ref.read(patchClashConfigProvider).testUrl,
       skipCertVerify: !appSetting.checkCertificate,
-      tailscale: ref.read(tailscaleSettingProvider),
+      tailscale: ref.read(tailscaleAccountsProvider).schema,
     );
   }
 
@@ -340,6 +340,17 @@ class SetupAction extends _$SetupAction {
     });
   }
 
+  /// The one path that pushes the tailnet schema; it rebuilds every tsnet
+  /// outbound, so every edit and apply lands here.
+  Future<void> applyTailscaleChanges() async {
+    final schema = ref.read(tailscaleAccountsProvider).schema;
+    final message = await _core.updateTailscale(schema);
+    if (message.isNotEmpty) {
+      throw MessageException(message);
+    }
+    ref.read(appliedTailscaleSchemaProvider.notifier).value = schema;
+  }
+
   @protected
   Duration get minApplyDebounce => const Duration(seconds: 2);
 
@@ -537,6 +548,9 @@ class SetupAction extends _$SetupAction {
         addedRules: setupState.addedRules,
         defaultUA: defaultUA,
         authentication: networkSetting.authentication.credentials,
+        tailscaleNameserverPolicy: ref
+            .read(tailscaleAccountsProvider)
+            .nameserverPolicy,
         matchTarget:
             profileBase == null ||
                 setupState.matchTarget?.trim().isNotEmpty == true
@@ -714,6 +728,8 @@ class SetupAction extends _$SetupAction {
     Future<void> Function()? preloadInvoke,
     FutureOr Function()? onUpdated,
   }) async {
+    // Keep-alive read: starts the tailnet snapshot poller for the app run.
+    ref.read(tailscaleAccountsSnapshotProvider);
     var profile = ref.read(currentProfileProvider) ?? recoverMissingProfile();
     // A refresh failure is surfaced by safeRun; setup keeps the old profile.
     final nextProfile = await globalState.safeRun(
@@ -803,6 +819,8 @@ class SetupAction extends _$SetupAction {
         globalState.lastConfigCounts =
             realProfile?.counts ?? configCountsOf(const {});
         _appliedInputs = inputs;
+        ref.read(appliedTailscaleSchemaProvider.notifier).value =
+            setupParams.tailscale;
         if (system.isAndroid) {
           await preferences.saveAppliedConfigMd5(yamlMd5);
         }
@@ -822,41 +840,218 @@ class SetupAction extends _$SetupAction {
     return _SetupTaskResult.completed;
   }
 
-  // Populate tailscaleRuntimeRoutesProvider with the node's advertised routes
-  // so vpnOptions surfaces them as Android VpnService routeAddress before the
-  // VPN actually starts. Polls briefly for a freshly-applied node to reach
-  // Running; on timeout the routes stay as they were and a later VPN restart
-  // picks them up.
+  // Peer-advertised routes reach the account model only through the snapshot
+  // poller's merge, so wait briefly for the accounts to settle first.
   Future<void> _refreshTailscaleRuntimeRoutes() async {
     if (!system.isAndroid) return;
-    final tailscale = ref.read(tailscaleSettingProvider);
-    final notifier = ref.read(tailscaleRuntimeRoutesProvider.notifier);
-    if (!tailscale.enable) {
-      if (ref.read(tailscaleRuntimeRoutesProvider).isNotEmpty) {
-        notifier.state = const [];
-        await preferences.saveShareState(ref.read(sharedStateProvider));
-      }
-      return;
-    }
     final deadline = DateTime.now().add(const Duration(seconds: 6));
-    while (DateTime.now().isBefore(deadline)) {
-      final state = await _core.getTailscaleState();
-      if (state != null && state.enable && state.backendState == 'Running') {
-        final current = ref.read(tailscaleRuntimeRoutesProvider);
-        final next = state.routes;
-        final changed = current.length != next.length ||
-            current.asMap().entries.any((e) => e.value != next[e.key]);
-        if (changed) {
-          notifier.state = List<String>.unmodifiable(next);
-          await preferences.saveShareState(ref.read(sharedStateProvider));
-        }
-        return;
-      }
+    while (DateTime.now().isBefore(deadline) && !_tailscaleAccountsSettled()) {
       await Future<void>.delayed(const Duration(milliseconds: 500));
     }
-    commonPrint.log(
-      '[Tailscale] routes not ready before VPN start; user may need to '
-      'toggle the VPN once tsnet is Running to pick up peer subnet routes',
+    final next = ref.read(tailscaleAccountsProvider).enabledRouteCidrs;
+    final current = ref.read(tailscaleRuntimeRoutesProvider);
+    final changed =
+        current.length != next.length ||
+        current.asMap().entries.any((e) => e.value != next[e.key]);
+    if (changed) {
+      ref.read(tailscaleRuntimeRoutesProvider.notifier).state =
+          List<String>.unmodifiable(next);
+      await preferences.saveShareState(ref.read(sharedStateProvider));
+    }
+  }
+
+  bool _tailscaleAccountsSettled() {
+    final enabled = ref
+        .read(tailscaleAccountsProvider)
+        .accounts
+        .where((account) => account.enable)
+        .toList();
+    if (enabled.isEmpty) {
+      return true;
+    }
+    final states = {
+      for (final entry
+          in ref.read(tailscaleAccountsSnapshotProvider)?.accounts ??
+              const <TailscaleAccountState>[])
+        entry.id: entry,
+    };
+    return enabled.every(
+      (account) => states[account.id]?.backendState == 'Running',
     );
+  }
+}
+
+/// The schema the Core last accepted; a model differing from it has
+/// unapplied changes.
+@Riverpod(keepAlive: true)
+class AppliedTailscaleSchema extends _$AppliedTailscaleSchema
+    with AutoDisposeNotifierMixin {
+  @override
+  TailscaleAccountsSchema? build() {
+    return null;
+  }
+}
+
+@riverpod
+bool hasUnappliedTailscaleChanges(Ref ref) {
+  final applied = ref.watch(appliedTailscaleSchemaProvider);
+  if (applied == null) {
+    return false;
+  }
+  return applied != ref.watch(tailscaleAccountsProvider).schema;
+}
+
+const _tailscaleActivePollInterval = Duration(seconds: 3);
+const _tailscaleIdlePollInterval = Duration(seconds: 15);
+const _tailscaleAutoFollowDelay = Duration(seconds: 30);
+
+/// Polls per-account state, merges each snapshot into the account model and
+/// warms a just-logged-in outbound.
+@Riverpod(keepAlive: true)
+class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
+    with AutoDisposeNotifierMixin {
+  Timer? _timer;
+  int _pollSeq = 0;
+
+  @override
+  TailscaleAccountsState? build() {
+    ref.onDispose(_stopTicker);
+    ref.listen(appVisibleProvider, (_, _) => _syncTicker());
+    ref.listen(coreStatusProvider, (_, _) => _syncTicker());
+    ref.listen(
+      tailscaleAccountsProvider.select(
+        (state) => [
+          for (final account in state.accounts) (account.id, account.enable),
+        ],
+      ),
+      (_, _) => _syncTicker(),
+    );
+    _syncTicker();
+    return null;
+  }
+
+  CoreController get _core => ref.read(coreHandlerProvider);
+
+  Set<String> get _enabledAccountIds => {
+    for (final account in ref.read(tailscaleAccountsProvider).accounts)
+      if (account.enable) account.id,
+  };
+
+  // That window is where the login URL and machine-approval state come from.
+  bool get _hasPendingAccount {
+    final running = {
+      for (final account in state?.accounts ?? const <TailscaleAccountState>[])
+        if (account.backendState == 'Running') account.id,
+    };
+    return _enabledAccountIds.any((id) => !running.contains(id));
+  }
+
+  void _syncTicker() {
+    _restartTicker();
+    _poll();
+  }
+
+  void _restartTicker() {
+    _stopTicker();
+    if (_enabledAccountIds.isEmpty ||
+        ref.read(coreStatusProvider) != CoreStatus.connected) {
+      return;
+    }
+    _timer = Timer.periodic(
+      ref.read(appVisibleProvider) || _hasPendingAccount
+          ? _tailscaleActivePollInterval
+          : _tailscaleIdlePollInterval,
+      (_) => _poll(),
+    );
+  }
+
+  void _stopTicker() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  Future<void> _poll() async {
+    final seq = ++_pollSeq;
+    final previous = state;
+    try {
+      final snapshot = await _core.getTailscaleAccountsState();
+      if (seq != _pollSeq || !ref.mounted || snapshot == null) {
+        return;
+      }
+      _absorb(snapshot, previous);
+      _restartTicker();
+    } catch (error) {
+      commonPrint.log(
+        'tailscale accounts poll failed: $error',
+        logLevel: coreFailureLogLevel(error),
+      );
+    }
+  }
+
+  void _absorb(
+    TailscaleAccountsState snapshot,
+    TailscaleAccountsState? previous,
+  ) {
+    state = snapshot;
+    final accounts = ref.read(tailscaleAccountsProvider);
+    if (accounts.accounts.isEmpty) {
+      return;
+    }
+    final entriesById = {
+      for (final entry in snapshot.accounts) entry.id: entry,
+    };
+    final previousById = {
+      for (final entry in previous?.accounts ?? const <TailscaleAccountState>[])
+        entry.id: entry,
+    };
+    var changed = false;
+    final merged = <TailscaleAccountProps>[];
+    for (final account in accounts.accounts) {
+      final entry = entriesById[account.id];
+      final next = mergeTailscaleAccount(account, entry);
+      if (next != account) {
+        changed = true;
+      }
+      merged.add(next);
+      unawaited(_warmUpOutbound(previousById[account.id], entry));
+    }
+    if (!changed) {
+      return;
+    }
+    ref.read(tailscaleAccountsProvider.notifier).value = accounts.copyWith(
+      accounts: merged,
+    );
+    if (ref.read(tailscaleAccountsProvider).autoFollow) {
+      debouncer.call(FunctionTag.tailscaleAutoFollow, () async {
+        if (!ref.mounted) {
+          return;
+        }
+        try {
+          await ref.read(setupActionProvider.notifier).applyTailscaleChanges();
+        } catch (error) {
+          commonPrint.log('tailscale auto-follow apply failed: $error');
+        }
+      }, duration: _tailscaleAutoFollowDelay);
+    }
+  }
+
+  // One delay test right after login starts the lazily-created server.
+  Future<void> _warmUpOutbound(
+    TailscaleAccountState? previous,
+    TailscaleAccountState? entry,
+  ) async {
+    if (entry == null ||
+        !entry.isRunning ||
+        entry.name.isEmpty ||
+        previous?.backendState == 'Running') {
+      return;
+    }
+    try {
+      await _core.getDelay(
+        ref.read(realTestUrlProvider()),
+        entry.name,
+        const Duration(seconds: 8),
+      );
+    } catch (_) {}
   }
 }

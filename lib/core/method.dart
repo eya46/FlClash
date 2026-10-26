@@ -54,7 +54,9 @@ enum CoreMethod {
   updateDns,
   watchRoute,
   checkRoutes,
-  getTailscaleState,
+  getTailscaleAccountsState,
+  startTailscaleLogin,
+  logoutTailscale,
   reconnectTailscale,
 }
 

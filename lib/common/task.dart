@@ -294,6 +294,14 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
     ),
   );
   rawConfig['dns'] = rawDns;
+  if (data.tailscaleNameserverPolicy.isNotEmpty) {
+    final policy = rawDns['nameserver-policy'];
+    // A user's own entry for a suffix wins over the injected one.
+    rawDns['nameserver-policy'] = {
+      ...data.tailscaleNameserverPolicy,
+      if (policy is Map) ...Map<String, dynamic>.from(policy),
+    };
+  }
   final ntpOverride = overrides.ntp.overrideJson(overrides.ntpOverrideKeys);
   if (ntpOverride.isNotEmpty) {
     final rawNtp = rawConfig['ntp'] is Map

@@ -196,17 +196,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m79(label) => "${label}은(는) 하나만 입력해야 합니다";
 
-  static String m80(value) => "최고 ${value}";
+  static String m80(name) => "TAILNET-${name} 이름이 이미 다른 계정에서 사용 중입니다";
 
-  static String m81(value) => "합계 ${value}";
+  static String m81(online, total) => "${online}/${total} 온라인";
 
-  static String m82(transport) => "${transport} 요청 헤더";
+  static String m82(value) => "최고 ${value}";
 
-  static String m83(label) => "${label}은(는) URL이어야 합니다";
+  static String m83(value) => "합계 ${value}";
 
-  static String m84(count) => "${Intl.plural(count, other: '${count}년 전')}";
+  static String m84(transport) => "${transport} 요청 헤더";
 
-  static String m85(count) => "${Intl.plural(count, other: '${count}년 전')}";
+  static String m85(label) => "${label}은(는) URL이어야 합니다";
+
+  static String m86(count) => "${Intl.plural(count, other: '${count}년 전')}";
+
+  static String m87(count) => "${Intl.plural(count, other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1520,6 +1524,74 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxy": MessageLookupByLibrary.simpleMessage("시스템 프록시"),
     "tab": MessageLookupByLibrary.simpleMessage("탭"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("탭 애니메이션"),
+    "tailscaleAcceptRoutes": MessageLookupByLibrary.simpleMessage("서브넷 라우트 허용"),
+    "tailscaleAccountLabel": MessageLookupByLibrary.simpleMessage("레이블"),
+    "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("계정"),
+    "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage("계정 추가"),
+    "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage("변경 사항 적용"),
+    "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("인증 키"),
+    "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
+      "tailnet 변경 따르기",
+    ),
+    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
+      "피어나 라우트가 변경되면 30초 후 tailnet 설정을 다시 적용합니다. 모든 tailnet 계정이 다시 연결됩니다.",
+    ),
+    "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage("컨트롤 서버 URL"),
+    "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage("계정 삭제"),
+    "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage("프록시로 연결"),
+    "tailscaleEditAccount": MessageLookupByLibrary.simpleMessage("계정 편집"),
+    "tailscaleEphemeral": MessageLookupByLibrary.simpleMessage("임시 노드"),
+    "tailscaleExitNode": MessageLookupByLibrary.simpleMessage("출구 노드"),
+    "tailscaleExitNodeAllowLanAccess": MessageLookupByLibrary.simpleMessage(
+      "LAN 접근 허용",
+    ),
+    "tailscaleExitNodeAutoAny": MessageLookupByLibrary.simpleMessage(
+      "아무거나 (자동)",
+    ),
+    "tailscaleExitNodeNone": MessageLookupByLibrary.simpleMessage("없음"),
+    "tailscaleExtraRules": MessageLookupByLibrary.simpleMessage("추가 규칙"),
+    "tailscaleHostname": MessageLookupByLibrary.simpleMessage("호스트 이름"),
+    "tailscaleInactive": MessageLookupByLibrary.simpleMessage("비활성"),
+    "tailscaleLabelConflict": m80,
+    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
+      "TAILSCALE 호환 그룹 유지",
+    ),
+    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
+      "TAILSCALE을 가리키던 기존 규칙과 그룹은 계속 작동합니다. TAILNET으로 바꾼 뒤 이 옵션을 끄세요.",
+    ),
+    "tailscaleLogin": MessageLookupByLibrary.simpleMessage("로그인"),
+    "tailscaleLogout": MessageLookupByLibrary.simpleMessage("로그아웃"),
+    "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
+      "MagicDNS 접미사",
+    ),
+    "tailscaleNeedsLogin": MessageLookupByLibrary.simpleMessage("로그인 필요"),
+    "tailscaleNoState": MessageLookupByLibrary.simpleMessage("상태 없음"),
+    "tailscaleNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "이 빌드에서는 Tailscale을 사용할 수 없습니다",
+    ),
+    "tailscaleOnlinePeerCount": m81,
+    "tailscaleOpenAuthUrl": MessageLookupByLibrary.simpleMessage("로그인 페이지 열기"),
+    "tailscalePeers": MessageLookupByLibrary.simpleMessage("피어"),
+    "tailscalePendingVpnRestart": MessageLookupByLibrary.simpleMessage(
+      "VPN 재시작 대기 중",
+    ),
+    "tailscaleRoutes": MessageLookupByLibrary.simpleMessage("광고된 라우트"),
+    "tailscaleRunning": MessageLookupByLibrary.simpleMessage("실행 중"),
+    "tailscaleStarting": MessageLookupByLibrary.simpleMessage("시작 중"),
+    "tailscaleStateDirLegacy": MessageLookupByLibrary.simpleMessage(
+      "이 계정은 이전 단일 노드 설정의 상태 디렉터리를 사용합니다",
+    ),
+    "tailscaleStopped": MessageLookupByLibrary.simpleMessage("중지됨"),
+    "tailscaleTailnet": MessageLookupByLibrary.simpleMessage("Tailnet"),
+    "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
+      "Tailscale IP",
+    ),
+    "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
+      "적용되지 않은 변경 사항이 있습니다",
+    ),
+    "tailscaleWaitingApproval": MessageLookupByLibrary.simpleMessage(
+      "관리자 승인 대기 중",
+    ),
     "tapIconToRetry": MessageLookupByLibrary.simpleMessage("아이콘을 눌러 다시 시도"),
     "tapToAuthorize": MessageLookupByLibrary.simpleMessage("눌러서 허용"),
     "target": MessageLookupByLibrary.simpleMessage("대상"),
@@ -1549,11 +1621,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("업로드량"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxy 포트"),
     "traffic": MessageLookupByLibrary.simpleMessage("트래픽"),
-    "trafficPeak": m80,
-    "trafficTotal": m81,
+    "trafficPeak": m82,
+    "trafficTotal": m83,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("트래픽 사용량"),
     "transport": MessageLookupByLibrary.simpleMessage("전송"),
-    "transportHeaders": m82,
+    "transportHeaders": m84,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "TUN 권한을 얻지 못해 끄기로 되돌렸습니다.",
@@ -1583,7 +1655,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("업로드 대역폭"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m83,
+    "urlTip": m85,
     "useHosts": MessageLookupByLibrary.simpleMessage("hosts 사용"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("시스템 hosts 사용"),
     "usedShort": MessageLookupByLibrary.simpleMessage("사용"),
@@ -1606,8 +1678,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "시스템에 기록하면 시스템 시계도 설정합니다. Android에서는 무시됩니다.",
     ),
-    "yearsAgo": m84,
-    "yearsAgoShort": m85,
+    "yearsAgo": m86,
+    "yearsAgoShort": m87,
     "yes": MessageLookupByLibrary.simpleMessage("예"),
     "zhCN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
   };

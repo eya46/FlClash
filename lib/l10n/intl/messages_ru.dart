@@ -217,18 +217,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m79(label) => "«${label}» — только одно значение";
 
-  static String m80(value) => "Пик ${value}";
+  static String m80(name) => "Имя TAILNET-${name} уже занято другим аккаунтом";
 
-  static String m81(value) => "Всего ${value}";
+  static String m81(online, total) => "${online}/${total} в сети";
 
-  static String m82(transport) => "Заголовки ${transport}";
+  static String m82(value) => "Пик ${value}";
 
-  static String m83(label) => "Значение «${label}» должно быть URL";
+  static String m83(value) => "Всего ${value}";
 
-  static String m84(count) =>
+  static String m84(transport) => "Заголовки ${transport}";
+
+  static String m85(label) => "Значение «${label}» должно быть URL";
+
+  static String m86(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
-  static String m85(count) =>
+  static String m87(count) =>
       "${Intl.plural(count, one: '${count} г. назад', few: '${count} г. назад', many: '${count} л. назад', other: '${count} г. назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -995,9 +999,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1884,6 +1889,100 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxy": MessageLookupByLibrary.simpleMessage("Системный прокси"),
     "tab": MessageLookupByLibrary.simpleMessage("Вкладки"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("Анимация вкладок"),
+    "tailscaleAcceptRoutes": MessageLookupByLibrary.simpleMessage(
+      "Принимать маршруты подсетей",
+    ),
+    "tailscaleAccountLabel": MessageLookupByLibrary.simpleMessage("Название"),
+    "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("Аккаунты"),
+    "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage(
+      "Добавить аккаунт",
+    ),
+    "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage(
+      "Применить изменения",
+    ),
+    "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage(
+      "Ключ авторизации",
+    ),
+    "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
+      "Следить за изменениями tailnet",
+    ),
+    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
+      "Повторно применяет настройки tailnet через 30 секунд после изменения пиров или маршрутов. При этом переподключаются все аккаунты tailnet.",
+    ),
+    "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
+      "Адрес control-сервера",
+    ),
+    "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage(
+      "Удалить аккаунт",
+    ),
+    "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage(
+      "Подключение через прокси",
+    ),
+    "tailscaleEditAccount": MessageLookupByLibrary.simpleMessage(
+      "Изменить аккаунт",
+    ),
+    "tailscaleEphemeral": MessageLookupByLibrary.simpleMessage(
+      "Эфемерный узел",
+    ),
+    "tailscaleExitNode": MessageLookupByLibrary.simpleMessage("Выходной узел"),
+    "tailscaleExitNodeAllowLanAccess": MessageLookupByLibrary.simpleMessage(
+      "Разрешить доступ к локальной сети",
+    ),
+    "tailscaleExitNodeAutoAny": MessageLookupByLibrary.simpleMessage(
+      "Любой (авто)",
+    ),
+    "tailscaleExitNodeNone": MessageLookupByLibrary.simpleMessage("Нет"),
+    "tailscaleExtraRules": MessageLookupByLibrary.simpleMessage(
+      "Дополнительные правила",
+    ),
+    "tailscaleHostname": MessageLookupByLibrary.simpleMessage("Имя хоста"),
+    "tailscaleInactive": MessageLookupByLibrary.simpleMessage("Неактивно"),
+    "tailscaleLabelConflict": m80,
+    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
+      "Сохранять совместимую группу TAILSCALE",
+    ),
+    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
+      "Старые правила и группы со ссылками на TAILSCALE продолжат работать. Перепишите их на TAILNET и отключите эту опцию.",
+    ),
+    "tailscaleLogin": MessageLookupByLibrary.simpleMessage("Войти"),
+    "tailscaleLogout": MessageLookupByLibrary.simpleMessage("Выйти"),
+    "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
+      "Суффикс MagicDNS",
+    ),
+    "tailscaleNeedsLogin": MessageLookupByLibrary.simpleMessage(
+      "Требуется вход",
+    ),
+    "tailscaleNoState": MessageLookupByLibrary.simpleMessage("Нет состояния"),
+    "tailscaleNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "Tailscale недоступен в этой сборке",
+    ),
+    "tailscaleOnlinePeerCount": m81,
+    "tailscaleOpenAuthUrl": MessageLookupByLibrary.simpleMessage(
+      "Открыть страницу входа",
+    ),
+    "tailscalePeers": MessageLookupByLibrary.simpleMessage("Пиры"),
+    "tailscalePendingVpnRestart": MessageLookupByLibrary.simpleMessage(
+      "Ожидает перезапуска VPN",
+    ),
+    "tailscaleRoutes": MessageLookupByLibrary.simpleMessage(
+      "Объявленные маршруты",
+    ),
+    "tailscaleRunning": MessageLookupByLibrary.simpleMessage("Работает"),
+    "tailscaleStarting": MessageLookupByLibrary.simpleMessage("Запуск"),
+    "tailscaleStateDirLegacy": MessageLookupByLibrary.simpleMessage(
+      "Этот аккаунт использует каталог состояния прежней настройки с одним узлом",
+    ),
+    "tailscaleStopped": MessageLookupByLibrary.simpleMessage("Остановлен"),
+    "tailscaleTailnet": MessageLookupByLibrary.simpleMessage("Tailnet"),
+    "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
+      "IP-адреса Tailscale",
+    ),
+    "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
+      "Есть неприменённые изменения",
+    ),
+    "tailscaleWaitingApproval": MessageLookupByLibrary.simpleMessage(
+      "Ожидание одобрения администратором",
+    ),
     "tapIconToRetry": MessageLookupByLibrary.simpleMessage(
       "Нажмите на значок, чтобы повторить",
     ),
@@ -1921,11 +2020,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Отдано"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Порт TProxy"),
     "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
-    "trafficPeak": m80,
-    "trafficTotal": m81,
+    "trafficPeak": m82,
+    "trafficTotal": m83,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Статистика трафика"),
     "transport": MessageLookupByLibrary.simpleMessage("Транспорт"),
-    "transportHeaders": m82,
+    "transportHeaders": m84,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось получить права для TUN, поэтому он выключен.",
@@ -1959,7 +2058,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("Скорость отдачи"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m83,
+    "urlTip": m85,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системный hosts",
@@ -1992,8 +2091,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "«Записывать в систему» также устанавливает системные часы; Android это игнорирует.",
     ),
-    "yearsAgo": m84,
-    "yearsAgoShort": m85,
+    "yearsAgo": m86,
+    "yearsAgoShort": m87,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };

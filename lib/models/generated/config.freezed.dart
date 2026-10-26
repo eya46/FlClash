@@ -2150,47 +2150,47 @@ $AuthenticationPropsCopyWith<$Res> get authentication {
 
 
 /// @nodoc
-mixin _$TailscaleProps {
+mixin _$TailscalePeerEntry {
 
- bool get enable;@JsonKey(name: 'accept-routes') bool get acceptRoutes; String get hostname;@JsonKey(name: 'auth-key') String get authKey;@JsonKey(name: 'control-url') String get controlUrl;@JsonKey(name: 'disabled-routes') List<String> get disabledRoutes;@JsonKey(name: 'route-control-plane-via-proxy') bool get routeControlPlaneViaProxy;@JsonKey(name: 'route-derp-via-proxy') bool get routeDerpViaProxy;
-/// Create a copy of TailscaleProps
+ String get key;@JsonKey(name: 'dns-name') String get dnsName;@JsonKey(name: 'tailscale-ips') List<String> get tailscaleIps;@JsonKey(name: 'exit-node-option') bool get exitNodeOption; bool get enabled;
+/// Create a copy of TailscalePeerEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<TailscaleProps> get copyWith => _$TailscalePropsCopyWithImpl<TailscaleProps>(this as TailscaleProps, _$identity);
+$TailscalePeerEntryCopyWith<TailscalePeerEntry> get copyWith => _$TailscalePeerEntryCopyWithImpl<TailscalePeerEntry>(this as TailscalePeerEntry, _$identity);
 
-  /// Serializes this TailscaleProps to a JSON map.
+  /// Serializes this TailscalePeerEntry to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  final _this = this as TailscaleProps;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleProps&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.acceptRoutes, _this.acceptRoutes) || other.acceptRoutes == _this.acceptRoutes)&&(identical(other.hostname, _this.hostname) || other.hostname == _this.hostname)&&(identical(other.authKey, _this.authKey) || other.authKey == _this.authKey)&&(identical(other.controlUrl, _this.controlUrl) || other.controlUrl == _this.controlUrl)&&const DeepCollectionEquality().equals(other.disabledRoutes, _this.disabledRoutes)&&(identical(other.routeControlPlaneViaProxy, _this.routeControlPlaneViaProxy) || other.routeControlPlaneViaProxy == _this.routeControlPlaneViaProxy)&&(identical(other.routeDerpViaProxy, _this.routeDerpViaProxy) || other.routeDerpViaProxy == _this.routeDerpViaProxy));
+  final _this = this as TailscalePeerEntry;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscalePeerEntry&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.dnsName, _this.dnsName) || other.dnsName == _this.dnsName)&&const DeepCollectionEquality().equals(other.tailscaleIps, _this.tailscaleIps)&&(identical(other.exitNodeOption, _this.exitNodeOption) || other.exitNodeOption == _this.exitNodeOption)&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-  final _this = this as TailscaleProps;
-  return Object.hash(runtimeType,_this.enable,_this.acceptRoutes,_this.hostname,_this.authKey,_this.controlUrl,const DeepCollectionEquality().hash(_this.disabledRoutes),_this.routeControlPlaneViaProxy,_this.routeDerpViaProxy);
+  final _this = this as TailscalePeerEntry;
+  return Object.hash(runtimeType,_this.key,_this.dnsName,const DeepCollectionEquality().hash(_this.tailscaleIps),_this.exitNodeOption,_this.enabled);
 }
 
 @override
 String toString() {
-  final _this = this as TailscaleProps;
-  return 'TailscaleProps(enable: ${_this.enable}, acceptRoutes: ${_this.acceptRoutes}, hostname: ${_this.hostname}, authKey: ${_this.authKey}, controlUrl: ${_this.controlUrl}, disabledRoutes: ${_this.disabledRoutes}, routeControlPlaneViaProxy: ${_this.routeControlPlaneViaProxy}, routeDerpViaProxy: ${_this.routeDerpViaProxy})';
+  final _this = this as TailscalePeerEntry;
+  return 'TailscalePeerEntry(key: ${_this.key}, dnsName: ${_this.dnsName}, tailscaleIps: ${_this.tailscaleIps}, exitNodeOption: ${_this.exitNodeOption}, enabled: ${_this.enabled})';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $TailscalePropsCopyWith<$Res>  {
-  factory $TailscalePropsCopyWith(TailscaleProps value, $Res Function(TailscaleProps) _then) = _$TailscalePropsCopyWithImpl;
+abstract mixin class $TailscalePeerEntryCopyWith<$Res>  {
+  factory $TailscalePeerEntryCopyWith(TailscalePeerEntry value, $Res Function(TailscalePeerEntry) _then) = _$TailscalePeerEntryCopyWithImpl;
 @useResult
 $Res call({
- bool enable,@JsonKey(name: 'accept-routes') bool acceptRoutes, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl,@JsonKey(name: 'disabled-routes') List<String> disabledRoutes,@JsonKey(name: 'route-control-plane-via-proxy') bool routeControlPlaneViaProxy,@JsonKey(name: 'route-derp-via-proxy') bool routeDerpViaProxy
+ String key,@JsonKey(name: 'dns-name') String dnsName,@JsonKey(name: 'tailscale-ips') List<String> tailscaleIps,@JsonKey(name: 'exit-node-option') bool exitNodeOption, bool enabled
 });
 
 
@@ -2198,25 +2198,22 @@ $Res call({
 
 }
 /// @nodoc
-class _$TailscalePropsCopyWithImpl<$Res>
-    implements $TailscalePropsCopyWith<$Res> {
-  _$TailscalePropsCopyWithImpl(this._self, this._then);
+class _$TailscalePeerEntryCopyWithImpl<$Res>
+    implements $TailscalePeerEntryCopyWith<$Res> {
+  _$TailscalePeerEntryCopyWithImpl(this._self, this._then);
 
-  final TailscaleProps _self;
-  final $Res Function(TailscaleProps) _then;
+  final TailscalePeerEntry _self;
+  final $Res Function(TailscalePeerEntry) _then;
 
-/// Create a copy of TailscaleProps
+/// Create a copy of TailscalePeerEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? acceptRoutes = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? disabledRoutes = null,Object? routeControlPlaneViaProxy = null,Object? routeDerpViaProxy = null,}) {
-  return _then(TailscaleProps(
-enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
-as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
-as bool,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_nullable_to_non_nullable
-as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
-as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
-as String,disabledRoutes: null == disabledRoutes ? _self.disabledRoutes : disabledRoutes // ignore: cast_nullable_to_non_nullable
-as List<String>,routeControlPlaneViaProxy: null == routeControlPlaneViaProxy ? _self.routeControlPlaneViaProxy : routeControlPlaneViaProxy // ignore: cast_nullable_to_non_nullable
-as bool,routeDerpViaProxy: null == routeDerpViaProxy ? _self.routeDerpViaProxy : routeDerpViaProxy // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? dnsName = null,Object? tailscaleIps = null,Object? exitNodeOption = null,Object? enabled = null,}) {
+  return _then(TailscalePeerEntry(
+key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
+as String,dnsName: null == dnsName ? _self.dnsName : dnsName // ignore: cast_nullable_to_non_nullable
+as String,tailscaleIps: null == tailscaleIps ? _self.tailscaleIps : tailscaleIps // ignore: cast_nullable_to_non_nullable
+as List<String>,exitNodeOption: null == exitNodeOption ? _self.exitNodeOption : exitNodeOption // ignore: cast_nullable_to_non_nullable
+as bool,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -2224,8 +2221,8 @@ as bool,
 }
 
 
-/// Adds pattern-matching-related methods to [TailscaleProps].
-extension TailscalePropsPatterns on TailscaleProps {
+/// Adds pattern-matching-related methods to [TailscalePeerEntry].
+extension TailscalePeerEntryPatterns on TailscalePeerEntry {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -2238,10 +2235,10 @@ extension TailscalePropsPatterns on TailscaleProps {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscaleProps value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscalePeerEntry value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _TailscaleProps() when $default != null:
+case _TailscalePeerEntry() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -2260,10 +2257,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscaleProps value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscalePeerEntry value)  $default,){
 final _that = this;
 switch (_that) {
-case _TailscaleProps():
+case _TailscalePeerEntry():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -2281,10 +2278,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscaleProps value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscalePeerEntry value)?  $default,){
 final _that = this;
 switch (_that) {
-case _TailscaleProps() when $default != null:
+case _TailscalePeerEntry() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -2302,10 +2299,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes, @JsonKey(name: 'route-control-plane-via-proxy')  bool routeControlPlaneViaProxy, @JsonKey(name: 'route-derp-via-proxy')  bool routeDerpViaProxy)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String key, @JsonKey(name: 'dns-name')  String dnsName, @JsonKey(name: 'tailscale-ips')  List<String> tailscaleIps, @JsonKey(name: 'exit-node-option')  bool exitNodeOption,  bool enabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _TailscaleProps() when $default != null:
-return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes,_that.routeControlPlaneViaProxy,_that.routeDerpViaProxy);case _:
+case _TailscalePeerEntry() when $default != null:
+return $default(_that.key,_that.dnsName,_that.tailscaleIps,_that.exitNodeOption,_that.enabled);case _:
   return orElse();
 
 }
@@ -2323,10 +2320,10 @@ return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes, @JsonKey(name: 'route-control-plane-via-proxy')  bool routeControlPlaneViaProxy, @JsonKey(name: 'route-derp-via-proxy')  bool routeDerpViaProxy)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String key, @JsonKey(name: 'dns-name')  String dnsName, @JsonKey(name: 'tailscale-ips')  List<String> tailscaleIps, @JsonKey(name: 'exit-node-option')  bool exitNodeOption,  bool enabled)  $default,) {final _that = this;
 switch (_that) {
-case _TailscaleProps():
-return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes,_that.routeControlPlaneViaProxy,_that.routeDerpViaProxy);case _:
+case _TailscalePeerEntry():
+return $default(_that.key,_that.dnsName,_that.tailscaleIps,_that.exitNodeOption,_that.enabled);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2343,10 +2340,10 @@ return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable, @JsonKey(name: 'accept-routes')  bool acceptRoutes,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl, @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes, @JsonKey(name: 'route-control-plane-via-proxy')  bool routeControlPlaneViaProxy, @JsonKey(name: 'route-derp-via-proxy')  bool routeDerpViaProxy)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String key, @JsonKey(name: 'dns-name')  String dnsName, @JsonKey(name: 'tailscale-ips')  List<String> tailscaleIps, @JsonKey(name: 'exit-node-option')  bool exitNodeOption,  bool enabled)?  $default,) {final _that = this;
 switch (_that) {
-case _TailscaleProps() when $default != null:
-return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_that.controlUrl,_that.disabledRoutes,_that.routeControlPlaneViaProxy,_that.routeDerpViaProxy);case _:
+case _TailscalePeerEntry() when $default != null:
+return $default(_that.key,_that.dnsName,_that.tailscaleIps,_that.exitNodeOption,_that.enabled);case _:
   return null;
 
 }
@@ -2357,61 +2354,58 @@ return $default(_that.enable,_that.acceptRoutes,_that.hostname,_that.authKey,_th
 /// @nodoc
 @JsonSerializable()
 
-class _TailscaleProps implements TailscaleProps {
-  const _TailscaleProps({this.enable = false, @JsonKey(name: 'accept-routes') this.acceptRoutes = true, this.hostname = '', @JsonKey(name: 'auth-key') this.authKey = '', @JsonKey(name: 'control-url') this.controlUrl = '', @JsonKey(name: 'disabled-routes')  List<String> disabledRoutes = const [], @JsonKey(name: 'route-control-plane-via-proxy') this.routeControlPlaneViaProxy = false, @JsonKey(name: 'route-derp-via-proxy') this.routeDerpViaProxy = false}): _disabledRoutes = disabledRoutes;
-  factory _TailscaleProps.fromJson(Map<String, dynamic> json) => _$TailscalePropsFromJson(json);
+class _TailscalePeerEntry implements TailscalePeerEntry {
+  const _TailscalePeerEntry({required this.key, @JsonKey(name: 'dns-name') this.dnsName = '', @JsonKey(name: 'tailscale-ips')  List<String> tailscaleIps = const [], @JsonKey(name: 'exit-node-option') this.exitNodeOption = false, this.enabled = true}): _tailscaleIps = tailscaleIps;
+  factory _TailscalePeerEntry.fromJson(Map<String, dynamic> json) => _$TailscalePeerEntryFromJson(json);
 
-@override@JsonKey() final  bool enable;
-@override@JsonKey(name: 'accept-routes') final  bool acceptRoutes;
-@override@JsonKey() final  String hostname;
-@override@JsonKey(name: 'auth-key') final  String authKey;
-@override@JsonKey(name: 'control-url') final  String controlUrl;
- final  List<String> _disabledRoutes;
-@override@JsonKey(name: 'disabled-routes') List<String> get disabledRoutes {
-  if (_disabledRoutes is EqualUnmodifiableListView) return _disabledRoutes;
+@override final  String key;
+@override@JsonKey(name: 'dns-name') final  String dnsName;
+ final  List<String> _tailscaleIps;
+@override@JsonKey(name: 'tailscale-ips') List<String> get tailscaleIps {
+  if (_tailscaleIps is EqualUnmodifiableListView) return _tailscaleIps;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_disabledRoutes);
+  return EqualUnmodifiableListView(_tailscaleIps);
 }
 
-@override@JsonKey(name: 'route-control-plane-via-proxy') final  bool routeControlPlaneViaProxy;
-@override@JsonKey(name: 'route-derp-via-proxy') final  bool routeDerpViaProxy;
+@override@JsonKey(name: 'exit-node-option') final  bool exitNodeOption;
+@override@JsonKey() final  bool enabled;
 
-/// Create a copy of TailscaleProps
+/// Create a copy of TailscalePeerEntry
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$TailscalePropsCopyWith<_TailscaleProps> get copyWith => __$TailscalePropsCopyWithImpl<_TailscaleProps>(this, _$identity);
+_$TailscalePeerEntryCopyWith<_TailscalePeerEntry> get copyWith => __$TailscalePeerEntryCopyWithImpl<_TailscalePeerEntry>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$TailscalePropsToJson(this, );
+  return _$TailscalePeerEntryToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleProps&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&const DeepCollectionEquality().equals(other.disabledRoutes, _disabledRoutes)&&(identical(other.routeControlPlaneViaProxy, routeControlPlaneViaProxy) || other.routeControlPlaneViaProxy == routeControlPlaneViaProxy)&&(identical(other.routeDerpViaProxy, routeDerpViaProxy) || other.routeDerpViaProxy == routeDerpViaProxy));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscalePeerEntry&&(identical(other.key, key) || other.key == key)&&(identical(other.dnsName, dnsName) || other.dnsName == dnsName)&&const DeepCollectionEquality().equals(other.tailscaleIps, _tailscaleIps)&&(identical(other.exitNodeOption, exitNodeOption) || other.exitNodeOption == exitNodeOption)&&(identical(other.enabled, enabled) || other.enabled == enabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,enable,acceptRoutes,hostname,authKey,controlUrl,const DeepCollectionEquality().hash(_disabledRoutes),routeControlPlaneViaProxy,routeDerpViaProxy);
+    return Object.hash(runtimeType,key,dnsName,const DeepCollectionEquality().hash(_tailscaleIps),exitNodeOption,enabled);
 }
 
 @override
 String toString() {
-    return 'TailscaleProps(enable: $enable, acceptRoutes: $acceptRoutes, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, disabledRoutes: $disabledRoutes, routeControlPlaneViaProxy: $routeControlPlaneViaProxy, routeDerpViaProxy: $routeDerpViaProxy)';
+    return 'TailscalePeerEntry(key: $key, dnsName: $dnsName, tailscaleIps: $tailscaleIps, exitNodeOption: $exitNodeOption, enabled: $enabled)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$TailscalePropsCopyWith<$Res> implements $TailscalePropsCopyWith<$Res> {
-  factory _$TailscalePropsCopyWith(_TailscaleProps value, $Res Function(_TailscaleProps) _then) = __$TailscalePropsCopyWithImpl;
+abstract mixin class _$TailscalePeerEntryCopyWith<$Res> implements $TailscalePeerEntryCopyWith<$Res> {
+  factory _$TailscalePeerEntryCopyWith(_TailscalePeerEntry value, $Res Function(_TailscalePeerEntry) _then) = __$TailscalePeerEntryCopyWithImpl;
 @override @useResult
 $Res call({
- bool enable,@JsonKey(name: 'accept-routes') bool acceptRoutes, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl,@JsonKey(name: 'disabled-routes') List<String> disabledRoutes,@JsonKey(name: 'route-control-plane-via-proxy') bool routeControlPlaneViaProxy,@JsonKey(name: 'route-derp-via-proxy') bool routeDerpViaProxy
+ String key,@JsonKey(name: 'dns-name') String dnsName,@JsonKey(name: 'tailscale-ips') List<String> tailscaleIps,@JsonKey(name: 'exit-node-option') bool exitNodeOption, bool enabled
 });
 
 
@@ -2419,26 +2413,914 @@ $Res call({
 
 }
 /// @nodoc
-class __$TailscalePropsCopyWithImpl<$Res>
-    implements _$TailscalePropsCopyWith<$Res> {
-  __$TailscalePropsCopyWithImpl(this._self, this._then);
+class __$TailscalePeerEntryCopyWithImpl<$Res>
+    implements _$TailscalePeerEntryCopyWith<$Res> {
+  __$TailscalePeerEntryCopyWithImpl(this._self, this._then);
 
-  final _TailscaleProps _self;
-  final $Res Function(_TailscaleProps) _then;
+  final _TailscalePeerEntry _self;
+  final $Res Function(_TailscalePeerEntry) _then;
 
-/// Create a copy of TailscaleProps
+/// Create a copy of TailscalePeerEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enable = null,Object? acceptRoutes = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? disabledRoutes = null,Object? routeControlPlaneViaProxy = null,Object? routeDerpViaProxy = null,}) {
-  return _then(_TailscaleProps(
-enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
-as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
-as bool,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? key = null,Object? dnsName = null,Object? tailscaleIps = null,Object? exitNodeOption = null,Object? enabled = null,}) {
+  return _then(_TailscalePeerEntry(
+key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
+as String,dnsName: null == dnsName ? _self.dnsName : dnsName // ignore: cast_nullable_to_non_nullable
+as String,tailscaleIps: null == tailscaleIps ? _self._tailscaleIps : tailscaleIps // ignore: cast_nullable_to_non_nullable
+as List<String>,exitNodeOption: null == exitNodeOption ? _self.exitNodeOption : exitNodeOption // ignore: cast_nullable_to_non_nullable
+as bool,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TailscaleRouteEntry {
+
+ String get cidr; bool get enabled;
+/// Create a copy of TailscaleRouteEntry
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TailscaleRouteEntryCopyWith<TailscaleRouteEntry> get copyWith => _$TailscaleRouteEntryCopyWithImpl<TailscaleRouteEntry>(this as TailscaleRouteEntry, _$identity);
+
+  /// Serializes this TailscaleRouteEntry to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TailscaleRouteEntry;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleRouteEntry&&(identical(other.cidr, _this.cidr) || other.cidr == _this.cidr)&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TailscaleRouteEntry;
+  return Object.hash(runtimeType,_this.cidr,_this.enabled);
+}
+
+@override
+String toString() {
+  final _this = this as TailscaleRouteEntry;
+  return 'TailscaleRouteEntry(cidr: ${_this.cidr}, enabled: ${_this.enabled})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TailscaleRouteEntryCopyWith<$Res>  {
+  factory $TailscaleRouteEntryCopyWith(TailscaleRouteEntry value, $Res Function(TailscaleRouteEntry) _then) = _$TailscaleRouteEntryCopyWithImpl;
+@useResult
+$Res call({
+ String cidr, bool enabled
+});
+
+
+
+
+}
+/// @nodoc
+class _$TailscaleRouteEntryCopyWithImpl<$Res>
+    implements $TailscaleRouteEntryCopyWith<$Res> {
+  _$TailscaleRouteEntryCopyWithImpl(this._self, this._then);
+
+  final TailscaleRouteEntry _self;
+  final $Res Function(TailscaleRouteEntry) _then;
+
+/// Create a copy of TailscaleRouteEntry
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? cidr = null,Object? enabled = null,}) {
+  return _then(TailscaleRouteEntry(
+cidr: null == cidr ? _self.cidr : cidr // ignore: cast_nullable_to_non_nullable
+as String,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TailscaleRouteEntry].
+extension TailscaleRouteEntryPatterns on TailscaleRouteEntry {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscaleRouteEntry value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TailscaleRouteEntry() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscaleRouteEntry value)  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleRouteEntry():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscaleRouteEntry value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleRouteEntry() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String cidr,  bool enabled)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TailscaleRouteEntry() when $default != null:
+return $default(_that.cidr,_that.enabled);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String cidr,  bool enabled)  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleRouteEntry():
+return $default(_that.cidr,_that.enabled);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String cidr,  bool enabled)?  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleRouteEntry() when $default != null:
+return $default(_that.cidr,_that.enabled);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TailscaleRouteEntry implements TailscaleRouteEntry {
+  const _TailscaleRouteEntry({required this.cidr, this.enabled = true});
+  factory _TailscaleRouteEntry.fromJson(Map<String, dynamic> json) => _$TailscaleRouteEntryFromJson(json);
+
+@override final  String cidr;
+@override@JsonKey() final  bool enabled;
+
+/// Create a copy of TailscaleRouteEntry
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TailscaleRouteEntryCopyWith<_TailscaleRouteEntry> get copyWith => __$TailscaleRouteEntryCopyWithImpl<_TailscaleRouteEntry>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TailscaleRouteEntryToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleRouteEntry&&(identical(other.cidr, cidr) || other.cidr == cidr)&&(identical(other.enabled, enabled) || other.enabled == enabled));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,cidr,enabled);
+}
+
+@override
+String toString() {
+    return 'TailscaleRouteEntry(cidr: $cidr, enabled: $enabled)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TailscaleRouteEntryCopyWith<$Res> implements $TailscaleRouteEntryCopyWith<$Res> {
+  factory _$TailscaleRouteEntryCopyWith(_TailscaleRouteEntry value, $Res Function(_TailscaleRouteEntry) _then) = __$TailscaleRouteEntryCopyWithImpl;
+@override @useResult
+$Res call({
+ String cidr, bool enabled
+});
+
+
+
+
+}
+/// @nodoc
+class __$TailscaleRouteEntryCopyWithImpl<$Res>
+    implements _$TailscaleRouteEntryCopyWith<$Res> {
+  __$TailscaleRouteEntryCopyWithImpl(this._self, this._then);
+
+  final _TailscaleRouteEntry _self;
+  final $Res Function(_TailscaleRouteEntry) _then;
+
+/// Create a copy of TailscaleRouteEntry
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? cidr = null,Object? enabled = null,}) {
+  return _then(_TailscaleRouteEntry(
+cidr: null == cidr ? _self.cidr : cidr // ignore: cast_nullable_to_non_nullable
+as String,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TailscaleAccountProps {
+
+ String get id; String get label; bool get enable;@JsonKey(name: 'state-dir') String get stateDir; String get hostname;@JsonKey(name: 'auth-key') String get authKey;@JsonKey(name: 'control-url') String get controlUrl; bool get ephemeral; bool get udp;@JsonKey(name: 'accept-routes') bool get acceptRoutes;@JsonKey(name: 'exit-node') String get exitNode;@JsonKey(name: 'exit-node-allow-lan-access') bool get exitNodeAllowLanAccess;@JsonKey(name: 'dialer-proxy') String get dialerProxy;@JsonKey(name: 'magic-dns-suffix') String get magicDnsSuffix; List<TailscalePeerEntry> get peers; List<TailscaleRouteEntry> get routes;@JsonKey(name: 'extra-rules') List<String> get extraRules;
+/// Create a copy of TailscaleAccountProps
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TailscaleAccountPropsCopyWith<TailscaleAccountProps> get copyWith => _$TailscaleAccountPropsCopyWithImpl<TailscaleAccountProps>(this as TailscaleAccountProps, _$identity);
+
+  /// Serializes this TailscaleAccountProps to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TailscaleAccountProps;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleAccountProps&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.stateDir, _this.stateDir) || other.stateDir == _this.stateDir)&&(identical(other.hostname, _this.hostname) || other.hostname == _this.hostname)&&(identical(other.authKey, _this.authKey) || other.authKey == _this.authKey)&&(identical(other.controlUrl, _this.controlUrl) || other.controlUrl == _this.controlUrl)&&(identical(other.ephemeral, _this.ephemeral) || other.ephemeral == _this.ephemeral)&&(identical(other.udp, _this.udp) || other.udp == _this.udp)&&(identical(other.acceptRoutes, _this.acceptRoutes) || other.acceptRoutes == _this.acceptRoutes)&&(identical(other.exitNode, _this.exitNode) || other.exitNode == _this.exitNode)&&(identical(other.exitNodeAllowLanAccess, _this.exitNodeAllowLanAccess) || other.exitNodeAllowLanAccess == _this.exitNodeAllowLanAccess)&&(identical(other.dialerProxy, _this.dialerProxy) || other.dialerProxy == _this.dialerProxy)&&(identical(other.magicDnsSuffix, _this.magicDnsSuffix) || other.magicDnsSuffix == _this.magicDnsSuffix)&&const DeepCollectionEquality().equals(other.peers, _this.peers)&&const DeepCollectionEquality().equals(other.routes, _this.routes)&&const DeepCollectionEquality().equals(other.extraRules, _this.extraRules));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TailscaleAccountProps;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.enable,_this.stateDir,_this.hostname,_this.authKey,_this.controlUrl,_this.ephemeral,_this.udp,_this.acceptRoutes,_this.exitNode,_this.exitNodeAllowLanAccess,_this.dialerProxy,_this.magicDnsSuffix,const DeepCollectionEquality().hash(_this.peers),const DeepCollectionEquality().hash(_this.routes),const DeepCollectionEquality().hash(_this.extraRules));
+}
+
+@override
+String toString() {
+  final _this = this as TailscaleAccountProps;
+  return 'TailscaleAccountProps(id: ${_this.id}, label: ${_this.label}, enable: ${_this.enable}, stateDir: ${_this.stateDir}, hostname: ${_this.hostname}, authKey: ${_this.authKey}, controlUrl: ${_this.controlUrl}, ephemeral: ${_this.ephemeral}, udp: ${_this.udp}, acceptRoutes: ${_this.acceptRoutes}, exitNode: ${_this.exitNode}, exitNodeAllowLanAccess: ${_this.exitNodeAllowLanAccess}, dialerProxy: ${_this.dialerProxy}, magicDnsSuffix: ${_this.magicDnsSuffix}, peers: ${_this.peers}, routes: ${_this.routes}, extraRules: ${_this.extraRules})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TailscaleAccountPropsCopyWith<$Res>  {
+  factory $TailscaleAccountPropsCopyWith(TailscaleAccountProps value, $Res Function(TailscaleAccountProps) _then) = _$TailscaleAccountPropsCopyWithImpl;
+@useResult
+$Res call({
+ String id, String label, bool enable,@JsonKey(name: 'state-dir') String stateDir, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl, bool ephemeral, bool udp,@JsonKey(name: 'accept-routes') bool acceptRoutes,@JsonKey(name: 'exit-node') String exitNode,@JsonKey(name: 'exit-node-allow-lan-access') bool exitNodeAllowLanAccess,@JsonKey(name: 'dialer-proxy') String dialerProxy,@JsonKey(name: 'magic-dns-suffix') String magicDnsSuffix, List<TailscalePeerEntry> peers, List<TailscaleRouteEntry> routes,@JsonKey(name: 'extra-rules') List<String> extraRules
+});
+
+
+
+
+}
+/// @nodoc
+class _$TailscaleAccountPropsCopyWithImpl<$Res>
+    implements $TailscaleAccountPropsCopyWith<$Res> {
+  _$TailscaleAccountPropsCopyWithImpl(this._self, this._then);
+
+  final TailscaleAccountProps _self;
+  final $Res Function(TailscaleAccountProps) _then;
+
+/// Create a copy of TailscaleAccountProps
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? enable = null,Object? stateDir = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? ephemeral = null,Object? udp = null,Object? acceptRoutes = null,Object? exitNode = null,Object? exitNodeAllowLanAccess = null,Object? dialerProxy = null,Object? magicDnsSuffix = null,Object? peers = null,Object? routes = null,Object? extraRules = null,}) {
+  return _then(TailscaleAccountProps(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+as bool,stateDir: null == stateDir ? _self.stateDir : stateDir // ignore: cast_nullable_to_non_nullable
+as String,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_nullable_to_non_nullable
 as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
 as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
-as String,disabledRoutes: null == disabledRoutes ? _self._disabledRoutes : disabledRoutes // ignore: cast_nullable_to_non_nullable
-as List<String>,routeControlPlaneViaProxy: null == routeControlPlaneViaProxy ? _self.routeControlPlaneViaProxy : routeControlPlaneViaProxy // ignore: cast_nullable_to_non_nullable
-as bool,routeDerpViaProxy: null == routeDerpViaProxy ? _self.routeDerpViaProxy : routeDerpViaProxy // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,ephemeral: null == ephemeral ? _self.ephemeral : ephemeral // ignore: cast_nullable_to_non_nullable
+as bool,udp: null == udp ? _self.udp : udp // ignore: cast_nullable_to_non_nullable
+as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
+as bool,exitNode: null == exitNode ? _self.exitNode : exitNode // ignore: cast_nullable_to_non_nullable
+as String,exitNodeAllowLanAccess: null == exitNodeAllowLanAccess ? _self.exitNodeAllowLanAccess : exitNodeAllowLanAccess // ignore: cast_nullable_to_non_nullable
+as bool,dialerProxy: null == dialerProxy ? _self.dialerProxy : dialerProxy // ignore: cast_nullable_to_non_nullable
+as String,magicDnsSuffix: null == magicDnsSuffix ? _self.magicDnsSuffix : magicDnsSuffix // ignore: cast_nullable_to_non_nullable
+as String,peers: null == peers ? _self.peers : peers // ignore: cast_nullable_to_non_nullable
+as List<TailscalePeerEntry>,routes: null == routes ? _self.routes : routes // ignore: cast_nullable_to_non_nullable
+as List<TailscaleRouteEntry>,extraRules: null == extraRules ? _self.extraRules : extraRules // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TailscaleAccountProps].
+extension TailscaleAccountPropsPatterns on TailscaleAccountProps {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscaleAccountProps value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountProps() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscaleAccountProps value)  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountProps():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscaleAccountProps value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountProps() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  bool enable, @JsonKey(name: 'state-dir')  String stateDir,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl,  bool ephemeral,  bool udp, @JsonKey(name: 'accept-routes')  bool acceptRoutes, @JsonKey(name: 'exit-node')  String exitNode, @JsonKey(name: 'exit-node-allow-lan-access')  bool exitNodeAllowLanAccess, @JsonKey(name: 'dialer-proxy')  String dialerProxy, @JsonKey(name: 'magic-dns-suffix')  String magicDnsSuffix,  List<TailscalePeerEntry> peers,  List<TailscaleRouteEntry> routes, @JsonKey(name: 'extra-rules')  List<String> extraRules)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TailscaleAccountProps() when $default != null:
+return $default(_that.id,_that.label,_that.enable,_that.stateDir,_that.hostname,_that.authKey,_that.controlUrl,_that.ephemeral,_that.udp,_that.acceptRoutes,_that.exitNode,_that.exitNodeAllowLanAccess,_that.dialerProxy,_that.magicDnsSuffix,_that.peers,_that.routes,_that.extraRules);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  bool enable, @JsonKey(name: 'state-dir')  String stateDir,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl,  bool ephemeral,  bool udp, @JsonKey(name: 'accept-routes')  bool acceptRoutes, @JsonKey(name: 'exit-node')  String exitNode, @JsonKey(name: 'exit-node-allow-lan-access')  bool exitNodeAllowLanAccess, @JsonKey(name: 'dialer-proxy')  String dialerProxy, @JsonKey(name: 'magic-dns-suffix')  String magicDnsSuffix,  List<TailscalePeerEntry> peers,  List<TailscaleRouteEntry> routes, @JsonKey(name: 'extra-rules')  List<String> extraRules)  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccountProps():
+return $default(_that.id,_that.label,_that.enable,_that.stateDir,_that.hostname,_that.authKey,_that.controlUrl,_that.ephemeral,_that.udp,_that.acceptRoutes,_that.exitNode,_that.exitNodeAllowLanAccess,_that.dialerProxy,_that.magicDnsSuffix,_that.peers,_that.routes,_that.extraRules);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  bool enable, @JsonKey(name: 'state-dir')  String stateDir,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl,  bool ephemeral,  bool udp, @JsonKey(name: 'accept-routes')  bool acceptRoutes, @JsonKey(name: 'exit-node')  String exitNode, @JsonKey(name: 'exit-node-allow-lan-access')  bool exitNodeAllowLanAccess, @JsonKey(name: 'dialer-proxy')  String dialerProxy, @JsonKey(name: 'magic-dns-suffix')  String magicDnsSuffix,  List<TailscalePeerEntry> peers,  List<TailscaleRouteEntry> routes, @JsonKey(name: 'extra-rules')  List<String> extraRules)?  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccountProps() when $default != null:
+return $default(_that.id,_that.label,_that.enable,_that.stateDir,_that.hostname,_that.authKey,_that.controlUrl,_that.ephemeral,_that.udp,_that.acceptRoutes,_that.exitNode,_that.exitNodeAllowLanAccess,_that.dialerProxy,_that.magicDnsSuffix,_that.peers,_that.routes,_that.extraRules);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TailscaleAccountProps implements TailscaleAccountProps {
+  const _TailscaleAccountProps({required this.id, this.label = '', this.enable = true, @JsonKey(name: 'state-dir') this.stateDir = '', this.hostname = '', @JsonKey(name: 'auth-key') this.authKey = '', @JsonKey(name: 'control-url') this.controlUrl = '', this.ephemeral = false, this.udp = true, @JsonKey(name: 'accept-routes') this.acceptRoutes = true, @JsonKey(name: 'exit-node') this.exitNode = '', @JsonKey(name: 'exit-node-allow-lan-access') this.exitNodeAllowLanAccess = false, @JsonKey(name: 'dialer-proxy') this.dialerProxy = '', @JsonKey(name: 'magic-dns-suffix') this.magicDnsSuffix = '',  List<TailscalePeerEntry> peers = const [],  List<TailscaleRouteEntry> routes = const [], @JsonKey(name: 'extra-rules')  List<String> extraRules = const []}): _peers = peers,_routes = routes,_extraRules = extraRules;
+  factory _TailscaleAccountProps.fromJson(Map<String, dynamic> json) => _$TailscaleAccountPropsFromJson(json);
+
+@override final  String id;
+@override@JsonKey() final  String label;
+@override@JsonKey() final  bool enable;
+@override@JsonKey(name: 'state-dir') final  String stateDir;
+@override@JsonKey() final  String hostname;
+@override@JsonKey(name: 'auth-key') final  String authKey;
+@override@JsonKey(name: 'control-url') final  String controlUrl;
+@override@JsonKey() final  bool ephemeral;
+@override@JsonKey() final  bool udp;
+@override@JsonKey(name: 'accept-routes') final  bool acceptRoutes;
+@override@JsonKey(name: 'exit-node') final  String exitNode;
+@override@JsonKey(name: 'exit-node-allow-lan-access') final  bool exitNodeAllowLanAccess;
+@override@JsonKey(name: 'dialer-proxy') final  String dialerProxy;
+@override@JsonKey(name: 'magic-dns-suffix') final  String magicDnsSuffix;
+ final  List<TailscalePeerEntry> _peers;
+@override@JsonKey() List<TailscalePeerEntry> get peers {
+  if (_peers is EqualUnmodifiableListView) return _peers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_peers);
+}
+
+ final  List<TailscaleRouteEntry> _routes;
+@override@JsonKey() List<TailscaleRouteEntry> get routes {
+  if (_routes is EqualUnmodifiableListView) return _routes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_routes);
+}
+
+ final  List<String> _extraRules;
+@override@JsonKey(name: 'extra-rules') List<String> get extraRules {
+  if (_extraRules is EqualUnmodifiableListView) return _extraRules;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_extraRules);
+}
+
+
+/// Create a copy of TailscaleAccountProps
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TailscaleAccountPropsCopyWith<_TailscaleAccountProps> get copyWith => __$TailscaleAccountPropsCopyWithImpl<_TailscaleAccountProps>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TailscaleAccountPropsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleAccountProps&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.stateDir, stateDir) || other.stateDir == stateDir)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&(identical(other.ephemeral, ephemeral) || other.ephemeral == ephemeral)&&(identical(other.udp, udp) || other.udp == udp)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.exitNode, exitNode) || other.exitNode == exitNode)&&(identical(other.exitNodeAllowLanAccess, exitNodeAllowLanAccess) || other.exitNodeAllowLanAccess == exitNodeAllowLanAccess)&&(identical(other.dialerProxy, dialerProxy) || other.dialerProxy == dialerProxy)&&(identical(other.magicDnsSuffix, magicDnsSuffix) || other.magicDnsSuffix == magicDnsSuffix)&&const DeepCollectionEquality().equals(other.peers, _peers)&&const DeepCollectionEquality().equals(other.routes, _routes)&&const DeepCollectionEquality().equals(other.extraRules, _extraRules));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,label,enable,stateDir,hostname,authKey,controlUrl,ephemeral,udp,acceptRoutes,exitNode,exitNodeAllowLanAccess,dialerProxy,magicDnsSuffix,const DeepCollectionEquality().hash(_peers),const DeepCollectionEquality().hash(_routes),const DeepCollectionEquality().hash(_extraRules));
+}
+
+@override
+String toString() {
+    return 'TailscaleAccountProps(id: $id, label: $label, enable: $enable, stateDir: $stateDir, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, ephemeral: $ephemeral, udp: $udp, acceptRoutes: $acceptRoutes, exitNode: $exitNode, exitNodeAllowLanAccess: $exitNodeAllowLanAccess, dialerProxy: $dialerProxy, magicDnsSuffix: $magicDnsSuffix, peers: $peers, routes: $routes, extraRules: $extraRules)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TailscaleAccountPropsCopyWith<$Res> implements $TailscaleAccountPropsCopyWith<$Res> {
+  factory _$TailscaleAccountPropsCopyWith(_TailscaleAccountProps value, $Res Function(_TailscaleAccountProps) _then) = __$TailscaleAccountPropsCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String label, bool enable,@JsonKey(name: 'state-dir') String stateDir, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl, bool ephemeral, bool udp,@JsonKey(name: 'accept-routes') bool acceptRoutes,@JsonKey(name: 'exit-node') String exitNode,@JsonKey(name: 'exit-node-allow-lan-access') bool exitNodeAllowLanAccess,@JsonKey(name: 'dialer-proxy') String dialerProxy,@JsonKey(name: 'magic-dns-suffix') String magicDnsSuffix, List<TailscalePeerEntry> peers, List<TailscaleRouteEntry> routes,@JsonKey(name: 'extra-rules') List<String> extraRules
+});
+
+
+
+
+}
+/// @nodoc
+class __$TailscaleAccountPropsCopyWithImpl<$Res>
+    implements _$TailscaleAccountPropsCopyWith<$Res> {
+  __$TailscaleAccountPropsCopyWithImpl(this._self, this._then);
+
+  final _TailscaleAccountProps _self;
+  final $Res Function(_TailscaleAccountProps) _then;
+
+/// Create a copy of TailscaleAccountProps
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = null,Object? enable = null,Object? stateDir = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? ephemeral = null,Object? udp = null,Object? acceptRoutes = null,Object? exitNode = null,Object? exitNodeAllowLanAccess = null,Object? dialerProxy = null,Object? magicDnsSuffix = null,Object? peers = null,Object? routes = null,Object? extraRules = null,}) {
+  return _then(_TailscaleAccountProps(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+as bool,stateDir: null == stateDir ? _self.stateDir : stateDir // ignore: cast_nullable_to_non_nullable
+as String,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_nullable_to_non_nullable
+as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
+as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
+as String,ephemeral: null == ephemeral ? _self.ephemeral : ephemeral // ignore: cast_nullable_to_non_nullable
+as bool,udp: null == udp ? _self.udp : udp // ignore: cast_nullable_to_non_nullable
+as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
+as bool,exitNode: null == exitNode ? _self.exitNode : exitNode // ignore: cast_nullable_to_non_nullable
+as String,exitNodeAllowLanAccess: null == exitNodeAllowLanAccess ? _self.exitNodeAllowLanAccess : exitNodeAllowLanAccess // ignore: cast_nullable_to_non_nullable
+as bool,dialerProxy: null == dialerProxy ? _self.dialerProxy : dialerProxy // ignore: cast_nullable_to_non_nullable
+as String,magicDnsSuffix: null == magicDnsSuffix ? _self.magicDnsSuffix : magicDnsSuffix // ignore: cast_nullable_to_non_nullable
+as String,peers: null == peers ? _self._peers : peers // ignore: cast_nullable_to_non_nullable
+as List<TailscalePeerEntry>,routes: null == routes ? _self._routes : routes // ignore: cast_nullable_to_non_nullable
+as List<TailscaleRouteEntry>,extraRules: null == extraRules ? _self._extraRules : extraRules // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TailscaleAccounts {
+
+@JsonKey(name: 'legacy-alias') bool get legacyAlias; bool get autoFollow; List<TailscaleAccountProps> get accounts;
+/// Create a copy of TailscaleAccounts
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TailscaleAccountsCopyWith<TailscaleAccounts> get copyWith => _$TailscaleAccountsCopyWithImpl<TailscaleAccounts>(this as TailscaleAccounts, _$identity);
+
+  /// Serializes this TailscaleAccounts to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TailscaleAccounts;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleAccounts&&(identical(other.legacyAlias, _this.legacyAlias) || other.legacyAlias == _this.legacyAlias)&&(identical(other.autoFollow, _this.autoFollow) || other.autoFollow == _this.autoFollow)&&const DeepCollectionEquality().equals(other.accounts, _this.accounts));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TailscaleAccounts;
+  return Object.hash(runtimeType,_this.legacyAlias,_this.autoFollow,const DeepCollectionEquality().hash(_this.accounts));
+}
+
+@override
+String toString() {
+  final _this = this as TailscaleAccounts;
+  return 'TailscaleAccounts(legacyAlias: ${_this.legacyAlias}, autoFollow: ${_this.autoFollow}, accounts: ${_this.accounts})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TailscaleAccountsCopyWith<$Res>  {
+  factory $TailscaleAccountsCopyWith(TailscaleAccounts value, $Res Function(TailscaleAccounts) _then) = _$TailscaleAccountsCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: 'legacy-alias') bool legacyAlias, bool autoFollow, List<TailscaleAccountProps> accounts
+});
+
+
+
+
+}
+/// @nodoc
+class _$TailscaleAccountsCopyWithImpl<$Res>
+    implements $TailscaleAccountsCopyWith<$Res> {
+  _$TailscaleAccountsCopyWithImpl(this._self, this._then);
+
+  final TailscaleAccounts _self;
+  final $Res Function(TailscaleAccounts) _then;
+
+/// Create a copy of TailscaleAccounts
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? legacyAlias = null,Object? autoFollow = null,Object? accounts = null,}) {
+  return _then(TailscaleAccounts(
+legacyAlias: null == legacyAlias ? _self.legacyAlias : legacyAlias // ignore: cast_nullable_to_non_nullable
+as bool,autoFollow: null == autoFollow ? _self.autoFollow : autoFollow // ignore: cast_nullable_to_non_nullable
+as bool,accounts: null == accounts ? _self.accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<TailscaleAccountProps>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TailscaleAccounts].
+extension TailscaleAccountsPatterns on TailscaleAccounts {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscaleAccounts value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TailscaleAccounts() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscaleAccounts value)  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccounts():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscaleAccounts value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccounts() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'legacy-alias')  bool legacyAlias,  bool autoFollow,  List<TailscaleAccountProps> accounts)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TailscaleAccounts() when $default != null:
+return $default(_that.legacyAlias,_that.autoFollow,_that.accounts);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'legacy-alias')  bool legacyAlias,  bool autoFollow,  List<TailscaleAccountProps> accounts)  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccounts():
+return $default(_that.legacyAlias,_that.autoFollow,_that.accounts);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'legacy-alias')  bool legacyAlias,  bool autoFollow,  List<TailscaleAccountProps> accounts)?  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccounts() when $default != null:
+return $default(_that.legacyAlias,_that.autoFollow,_that.accounts);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TailscaleAccounts implements TailscaleAccounts {
+  const _TailscaleAccounts({@JsonKey(name: 'legacy-alias') this.legacyAlias = false, this.autoFollow = false,  List<TailscaleAccountProps> accounts = const []}): _accounts = accounts;
+  factory _TailscaleAccounts.fromJson(Map<String, dynamic> json) => _$TailscaleAccountsFromJson(json);
+
+@override@JsonKey(name: 'legacy-alias') final  bool legacyAlias;
+@override@JsonKey() final  bool autoFollow;
+ final  List<TailscaleAccountProps> _accounts;
+@override@JsonKey() List<TailscaleAccountProps> get accounts {
+  if (_accounts is EqualUnmodifiableListView) return _accounts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_accounts);
+}
+
+
+/// Create a copy of TailscaleAccounts
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TailscaleAccountsCopyWith<_TailscaleAccounts> get copyWith => __$TailscaleAccountsCopyWithImpl<_TailscaleAccounts>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TailscaleAccountsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleAccounts&&(identical(other.legacyAlias, legacyAlias) || other.legacyAlias == legacyAlias)&&(identical(other.autoFollow, autoFollow) || other.autoFollow == autoFollow)&&const DeepCollectionEquality().equals(other.accounts, _accounts));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,legacyAlias,autoFollow,const DeepCollectionEquality().hash(_accounts));
+}
+
+@override
+String toString() {
+    return 'TailscaleAccounts(legacyAlias: $legacyAlias, autoFollow: $autoFollow, accounts: $accounts)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TailscaleAccountsCopyWith<$Res> implements $TailscaleAccountsCopyWith<$Res> {
+  factory _$TailscaleAccountsCopyWith(_TailscaleAccounts value, $Res Function(_TailscaleAccounts) _then) = __$TailscaleAccountsCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: 'legacy-alias') bool legacyAlias, bool autoFollow, List<TailscaleAccountProps> accounts
+});
+
+
+
+
+}
+/// @nodoc
+class __$TailscaleAccountsCopyWithImpl<$Res>
+    implements _$TailscaleAccountsCopyWith<$Res> {
+  __$TailscaleAccountsCopyWithImpl(this._self, this._then);
+
+  final _TailscaleAccounts _self;
+  final $Res Function(_TailscaleAccounts) _then;
+
+/// Create a copy of TailscaleAccounts
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? legacyAlias = null,Object? autoFollow = null,Object? accounts = null,}) {
+  return _then(_TailscaleAccounts(
+legacyAlias: null == legacyAlias ? _self.legacyAlias : legacyAlias // ignore: cast_nullable_to_non_nullable
+as bool,autoFollow: null == autoFollow ? _self.autoFollow : autoFollow // ignore: cast_nullable_to_non_nullable
+as bool,accounts: null == accounts ? _self._accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<TailscaleAccountProps>,
   ));
 }
 
@@ -3325,7 +4207,7 @@ $TextScaleCopyWith<$Res> get textScale {
 /// @nodoc
 mixin _$Config {
 
- int? get currentProfileId; List<HotKeyAction> get hotKeyActions;@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps get appSettingProps; DAVProps? get davProps; NetworkProps get networkProps; VpnProps get vpnProps; TailscaleProps get tailscaleProps;@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps get themeProps; ProxiesStyleProps get proxiesStyleProps;@JsonKey(name: 'windowGeometry') WindowProps get windowProps; PatchClashConfig get patchClashConfig; List<String> get excludeSSIDs;
+ int? get currentProfileId; List<HotKeyAction> get hotKeyActions;@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps get appSettingProps; DAVProps? get davProps; NetworkProps get networkProps; VpnProps get vpnProps; TailscaleAccounts get tailscaleAccounts;@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps get themeProps; ProxiesStyleProps get proxiesStyleProps;@JsonKey(name: 'windowGeometry') WindowProps get windowProps; PatchClashConfig get patchClashConfig; List<String> get excludeSSIDs;
 /// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3339,20 +4221,20 @@ $ConfigCopyWith<Config> get copyWith => _$ConfigCopyWithImpl<Config>(this as Con
 @override
 bool operator ==(Object other) {
   final _this = this as Config;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Config&&(identical(other.currentProfileId, _this.currentProfileId) || other.currentProfileId == _this.currentProfileId)&&const DeepCollectionEquality().equals(other.hotKeyActions, _this.hotKeyActions)&&(identical(other.appSettingProps, _this.appSettingProps) || other.appSettingProps == _this.appSettingProps)&&(identical(other.davProps, _this.davProps) || other.davProps == _this.davProps)&&(identical(other.networkProps, _this.networkProps) || other.networkProps == _this.networkProps)&&(identical(other.vpnProps, _this.vpnProps) || other.vpnProps == _this.vpnProps)&&(identical(other.tailscaleProps, _this.tailscaleProps) || other.tailscaleProps == _this.tailscaleProps)&&(identical(other.themeProps, _this.themeProps) || other.themeProps == _this.themeProps)&&(identical(other.proxiesStyleProps, _this.proxiesStyleProps) || other.proxiesStyleProps == _this.proxiesStyleProps)&&(identical(other.windowProps, _this.windowProps) || other.windowProps == _this.windowProps)&&(identical(other.patchClashConfig, _this.patchClashConfig) || other.patchClashConfig == _this.patchClashConfig)&&const DeepCollectionEquality().equals(other.excludeSSIDs, _this.excludeSSIDs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Config&&(identical(other.currentProfileId, _this.currentProfileId) || other.currentProfileId == _this.currentProfileId)&&const DeepCollectionEquality().equals(other.hotKeyActions, _this.hotKeyActions)&&(identical(other.appSettingProps, _this.appSettingProps) || other.appSettingProps == _this.appSettingProps)&&(identical(other.davProps, _this.davProps) || other.davProps == _this.davProps)&&(identical(other.networkProps, _this.networkProps) || other.networkProps == _this.networkProps)&&(identical(other.vpnProps, _this.vpnProps) || other.vpnProps == _this.vpnProps)&&(identical(other.tailscaleAccounts, _this.tailscaleAccounts) || other.tailscaleAccounts == _this.tailscaleAccounts)&&(identical(other.themeProps, _this.themeProps) || other.themeProps == _this.themeProps)&&(identical(other.proxiesStyleProps, _this.proxiesStyleProps) || other.proxiesStyleProps == _this.proxiesStyleProps)&&(identical(other.windowProps, _this.windowProps) || other.windowProps == _this.windowProps)&&(identical(other.patchClashConfig, _this.patchClashConfig) || other.patchClashConfig == _this.patchClashConfig)&&const DeepCollectionEquality().equals(other.excludeSSIDs, _this.excludeSSIDs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Config;
-  return Object.hash(runtimeType,_this.currentProfileId,const DeepCollectionEquality().hash(_this.hotKeyActions),_this.appSettingProps,_this.davProps,_this.networkProps,_this.vpnProps,_this.tailscaleProps,_this.themeProps,_this.proxiesStyleProps,_this.windowProps,_this.patchClashConfig,const DeepCollectionEquality().hash(_this.excludeSSIDs));
+  return Object.hash(runtimeType,_this.currentProfileId,const DeepCollectionEquality().hash(_this.hotKeyActions),_this.appSettingProps,_this.davProps,_this.networkProps,_this.vpnProps,_this.tailscaleAccounts,_this.themeProps,_this.proxiesStyleProps,_this.windowProps,_this.patchClashConfig,const DeepCollectionEquality().hash(_this.excludeSSIDs));
 }
 
 @override
 String toString() {
   final _this = this as Config;
-  return 'Config(currentProfileId: ${_this.currentProfileId}, hotKeyActions: ${_this.hotKeyActions}, appSettingProps: ${_this.appSettingProps}, davProps: ${_this.davProps}, networkProps: ${_this.networkProps}, vpnProps: ${_this.vpnProps}, tailscaleProps: ${_this.tailscaleProps}, themeProps: ${_this.themeProps}, proxiesStyleProps: ${_this.proxiesStyleProps}, windowProps: ${_this.windowProps}, patchClashConfig: ${_this.patchClashConfig}, excludeSSIDs: ${_this.excludeSSIDs})';
+  return 'Config(currentProfileId: ${_this.currentProfileId}, hotKeyActions: ${_this.hotKeyActions}, appSettingProps: ${_this.appSettingProps}, davProps: ${_this.davProps}, networkProps: ${_this.networkProps}, vpnProps: ${_this.vpnProps}, tailscaleAccounts: ${_this.tailscaleAccounts}, themeProps: ${_this.themeProps}, proxiesStyleProps: ${_this.proxiesStyleProps}, windowProps: ${_this.windowProps}, patchClashConfig: ${_this.patchClashConfig}, excludeSSIDs: ${_this.excludeSSIDs})';
 }
 
 
@@ -3363,11 +4245,11 @@ abstract mixin class $ConfigCopyWith<$Res>  {
   factory $ConfigCopyWith(Config value, $Res Function(Config) _then) = _$ConfigCopyWithImpl;
 @useResult
 $Res call({
- int? currentProfileId, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps, TailscaleProps tailscaleProps,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps,@JsonKey(name: 'windowGeometry') WindowProps windowProps, PatchClashConfig patchClashConfig, List<String> excludeSSIDs
+ int? currentProfileId, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps, TailscaleAccounts tailscaleAccounts,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps,@JsonKey(name: 'windowGeometry') WindowProps windowProps, PatchClashConfig patchClashConfig, List<String> excludeSSIDs
 });
 
 
-$AppSettingPropsCopyWith<$Res> get appSettingProps;$DAVPropsCopyWith<$Res>? get davProps;$NetworkPropsCopyWith<$Res> get networkProps;$VpnPropsCopyWith<$Res> get vpnProps;$TailscalePropsCopyWith<$Res> get tailscaleProps;$ThemePropsCopyWith<$Res> get themeProps;$ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;$WindowPropsCopyWith<$Res> get windowProps;$PatchClashConfigCopyWith<$Res> get patchClashConfig;
+$AppSettingPropsCopyWith<$Res> get appSettingProps;$DAVPropsCopyWith<$Res>? get davProps;$NetworkPropsCopyWith<$Res> get networkProps;$VpnPropsCopyWith<$Res> get vpnProps;$TailscaleAccountsCopyWith<$Res> get tailscaleAccounts;$ThemePropsCopyWith<$Res> get themeProps;$ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;$WindowPropsCopyWith<$Res> get windowProps;$PatchClashConfigCopyWith<$Res> get patchClashConfig;
 
 }
 /// @nodoc
@@ -3380,7 +4262,7 @@ class _$ConfigCopyWithImpl<$Res>
 
 /// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currentProfileId = freezed,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? tailscaleProps = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? windowProps = null,Object? patchClashConfig = null,Object? excludeSSIDs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentProfileId = freezed,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? tailscaleAccounts = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? windowProps = null,Object? patchClashConfig = null,Object? excludeSSIDs = null,}) {
   return _then(Config(
 currentProfileId: freezed == currentProfileId ? _self.currentProfileId : currentProfileId // ignore: cast_nullable_to_non_nullable
 as int?,hotKeyActions: null == hotKeyActions ? _self.hotKeyActions : hotKeyActions // ignore: cast_nullable_to_non_nullable
@@ -3388,8 +4270,8 @@ as List<HotKeyAction>,appSettingProps: null == appSettingProps ? _self.appSettin
 as AppSettingProps,davProps: freezed == davProps ? _self.davProps : davProps // ignore: cast_nullable_to_non_nullable
 as DAVProps?,networkProps: null == networkProps ? _self.networkProps : networkProps // ignore: cast_nullable_to_non_nullable
 as NetworkProps,vpnProps: null == vpnProps ? _self.vpnProps : vpnProps // ignore: cast_nullable_to_non_nullable
-as VpnProps,tailscaleProps: null == tailscaleProps ? _self.tailscaleProps : tailscaleProps // ignore: cast_nullable_to_non_nullable
-as TailscaleProps,themeProps: null == themeProps ? _self.themeProps : themeProps // ignore: cast_nullable_to_non_nullable
+as VpnProps,tailscaleAccounts: null == tailscaleAccounts ? _self.tailscaleAccounts : tailscaleAccounts // ignore: cast_nullable_to_non_nullable
+as TailscaleAccounts,themeProps: null == themeProps ? _self.themeProps : themeProps // ignore: cast_nullable_to_non_nullable
 as ThemeProps,proxiesStyleProps: null == proxiesStyleProps ? _self.proxiesStyleProps : proxiesStyleProps // ignore: cast_nullable_to_non_nullable
 as ProxiesStyleProps,windowProps: null == windowProps ? _self.windowProps : windowProps // ignore: cast_nullable_to_non_nullable
 as WindowProps,patchClashConfig: null == patchClashConfig ? _self.patchClashConfig : patchClashConfig // ignore: cast_nullable_to_non_nullable
@@ -3440,10 +4322,10 @@ $VpnPropsCopyWith<$Res> get vpnProps {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<$Res> get tailscaleProps {
+$TailscaleAccountsCopyWith<$Res> get tailscaleAccounts {
   
-  return $TailscalePropsCopyWith<$Res>(_self.tailscaleProps, (value) {
-    return _then(_self.copyWith(tailscaleProps: value));
+  return $TailscaleAccountsCopyWith<$Res>(_self.tailscaleAccounts, (value) {
+    return _then(_self.copyWith(tailscaleAccounts: value));
   });
 }/// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
@@ -3563,10 +4445,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? currentProfileId,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps,  TailscaleProps tailscaleProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps, @JsonKey(name: 'windowGeometry')  WindowProps windowProps,  PatchClashConfig patchClashConfig,  List<String> excludeSSIDs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? currentProfileId,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps,  TailscaleAccounts tailscaleAccounts, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps, @JsonKey(name: 'windowGeometry')  WindowProps windowProps,  PatchClashConfig patchClashConfig,  List<String> excludeSSIDs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Config() when $default != null:
-return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.tailscaleProps,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.excludeSSIDs);case _:
+return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.tailscaleAccounts,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.excludeSSIDs);case _:
   return orElse();
 
 }
@@ -3584,10 +4466,10 @@ return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? currentProfileId,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps,  TailscaleProps tailscaleProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps, @JsonKey(name: 'windowGeometry')  WindowProps windowProps,  PatchClashConfig patchClashConfig,  List<String> excludeSSIDs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? currentProfileId,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps,  TailscaleAccounts tailscaleAccounts, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps, @JsonKey(name: 'windowGeometry')  WindowProps windowProps,  PatchClashConfig patchClashConfig,  List<String> excludeSSIDs)  $default,) {final _that = this;
 switch (_that) {
 case _Config():
-return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.tailscaleProps,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.excludeSSIDs);case _:
+return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.tailscaleAccounts,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.excludeSSIDs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -3604,10 +4486,10 @@ return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? currentProfileId,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps,  TailscaleProps tailscaleProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps, @JsonKey(name: 'windowGeometry')  WindowProps windowProps,  PatchClashConfig patchClashConfig,  List<String> excludeSSIDs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? currentProfileId,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps,  TailscaleAccounts tailscaleAccounts, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps, @JsonKey(name: 'windowGeometry')  WindowProps windowProps,  PatchClashConfig patchClashConfig,  List<String> excludeSSIDs)?  $default,) {final _that = this;
 switch (_that) {
 case _Config() when $default != null:
-return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.tailscaleProps,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.excludeSSIDs);case _:
+return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.tailscaleAccounts,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.excludeSSIDs);case _:
   return null;
 
 }
@@ -3619,7 +4501,7 @@ return $default(_that.currentProfileId,_that.hotKeyActions,_that.appSettingProps
 @JsonSerializable()
 
 class _Config implements Config {
-  const _Config({this.currentProfileId,  List<HotKeyAction> hotKeyActions = const [], @JsonKey(fromJson: AppSettingProps.safeFromJson) this.appSettingProps = defaultAppSettingProps, this.davProps, this.networkProps = defaultNetworkProps, this.vpnProps = defaultVpnProps, this.tailscaleProps = defaultTailscaleProps, @JsonKey(fromJson: ThemeProps.safeFromJson) required this.themeProps, this.proxiesStyleProps = defaultProxiesStyleProps, @JsonKey(name: 'windowGeometry') this.windowProps = defaultWindowProps, this.patchClashConfig = defaultClashConfig,  List<String> excludeSSIDs = const []}): _hotKeyActions = hotKeyActions,_excludeSSIDs = excludeSSIDs;
+  const _Config({this.currentProfileId,  List<HotKeyAction> hotKeyActions = const [], @JsonKey(fromJson: AppSettingProps.safeFromJson) this.appSettingProps = defaultAppSettingProps, this.davProps, this.networkProps = defaultNetworkProps, this.vpnProps = defaultVpnProps, this.tailscaleAccounts = defaultTailscaleAccounts, @JsonKey(fromJson: ThemeProps.safeFromJson) required this.themeProps, this.proxiesStyleProps = defaultProxiesStyleProps, @JsonKey(name: 'windowGeometry') this.windowProps = defaultWindowProps, this.patchClashConfig = defaultClashConfig,  List<String> excludeSSIDs = const []}): _hotKeyActions = hotKeyActions,_excludeSSIDs = excludeSSIDs;
   factory _Config.fromJson(Map<String, dynamic> json) => _$ConfigFromJson(json);
 
 @override final  int? currentProfileId;
@@ -3634,7 +4516,7 @@ class _Config implements Config {
 @override final  DAVProps? davProps;
 @override@JsonKey() final  NetworkProps networkProps;
 @override@JsonKey() final  VpnProps vpnProps;
-@override@JsonKey() final  TailscaleProps tailscaleProps;
+@override@JsonKey() final  TailscaleAccounts tailscaleAccounts;
 @override@JsonKey(fromJson: ThemeProps.safeFromJson) final  ThemeProps themeProps;
 @override@JsonKey() final  ProxiesStyleProps proxiesStyleProps;
 @override@JsonKey(name: 'windowGeometry') final  WindowProps windowProps;
@@ -3660,18 +4542,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Config&&(identical(other.currentProfileId, currentProfileId) || other.currentProfileId == currentProfileId)&&const DeepCollectionEquality().equals(other.hotKeyActions, _hotKeyActions)&&(identical(other.appSettingProps, appSettingProps) || other.appSettingProps == appSettingProps)&&(identical(other.davProps, davProps) || other.davProps == davProps)&&(identical(other.networkProps, networkProps) || other.networkProps == networkProps)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.tailscaleProps, tailscaleProps) || other.tailscaleProps == tailscaleProps)&&(identical(other.themeProps, themeProps) || other.themeProps == themeProps)&&(identical(other.proxiesStyleProps, proxiesStyleProps) || other.proxiesStyleProps == proxiesStyleProps)&&(identical(other.windowProps, windowProps) || other.windowProps == windowProps)&&(identical(other.patchClashConfig, patchClashConfig) || other.patchClashConfig == patchClashConfig)&&const DeepCollectionEquality().equals(other.excludeSSIDs, _excludeSSIDs));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Config&&(identical(other.currentProfileId, currentProfileId) || other.currentProfileId == currentProfileId)&&const DeepCollectionEquality().equals(other.hotKeyActions, _hotKeyActions)&&(identical(other.appSettingProps, appSettingProps) || other.appSettingProps == appSettingProps)&&(identical(other.davProps, davProps) || other.davProps == davProps)&&(identical(other.networkProps, networkProps) || other.networkProps == networkProps)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.tailscaleAccounts, tailscaleAccounts) || other.tailscaleAccounts == tailscaleAccounts)&&(identical(other.themeProps, themeProps) || other.themeProps == themeProps)&&(identical(other.proxiesStyleProps, proxiesStyleProps) || other.proxiesStyleProps == proxiesStyleProps)&&(identical(other.windowProps, windowProps) || other.windowProps == windowProps)&&(identical(other.patchClashConfig, patchClashConfig) || other.patchClashConfig == patchClashConfig)&&const DeepCollectionEquality().equals(other.excludeSSIDs, _excludeSSIDs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,currentProfileId,const DeepCollectionEquality().hash(_hotKeyActions),appSettingProps,davProps,networkProps,vpnProps,tailscaleProps,themeProps,proxiesStyleProps,windowProps,patchClashConfig,const DeepCollectionEquality().hash(_excludeSSIDs));
+    return Object.hash(runtimeType,currentProfileId,const DeepCollectionEquality().hash(_hotKeyActions),appSettingProps,davProps,networkProps,vpnProps,tailscaleAccounts,themeProps,proxiesStyleProps,windowProps,patchClashConfig,const DeepCollectionEquality().hash(_excludeSSIDs));
 }
 
 @override
 String toString() {
-    return 'Config(currentProfileId: $currentProfileId, hotKeyActions: $hotKeyActions, appSettingProps: $appSettingProps, davProps: $davProps, networkProps: $networkProps, vpnProps: $vpnProps, tailscaleProps: $tailscaleProps, themeProps: $themeProps, proxiesStyleProps: $proxiesStyleProps, windowProps: $windowProps, patchClashConfig: $patchClashConfig, excludeSSIDs: $excludeSSIDs)';
+    return 'Config(currentProfileId: $currentProfileId, hotKeyActions: $hotKeyActions, appSettingProps: $appSettingProps, davProps: $davProps, networkProps: $networkProps, vpnProps: $vpnProps, tailscaleAccounts: $tailscaleAccounts, themeProps: $themeProps, proxiesStyleProps: $proxiesStyleProps, windowProps: $windowProps, patchClashConfig: $patchClashConfig, excludeSSIDs: $excludeSSIDs)';
 }
 
 
@@ -3682,11 +4564,11 @@ abstract mixin class _$ConfigCopyWith<$Res> implements $ConfigCopyWith<$Res> {
   factory _$ConfigCopyWith(_Config value, $Res Function(_Config) _then) = __$ConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int? currentProfileId, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps, TailscaleProps tailscaleProps,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps,@JsonKey(name: 'windowGeometry') WindowProps windowProps, PatchClashConfig patchClashConfig, List<String> excludeSSIDs
+ int? currentProfileId, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps, TailscaleAccounts tailscaleAccounts,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps,@JsonKey(name: 'windowGeometry') WindowProps windowProps, PatchClashConfig patchClashConfig, List<String> excludeSSIDs
 });
 
 
-@override $AppSettingPropsCopyWith<$Res> get appSettingProps;@override $DAVPropsCopyWith<$Res>? get davProps;@override $NetworkPropsCopyWith<$Res> get networkProps;@override $VpnPropsCopyWith<$Res> get vpnProps;@override $TailscalePropsCopyWith<$Res> get tailscaleProps;@override $ThemePropsCopyWith<$Res> get themeProps;@override $ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;@override $WindowPropsCopyWith<$Res> get windowProps;@override $PatchClashConfigCopyWith<$Res> get patchClashConfig;
+@override $AppSettingPropsCopyWith<$Res> get appSettingProps;@override $DAVPropsCopyWith<$Res>? get davProps;@override $NetworkPropsCopyWith<$Res> get networkProps;@override $VpnPropsCopyWith<$Res> get vpnProps;@override $TailscaleAccountsCopyWith<$Res> get tailscaleAccounts;@override $ThemePropsCopyWith<$Res> get themeProps;@override $ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;@override $WindowPropsCopyWith<$Res> get windowProps;@override $PatchClashConfigCopyWith<$Res> get patchClashConfig;
 
 }
 /// @nodoc
@@ -3699,7 +4581,7 @@ class __$ConfigCopyWithImpl<$Res>
 
 /// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currentProfileId = freezed,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? tailscaleProps = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? windowProps = null,Object? patchClashConfig = null,Object? excludeSSIDs = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currentProfileId = freezed,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? tailscaleAccounts = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? windowProps = null,Object? patchClashConfig = null,Object? excludeSSIDs = null,}) {
   return _then(_Config(
 currentProfileId: freezed == currentProfileId ? _self.currentProfileId : currentProfileId // ignore: cast_nullable_to_non_nullable
 as int?,hotKeyActions: null == hotKeyActions ? _self._hotKeyActions : hotKeyActions // ignore: cast_nullable_to_non_nullable
@@ -3707,8 +4589,8 @@ as List<HotKeyAction>,appSettingProps: null == appSettingProps ? _self.appSettin
 as AppSettingProps,davProps: freezed == davProps ? _self.davProps : davProps // ignore: cast_nullable_to_non_nullable
 as DAVProps?,networkProps: null == networkProps ? _self.networkProps : networkProps // ignore: cast_nullable_to_non_nullable
 as NetworkProps,vpnProps: null == vpnProps ? _self.vpnProps : vpnProps // ignore: cast_nullable_to_non_nullable
-as VpnProps,tailscaleProps: null == tailscaleProps ? _self.tailscaleProps : tailscaleProps // ignore: cast_nullable_to_non_nullable
-as TailscaleProps,themeProps: null == themeProps ? _self.themeProps : themeProps // ignore: cast_nullable_to_non_nullable
+as VpnProps,tailscaleAccounts: null == tailscaleAccounts ? _self.tailscaleAccounts : tailscaleAccounts // ignore: cast_nullable_to_non_nullable
+as TailscaleAccounts,themeProps: null == themeProps ? _self.themeProps : themeProps // ignore: cast_nullable_to_non_nullable
 as ThemeProps,proxiesStyleProps: null == proxiesStyleProps ? _self.proxiesStyleProps : proxiesStyleProps // ignore: cast_nullable_to_non_nullable
 as ProxiesStyleProps,windowProps: null == windowProps ? _self.windowProps : windowProps // ignore: cast_nullable_to_non_nullable
 as WindowProps,patchClashConfig: null == patchClashConfig ? _self.patchClashConfig : patchClashConfig // ignore: cast_nullable_to_non_nullable
@@ -3760,10 +4642,10 @@ $VpnPropsCopyWith<$Res> get vpnProps {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<$Res> get tailscaleProps {
+$TailscaleAccountsCopyWith<$Res> get tailscaleAccounts {
   
-  return $TailscalePropsCopyWith<$Res>(_self.tailscaleProps, (value) {
-    return _then(_self.copyWith(tailscaleProps: value));
+  return $TailscaleAccountsCopyWith<$Res>(_self.tailscaleAccounts, (value) {
+    return _then(_self.copyWith(tailscaleAccounts: value));
   });
 }/// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.

@@ -7943,8 +7943,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -8050,6 +8049,411 @@ class AppLocalizations {
       name: 'alreadyInLocalProxies',
       desc: '',
       args: [name],
+    );
+  }
+
+  /// `Add account`
+  String get tailscaleAddAccount {
+    return Intl.message(
+      'Add account',
+      name: 'tailscaleAddAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit account`
+  String get tailscaleEditAccount {
+    return Intl.message(
+      'Edit account',
+      name: 'tailscaleEditAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Label`
+  String get tailscaleAccountLabel {
+    return Intl.message(
+      'Label',
+      name: 'tailscaleAccountLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The name TAILNET-{name} is already taken by another account`
+  String tailscaleLabelConflict(Object name) {
+    return Intl.message(
+      'The name TAILNET-$name is already taken by another account',
+      name: 'tailscaleLabelConflict',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Control server URL`
+  String get tailscaleControlUrl {
+    return Intl.message(
+      'Control server URL',
+      name: 'tailscaleControlUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hostname`
+  String get tailscaleHostname {
+    return Intl.message(
+      'Hostname',
+      name: 'tailscaleHostname',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auth key`
+  String get tailscaleAuthKey {
+    return Intl.message(
+      'Auth key',
+      name: 'tailscaleAuthKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ephemeral node`
+  String get tailscaleEphemeral {
+    return Intl.message(
+      'Ephemeral node',
+      name: 'tailscaleEphemeral',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept subnet routes`
+  String get tailscaleAcceptRoutes {
+    return Intl.message(
+      'Accept subnet routes',
+      name: 'tailscaleAcceptRoutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit node`
+  String get tailscaleExitNode {
+    return Intl.message(
+      'Exit node',
+      name: 'tailscaleExitNode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `None`
+  String get tailscaleExitNodeNone {
+    return Intl.message(
+      'None',
+      name: 'tailscaleExitNodeNone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Any (auto)`
+  String get tailscaleExitNodeAutoAny {
+    return Intl.message(
+      'Any (auto)',
+      name: 'tailscaleExitNodeAutoAny',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow LAN access`
+  String get tailscaleExitNodeAllowLanAccess {
+    return Intl.message(
+      'Allow LAN access',
+      name: 'tailscaleExitNodeAllowLanAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dial through proxy`
+  String get tailscaleDialerProxy {
+    return Intl.message(
+      'Dial through proxy',
+      name: 'tailscaleDialerProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log in`
+  String get tailscaleLogin {
+    return Intl.message('Log in', name: 'tailscaleLogin', desc: '', args: []);
+  }
+
+  /// `Log out`
+  String get tailscaleLogout {
+    return Intl.message('Log out', name: 'tailscaleLogout', desc: '', args: []);
+  }
+
+  /// `Open login page`
+  String get tailscaleOpenAuthUrl {
+    return Intl.message(
+      'Open login page',
+      name: 'tailscaleOpenAuthUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for admin approval`
+  String get tailscaleWaitingApproval {
+    return Intl.message(
+      'Waiting for admin approval',
+      name: 'tailscaleWaitingApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Needs login`
+  String get tailscaleNeedsLogin {
+    return Intl.message(
+      'Needs login',
+      name: 'tailscaleNeedsLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Starting`
+  String get tailscaleStarting {
+    return Intl.message(
+      'Starting',
+      name: 'tailscaleStarting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stopped`
+  String get tailscaleStopped {
+    return Intl.message(
+      'Stopped',
+      name: 'tailscaleStopped',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No state`
+  String get tailscaleNoState {
+    return Intl.message(
+      'No state',
+      name: 'tailscaleNoState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Running`
+  String get tailscaleRunning {
+    return Intl.message(
+      'Running',
+      name: 'tailscaleRunning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tailscale is not available in this build`
+  String get tailscaleNotAvailable {
+    return Intl.message(
+      'Tailscale is not available in this build',
+      name: 'tailscaleNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply changes`
+  String get tailscaleApplyChanges {
+    return Intl.message(
+      'Apply changes',
+      name: 'tailscaleApplyChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unapplied changes`
+  String get tailscaleUnappliedChanges {
+    return Intl.message(
+      'Unapplied changes',
+      name: 'tailscaleUnappliedChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow tailnet changes`
+  String get tailscaleAutoFollow {
+    return Intl.message(
+      'Follow tailnet changes',
+      name: 'tailscaleAutoFollow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-applies the tailnet config 30 seconds after peers or routes change. This reconnects every tailnet account.`
+  String get tailscaleAutoFollowDesc {
+    return Intl.message(
+      'Re-applies the tailnet config 30 seconds after peers or routes change. This reconnects every tailnet account.',
+      name: 'tailscaleAutoFollowDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep the TAILSCALE compatibility group`
+  String get tailscaleLegacyAlias {
+    return Intl.message(
+      'Keep the TAILSCALE compatibility group',
+      name: 'tailscaleLegacyAlias',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Old rules and groups that point at TAILSCALE keep working. Rewrite them to TAILNET, then turn this off.`
+  String get tailscaleLegacyAliasDesc {
+    return Intl.message(
+      'Old rules and groups that point at TAILSCALE keep working. Rewrite them to TAILNET, then turn this off.',
+      name: 'tailscaleLegacyAliasDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Peers`
+  String get tailscalePeers {
+    return Intl.message('Peers', name: 'tailscalePeers', desc: '', args: []);
+  }
+
+  /// `Advertised routes`
+  String get tailscaleRoutes {
+    return Intl.message(
+      'Advertised routes',
+      name: 'tailscaleRoutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extra rules`
+  String get tailscaleExtraRules {
+    return Intl.message(
+      'Extra rules',
+      name: 'tailscaleExtraRules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete account`
+  String get tailscaleDeleteAccount {
+    return Intl.message(
+      'Delete account',
+      name: 'tailscaleDeleteAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{online}/{total} online`
+  String tailscaleOnlinePeerCount(Object online, Object total) {
+    return Intl.message(
+      '$online/$total online',
+      name: 'tailscaleOnlinePeerCount',
+      desc: '',
+      args: [online, total],
+    );
+  }
+
+  /// `This account keeps the state directory of the previous single-node setup`
+  String get tailscaleStateDirLegacy {
+    return Intl.message(
+      'This account keeps the state directory of the previous single-node setup',
+      name: 'tailscaleStateDirLegacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accounts`
+  String get tailscaleAccounts {
+    return Intl.message(
+      'Accounts',
+      name: 'tailscaleAccounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inactive`
+  String get tailscaleInactive {
+    return Intl.message(
+      'Inactive',
+      name: 'tailscaleInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending VPN restart`
+  String get tailscalePendingVpnRestart {
+    return Intl.message(
+      'Pending VPN restart',
+      name: 'tailscalePendingVpnRestart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tailnet`
+  String get tailscaleTailnet {
+    return Intl.message(
+      'Tailnet',
+      name: 'tailscaleTailnet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tailscale IPs`
+  String get tailscaleTailscaleIps {
+    return Intl.message(
+      'Tailscale IPs',
+      name: 'tailscaleTailscaleIps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MagicDNS suffix`
+  String get tailscaleMagicDnsSuffix {
+    return Intl.message(
+      'MagicDNS suffix',
+      name: 'tailscaleMagicDnsSuffix',
+      desc: '',
+      args: [],
     );
   }
 }

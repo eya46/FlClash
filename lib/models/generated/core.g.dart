@@ -12,7 +12,9 @@ _SetupParams _$SetupParamsFromJson(Map<String, dynamic> json) => _SetupParams(
   skipCertVerify: json['skip-cert-verify'] as bool? ?? false,
   tailscale: json['tailscale'] == null
       ? null
-      : TailscaleProps.fromJson(json['tailscale'] as Map<String, dynamic>?),
+      : TailscaleAccountsSchema.fromJson(
+          json['tailscale'] as Map<String, dynamic>,
+        ),
   base: json['base'] == null
       ? null
       : SetupBase.fromJson(json['base'] as Map<String, dynamic>),
@@ -92,7 +94,9 @@ _UpdateParams _$UpdateParamsFromJson(Map<String, dynamic> json) =>
       skipCertVerify: json['skip-cert-verify'] as bool? ?? false,
       tailscale: json['tailscale'] == null
           ? null
-          : TailscaleProps.fromJson(json['tailscale'] as Map<String, dynamic>?),
+          : TailscaleAccountsSchema.fromJson(
+              json['tailscale'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$UpdateParamsToJson(_UpdateParams instance) =>
@@ -179,6 +183,86 @@ Map<String, dynamic> _$VpnOptionsToJson(_VpnOptions instance) =>
       'mtu': instance.mtu,
       'congestionController': instance.congestionController,
     };
+
+_TailscaleAccountsSchema _$TailscaleAccountsSchemaFromJson(
+  Map<String, dynamic> json,
+) => _TailscaleAccountsSchema(
+  legacyAlias: json['legacy-alias'] as bool? ?? false,
+  accounts:
+      (json['accounts'] as List<dynamic>?)
+          ?.map(
+            (e) => TailscaleAccountSchema.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TailscaleAccountsSchemaToJson(
+  _TailscaleAccountsSchema instance,
+) => <String, dynamic>{
+  'legacy-alias': instance.legacyAlias,
+  'accounts': instance.accounts,
+};
+
+_TailscaleAccountSchema _$TailscaleAccountSchemaFromJson(
+  Map<String, dynamic> json,
+) => _TailscaleAccountSchema(
+  id: json['id'] as String? ?? '',
+  label: json['label'] as String? ?? '',
+  enable: json['enable'] as bool? ?? true,
+  stateDir: json['state-dir'] as String? ?? '',
+  hostname: json['hostname'] as String? ?? '',
+  authKey: json['auth-key'] as String? ?? '',
+  controlUrl: json['control-url'] as String? ?? '',
+  ephemeral: json['ephemeral'] as bool? ?? false,
+  udp: json['udp'] as bool? ?? true,
+  acceptRoutes: json['accept-routes'] as bool? ?? true,
+  exitNode: json['exit-node'] as String? ?? '',
+  exitNodeAllowLanAccess: json['exit-node-allow-lan-access'] as bool? ?? false,
+  dialerProxy: json['dialer-proxy'] as String? ?? '',
+  peerCidrs:
+      (json['peer-cidrs'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  peerDomains:
+      (json['peer-domains'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  routeCidrs:
+      (json['route-cidrs'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  extraRules:
+      (json['extra-rules'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TailscaleAccountSchemaToJson(
+  _TailscaleAccountSchema instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'label': instance.label,
+  'enable': instance.enable,
+  'state-dir': instance.stateDir,
+  'hostname': instance.hostname,
+  'auth-key': instance.authKey,
+  'control-url': instance.controlUrl,
+  'ephemeral': instance.ephemeral,
+  'udp': instance.udp,
+  'accept-routes': instance.acceptRoutes,
+  'exit-node': instance.exitNode,
+  'exit-node-allow-lan-access': instance.exitNodeAllowLanAccess,
+  'dialer-proxy': instance.dialerProxy,
+  'peer-cidrs': instance.peerCidrs,
+  'peer-domains': instance.peerDomains,
+  'route-cidrs': instance.routeCidrs,
+  'extra-rules': instance.extraRules,
+};
 
 _InitParams _$InitParamsFromJson(Map<String, dynamic> json) => _InitParams(
   homeDir: json['home-dir'] as String,

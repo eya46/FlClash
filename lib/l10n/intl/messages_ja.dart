@@ -195,17 +195,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m79(label) => "${label}は1項目のみ指定できます";
 
-  static String m80(value) => "ピーク ${value}";
+  static String m80(name) => "名前 TAILNET-${name} は既に別のアカウントで使われています";
 
-  static String m81(value) => "累計 ${value}";
+  static String m81(online, total) => "${online}/${total} オンライン";
 
-  static String m82(transport) => "${transport} リクエストヘッダー";
+  static String m82(value) => "ピーク ${value}";
 
-  static String m83(label) => "${label}はURLである必要があります";
+  static String m83(value) => "累計 ${value}";
 
-  static String m84(count) => "${count} 年前";
+  static String m84(transport) => "${transport} リクエストヘッダー";
 
-  static String m85(count) => "${count} 年前";
+  static String m85(label) => "${label}はURLである必要があります";
+
+  static String m86(count) => "${count} 年前";
+
+  static String m87(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1547,6 +1551,76 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxy": MessageLookupByLibrary.simpleMessage("システムプロキシ"),
     "tab": MessageLookupByLibrary.simpleMessage("タブ"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("タブアニメーション"),
+    "tailscaleAcceptRoutes": MessageLookupByLibrary.simpleMessage(
+      "サブネットルートを受け入れる",
+    ),
+    "tailscaleAccountLabel": MessageLookupByLibrary.simpleMessage("ラベル"),
+    "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("アカウント"),
+    "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage("アカウントを追加"),
+    "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage("変更を適用"),
+    "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("認証キー"),
+    "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
+      "tailnet の変更に追従する",
+    ),
+    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
+      "ピアやルートの変更から 30 秒後に tailnet 設定を再適用します。すべての tailnet アカウントが再接続されます。",
+    ),
+    "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
+      "コントロールサーバーURL",
+    ),
+    "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage("アカウントを削除"),
+    "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage("プロキシ経由で接続"),
+    "tailscaleEditAccount": MessageLookupByLibrary.simpleMessage("アカウントを編集"),
+    "tailscaleEphemeral": MessageLookupByLibrary.simpleMessage("エフェメラルノード"),
+    "tailscaleExitNode": MessageLookupByLibrary.simpleMessage("出口ノード"),
+    "tailscaleExitNodeAllowLanAccess": MessageLookupByLibrary.simpleMessage(
+      "LANアクセスを許可",
+    ),
+    "tailscaleExitNodeAutoAny": MessageLookupByLibrary.simpleMessage("自動（任意）"),
+    "tailscaleExitNodeNone": MessageLookupByLibrary.simpleMessage("なし"),
+    "tailscaleExtraRules": MessageLookupByLibrary.simpleMessage("追加ルール"),
+    "tailscaleHostname": MessageLookupByLibrary.simpleMessage("ホスト名"),
+    "tailscaleInactive": MessageLookupByLibrary.simpleMessage("非アクティブ"),
+    "tailscaleLabelConflict": m80,
+    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
+      "TAILSCALE 互換グループを維持",
+    ),
+    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
+      "TAILSCALE を指す旧ルール・旧グループは引き続き機能します。TAILNET に書き換えた後、オフにしてください。",
+    ),
+    "tailscaleLogin": MessageLookupByLibrary.simpleMessage("ログイン"),
+    "tailscaleLogout": MessageLookupByLibrary.simpleMessage("ログアウト"),
+    "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
+      "MagicDNS サフィックス",
+    ),
+    "tailscaleNeedsLogin": MessageLookupByLibrary.simpleMessage("要ログイン"),
+    "tailscaleNoState": MessageLookupByLibrary.simpleMessage("状態なし"),
+    "tailscaleNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "このビルドでは Tailscale を利用できません",
+    ),
+    "tailscaleOnlinePeerCount": m81,
+    "tailscaleOpenAuthUrl": MessageLookupByLibrary.simpleMessage("ログインページを開く"),
+    "tailscalePeers": MessageLookupByLibrary.simpleMessage("ピア"),
+    "tailscalePendingVpnRestart": MessageLookupByLibrary.simpleMessage(
+      "VPN の再起動待ち",
+    ),
+    "tailscaleRoutes": MessageLookupByLibrary.simpleMessage("広告ルート"),
+    "tailscaleRunning": MessageLookupByLibrary.simpleMessage("実行中"),
+    "tailscaleStarting": MessageLookupByLibrary.simpleMessage("起動中"),
+    "tailscaleStateDirLegacy": MessageLookupByLibrary.simpleMessage(
+      "このアカウントは旧単一ノード設定の状態ディレクトリを引き続き使用します",
+    ),
+    "tailscaleStopped": MessageLookupByLibrary.simpleMessage("停止済み"),
+    "tailscaleTailnet": MessageLookupByLibrary.simpleMessage("Tailnet"),
+    "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
+      "Tailscale IP",
+    ),
+    "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
+      "未適用の変更があります",
+    ),
+    "tailscaleWaitingApproval": MessageLookupByLibrary.simpleMessage(
+      "管理者の承認を待っています",
+    ),
     "tapIconToRetry": MessageLookupByLibrary.simpleMessage("アイコンをタップして再試行"),
     "tapToAuthorize": MessageLookupByLibrary.simpleMessage("タップして許可"),
     "target": MessageLookupByLibrary.simpleMessage("宛先"),
@@ -1576,11 +1650,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("アップロード量"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxyポート"),
     "traffic": MessageLookupByLibrary.simpleMessage("通信量"),
-    "trafficPeak": m80,
-    "trafficTotal": m81,
+    "trafficPeak": m82,
+    "trafficTotal": m83,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("トラフィック統計"),
     "transport": MessageLookupByLibrary.simpleMessage("トランスポート"),
-    "transportHeaders": m82,
+    "transportHeaders": m84,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "TUN の権限を取得できなかったため、オフにしました。",
@@ -1608,7 +1682,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("アップロード帯域幅"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m83,
+    "urlTip": m85,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hostsを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムのHostsを使用"),
     "usedShort": MessageLookupByLibrary.simpleMessage("使用済み"),
@@ -1631,8 +1705,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "システムに書き込むを有効にするとシステムクロックも設定します。Android では無視されます。",
     ),
-    "yearsAgo": m84,
-    "yearsAgoShort": m85,
+    "yearsAgo": m86,
+    "yearsAgoShort": m87,
     "yes": MessageLookupByLibrary.simpleMessage("はい"),
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };

@@ -216,51 +216,52 @@ abstract class _$NetworkSetting extends $Notifier<NetworkProps> {
   }
 }
 
-@ProviderFor(TailscaleSetting)
-final tailscaleSettingProvider = TailscaleSettingProvider._();
+@ProviderFor(_TailscaleAccounts)
+final tailscaleAccountsProvider = _TailscaleAccountsProvider._();
 
-final class TailscaleSettingProvider
-    extends $NotifierProvider<TailscaleSetting, TailscaleProps> {
-  TailscaleSettingProvider._()
+final class _TailscaleAccountsProvider
+    extends $NotifierProvider<_TailscaleAccounts, TailscaleAccounts> {
+  _TailscaleAccountsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'tailscaleSettingProvider',
+        name: r'tailscaleAccountsProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$tailscaleSettingHash();
+  String debugGetCreateSourceHash() => _$_tailscaleAccountsHash();
 
   @$internal
   @override
-  TailscaleSetting create() => TailscaleSetting();
+  _TailscaleAccounts create() => _TailscaleAccounts();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TailscaleProps value) {
+  Override overrideWithValue(TailscaleAccounts value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<TailscaleProps>(value),
+      providerOverride: $SyncValueProvider<TailscaleAccounts>(value),
     );
   }
 }
 
-String _$tailscaleSettingHash() => r'7a80c8693cfee7b0aa4f39cfbf38b5d56a812964';
+String _$_tailscaleAccountsHash() =>
+    r'c16f9414de5ee4d8c02521d7bf53447ad4e13085';
 
-abstract class _$TailscaleSetting extends $Notifier<TailscaleProps> {
-  TailscaleProps build();
+abstract class _$TailscaleAccounts extends $Notifier<TailscaleAccounts> {
+  TailscaleAccounts build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<TailscaleProps, TailscaleProps>;
+    final ref = this.ref as $Ref<TailscaleAccounts, TailscaleAccounts>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<TailscaleProps, TailscaleProps>,
-              TailscaleProps,
+              AnyNotifier<TailscaleAccounts, TailscaleAccounts>,
+              TailscaleAccounts,
               Object?,
               Object?
             >;
@@ -671,4 +672,4 @@ final class _ConfigProvider extends $FunctionalProvider<Config, Config, Config>
   }
 }
 
-String _$_configHash() => r'd5abc71c4bf8993e61731fe9ef18eeb6daf63d29';
+String _$_configHash() => r'387d497187ebc0630f2c296977b267fe985c6db1';

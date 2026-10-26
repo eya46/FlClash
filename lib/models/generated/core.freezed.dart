@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SetupParams {
 
-@JsonKey(name: 'selected-map') Map<String, String> get selectedMap;@JsonKey(name: 'test-url') String get testUrl;@JsonKey(name: 'skip-cert-verify') bool get skipCertVerify;@JsonKey(includeIfNull: false) TailscaleProps? get tailscale;@JsonKey(includeIfNull: false) SetupBase? get base;
+@JsonKey(name: 'selected-map') Map<String, String> get selectedMap;@JsonKey(name: 'test-url') String get testUrl;@JsonKey(name: 'skip-cert-verify') bool get skipCertVerify;@JsonKey(includeIfNull: false) TailscaleAccountsSchema? get tailscale;@JsonKey(includeIfNull: false) SetupBase? get base;
 /// Create a copy of SetupParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,11 +54,11 @@ abstract mixin class $SetupParamsCopyWith<$Res>  {
   factory $SetupParamsCopyWith(SetupParams value, $Res Function(SetupParams) _then) = _$SetupParamsCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'selected-map') Map<String, String> selectedMap,@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleProps? tailscale,@JsonKey(includeIfNull: false) SetupBase? base
+@JsonKey(name: 'selected-map') Map<String, String> selectedMap,@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleAccountsSchema? tailscale,@JsonKey(includeIfNull: false) SetupBase? base
 });
 
 
-$TailscalePropsCopyWith<$Res>? get tailscale;$SetupBaseCopyWith<$Res>? get base;
+$TailscaleAccountsSchemaCopyWith<$Res>? get tailscale;$SetupBaseCopyWith<$Res>? get base;
 
 }
 /// @nodoc
@@ -77,7 +77,7 @@ selectedMap: null == selectedMap ? _self.selectedMap : selectedMap // ignore: ca
 as Map<String, String>,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,skipCertVerify: null == skipCertVerify ? _self.skipCertVerify : skipCertVerify // ignore: cast_nullable_to_non_nullable
 as bool,tailscale: freezed == tailscale ? _self.tailscale : tailscale // ignore: cast_nullable_to_non_nullable
-as TailscaleProps?,base: freezed == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
+as TailscaleAccountsSchema?,base: freezed == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
 as SetupBase?,
   ));
 }
@@ -85,12 +85,12 @@ as SetupBase?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<$Res>? get tailscale {
+$TailscaleAccountsSchemaCopyWith<$Res>? get tailscale {
     if (_self.tailscale == null) {
     return null;
   }
 
-  return $TailscalePropsCopyWith<$Res>(_self.tailscale!, (value) {
+  return $TailscaleAccountsSchemaCopyWith<$Res>(_self.tailscale!, (value) {
     return _then(_self.copyWith(tailscale: value));
   });
 }/// Create a copy of SetupParams
@@ -187,7 +187,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'selected-map')  Map<String, String> selectedMap, @JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleProps? tailscale, @JsonKey(includeIfNull: false)  SetupBase? base)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'selected-map')  Map<String, String> selectedMap, @JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleAccountsSchema? tailscale, @JsonKey(includeIfNull: false)  SetupBase? base)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SetupParams() when $default != null:
 return $default(_that.selectedMap,_that.testUrl,_that.skipCertVerify,_that.tailscale,_that.base);case _:
@@ -208,7 +208,7 @@ return $default(_that.selectedMap,_that.testUrl,_that.skipCertVerify,_that.tails
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'selected-map')  Map<String, String> selectedMap, @JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleProps? tailscale, @JsonKey(includeIfNull: false)  SetupBase? base)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'selected-map')  Map<String, String> selectedMap, @JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleAccountsSchema? tailscale, @JsonKey(includeIfNull: false)  SetupBase? base)  $default,) {final _that = this;
 switch (_that) {
 case _SetupParams():
 return $default(_that.selectedMap,_that.testUrl,_that.skipCertVerify,_that.tailscale,_that.base);case _:
@@ -228,7 +228,7 @@ return $default(_that.selectedMap,_that.testUrl,_that.skipCertVerify,_that.tails
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'selected-map')  Map<String, String> selectedMap, @JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleProps? tailscale, @JsonKey(includeIfNull: false)  SetupBase? base)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'selected-map')  Map<String, String> selectedMap, @JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleAccountsSchema? tailscale, @JsonKey(includeIfNull: false)  SetupBase? base)?  $default,) {final _that = this;
 switch (_that) {
 case _SetupParams() when $default != null:
 return $default(_that.selectedMap,_that.testUrl,_that.skipCertVerify,_that.tailscale,_that.base);case _:
@@ -255,7 +255,7 @@ class _SetupParams implements SetupParams {
 
 @override@JsonKey(name: 'test-url') final  String testUrl;
 @override@JsonKey(name: 'skip-cert-verify') final  bool skipCertVerify;
-@override@JsonKey(includeIfNull: false) final  TailscaleProps? tailscale;
+@override@JsonKey(includeIfNull: false) final  TailscaleAccountsSchema? tailscale;
 @override@JsonKey(includeIfNull: false) final  SetupBase? base;
 
 /// Create a copy of SetupParams
@@ -293,11 +293,11 @@ abstract mixin class _$SetupParamsCopyWith<$Res> implements $SetupParamsCopyWith
   factory _$SetupParamsCopyWith(_SetupParams value, $Res Function(_SetupParams) _then) = __$SetupParamsCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'selected-map') Map<String, String> selectedMap,@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleProps? tailscale,@JsonKey(includeIfNull: false) SetupBase? base
+@JsonKey(name: 'selected-map') Map<String, String> selectedMap,@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleAccountsSchema? tailscale,@JsonKey(includeIfNull: false) SetupBase? base
 });
 
 
-@override $TailscalePropsCopyWith<$Res>? get tailscale;@override $SetupBaseCopyWith<$Res>? get base;
+@override $TailscaleAccountsSchemaCopyWith<$Res>? get tailscale;@override $SetupBaseCopyWith<$Res>? get base;
 
 }
 /// @nodoc
@@ -316,7 +316,7 @@ selectedMap: null == selectedMap ? _self._selectedMap : selectedMap // ignore: c
 as Map<String, String>,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,skipCertVerify: null == skipCertVerify ? _self.skipCertVerify : skipCertVerify // ignore: cast_nullable_to_non_nullable
 as bool,tailscale: freezed == tailscale ? _self.tailscale : tailscale // ignore: cast_nullable_to_non_nullable
-as TailscaleProps?,base: freezed == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
+as TailscaleAccountsSchema?,base: freezed == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
 as SetupBase?,
   ));
 }
@@ -325,12 +325,12 @@ as SetupBase?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<$Res>? get tailscale {
+$TailscaleAccountsSchemaCopyWith<$Res>? get tailscale {
     if (_self.tailscale == null) {
     return null;
   }
 
-  return $TailscalePropsCopyWith<$Res>(_self.tailscale!, (value) {
+  return $TailscaleAccountsSchemaCopyWith<$Res>(_self.tailscale!, (value) {
     return _then(_self.copyWith(tailscale: value));
   });
 }/// Create a copy of SetupParams
@@ -922,7 +922,7 @@ as int,
 /// @nodoc
 mixin _$UpdateParams {
 
-@JsonKey(toJson: _tunCoreJson) Tun get tun;@JsonKey(name: 'mixed-port') int get mixedPort;@JsonKey(name: 'allow-lan') bool get allowLan;@JsonKey(name: 'find-process-mode') FindProcessMode get findProcessMode; Mode get mode;@JsonKey(name: 'log-level') LogLevel get logLevel; bool? get ipv6;@JsonKey(name: 'tcp-concurrent') bool? get tcpConcurrent;@JsonKey(name: 'external-controller') ExternalControllerStatus get externalController; String get secret;@JsonKey(name: 'unified-delay') bool? get unifiedDelay; List<String> get authentication;@JsonKey(name: 'geo-auto-update') bool get geoAutoUpdate;@JsonKey(name: 'geo-update-interval') int get geoUpdateInterval;@JsonKey(name: 'geox-url') Map<String, String> get geoXUrl;@JsonKey(name: 'skip-cert-verify') bool get skipCertVerify;@JsonKey(includeIfNull: false) TailscaleProps? get tailscale;
+@JsonKey(toJson: _tunCoreJson) Tun get tun;@JsonKey(name: 'mixed-port') int get mixedPort;@JsonKey(name: 'allow-lan') bool get allowLan;@JsonKey(name: 'find-process-mode') FindProcessMode get findProcessMode; Mode get mode;@JsonKey(name: 'log-level') LogLevel get logLevel; bool? get ipv6;@JsonKey(name: 'tcp-concurrent') bool? get tcpConcurrent;@JsonKey(name: 'external-controller') ExternalControllerStatus get externalController; String get secret;@JsonKey(name: 'unified-delay') bool? get unifiedDelay; List<String> get authentication;@JsonKey(name: 'geo-auto-update') bool get geoAutoUpdate;@JsonKey(name: 'geo-update-interval') int get geoUpdateInterval;@JsonKey(name: 'geox-url') Map<String, String> get geoXUrl;@JsonKey(name: 'skip-cert-verify') bool get skipCertVerify;@JsonKey(includeIfNull: false) TailscaleAccountsSchema? get tailscale;
 /// Create a copy of UpdateParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -960,11 +960,11 @@ abstract mixin class $UpdateParamsCopyWith<$Res>  {
   factory $UpdateParamsCopyWith(UpdateParams value, $Res Function(UpdateParams) _then) = _$UpdateParamsCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(toJson: _tunCoreJson) Tun tun,@JsonKey(name: 'mixed-port') int mixedPort,@JsonKey(name: 'allow-lan') bool allowLan,@JsonKey(name: 'find-process-mode') FindProcessMode findProcessMode, Mode mode,@JsonKey(name: 'log-level') LogLevel logLevel, bool? ipv6,@JsonKey(name: 'tcp-concurrent') bool? tcpConcurrent,@JsonKey(name: 'external-controller') ExternalControllerStatus externalController, String secret,@JsonKey(name: 'unified-delay') bool? unifiedDelay, List<String> authentication,@JsonKey(name: 'geo-auto-update') bool geoAutoUpdate,@JsonKey(name: 'geo-update-interval') int geoUpdateInterval,@JsonKey(name: 'geox-url') Map<String, String> geoXUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleProps? tailscale
+@JsonKey(toJson: _tunCoreJson) Tun tun,@JsonKey(name: 'mixed-port') int mixedPort,@JsonKey(name: 'allow-lan') bool allowLan,@JsonKey(name: 'find-process-mode') FindProcessMode findProcessMode, Mode mode,@JsonKey(name: 'log-level') LogLevel logLevel, bool? ipv6,@JsonKey(name: 'tcp-concurrent') bool? tcpConcurrent,@JsonKey(name: 'external-controller') ExternalControllerStatus externalController, String secret,@JsonKey(name: 'unified-delay') bool? unifiedDelay, List<String> authentication,@JsonKey(name: 'geo-auto-update') bool geoAutoUpdate,@JsonKey(name: 'geo-update-interval') int geoUpdateInterval,@JsonKey(name: 'geox-url') Map<String, String> geoXUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleAccountsSchema? tailscale
 });
 
 
-$TunCopyWith<$Res> get tun;$TailscalePropsCopyWith<$Res>? get tailscale;
+$TunCopyWith<$Res> get tun;$TailscaleAccountsSchemaCopyWith<$Res>? get tailscale;
 
 }
 /// @nodoc
@@ -996,7 +996,7 @@ as bool,geoUpdateInterval: null == geoUpdateInterval ? _self.geoUpdateInterval :
 as int,geoXUrl: null == geoXUrl ? _self.geoXUrl : geoXUrl // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,skipCertVerify: null == skipCertVerify ? _self.skipCertVerify : skipCertVerify // ignore: cast_nullable_to_non_nullable
 as bool,tailscale: freezed == tailscale ? _self.tailscale : tailscale // ignore: cast_nullable_to_non_nullable
-as TailscaleProps?,
+as TailscaleAccountsSchema?,
   ));
 }
 /// Create a copy of UpdateParams
@@ -1012,12 +1012,12 @@ $TunCopyWith<$Res> get tun {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<$Res>? get tailscale {
+$TailscaleAccountsSchemaCopyWith<$Res>? get tailscale {
     if (_self.tailscale == null) {
     return null;
   }
 
-  return $TailscalePropsCopyWith<$Res>(_self.tailscale!, (value) {
+  return $TailscaleAccountsSchemaCopyWith<$Res>(_self.tailscale!, (value) {
     return _then(_self.copyWith(tailscale: value));
   });
 }
@@ -1102,7 +1102,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(toJson: _tunCoreJson)  Tun tun, @JsonKey(name: 'mixed-port')  int mixedPort, @JsonKey(name: 'allow-lan')  bool allowLan, @JsonKey(name: 'find-process-mode')  FindProcessMode findProcessMode,  Mode mode, @JsonKey(name: 'log-level')  LogLevel logLevel,  bool? ipv6, @JsonKey(name: 'tcp-concurrent')  bool? tcpConcurrent, @JsonKey(name: 'external-controller')  ExternalControllerStatus externalController,  String secret, @JsonKey(name: 'unified-delay')  bool? unifiedDelay,  List<String> authentication, @JsonKey(name: 'geo-auto-update')  bool geoAutoUpdate, @JsonKey(name: 'geo-update-interval')  int geoUpdateInterval, @JsonKey(name: 'geox-url')  Map<String, String> geoXUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleProps? tailscale)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(toJson: _tunCoreJson)  Tun tun, @JsonKey(name: 'mixed-port')  int mixedPort, @JsonKey(name: 'allow-lan')  bool allowLan, @JsonKey(name: 'find-process-mode')  FindProcessMode findProcessMode,  Mode mode, @JsonKey(name: 'log-level')  LogLevel logLevel,  bool? ipv6, @JsonKey(name: 'tcp-concurrent')  bool? tcpConcurrent, @JsonKey(name: 'external-controller')  ExternalControllerStatus externalController,  String secret, @JsonKey(name: 'unified-delay')  bool? unifiedDelay,  List<String> authentication, @JsonKey(name: 'geo-auto-update')  bool geoAutoUpdate, @JsonKey(name: 'geo-update-interval')  int geoUpdateInterval, @JsonKey(name: 'geox-url')  Map<String, String> geoXUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleAccountsSchema? tailscale)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdateParams() when $default != null:
 return $default(_that.tun,_that.mixedPort,_that.allowLan,_that.findProcessMode,_that.mode,_that.logLevel,_that.ipv6,_that.tcpConcurrent,_that.externalController,_that.secret,_that.unifiedDelay,_that.authentication,_that.geoAutoUpdate,_that.geoUpdateInterval,_that.geoXUrl,_that.skipCertVerify,_that.tailscale);case _:
@@ -1123,7 +1123,7 @@ return $default(_that.tun,_that.mixedPort,_that.allowLan,_that.findProcessMode,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(toJson: _tunCoreJson)  Tun tun, @JsonKey(name: 'mixed-port')  int mixedPort, @JsonKey(name: 'allow-lan')  bool allowLan, @JsonKey(name: 'find-process-mode')  FindProcessMode findProcessMode,  Mode mode, @JsonKey(name: 'log-level')  LogLevel logLevel,  bool? ipv6, @JsonKey(name: 'tcp-concurrent')  bool? tcpConcurrent, @JsonKey(name: 'external-controller')  ExternalControllerStatus externalController,  String secret, @JsonKey(name: 'unified-delay')  bool? unifiedDelay,  List<String> authentication, @JsonKey(name: 'geo-auto-update')  bool geoAutoUpdate, @JsonKey(name: 'geo-update-interval')  int geoUpdateInterval, @JsonKey(name: 'geox-url')  Map<String, String> geoXUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleProps? tailscale)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(toJson: _tunCoreJson)  Tun tun, @JsonKey(name: 'mixed-port')  int mixedPort, @JsonKey(name: 'allow-lan')  bool allowLan, @JsonKey(name: 'find-process-mode')  FindProcessMode findProcessMode,  Mode mode, @JsonKey(name: 'log-level')  LogLevel logLevel,  bool? ipv6, @JsonKey(name: 'tcp-concurrent')  bool? tcpConcurrent, @JsonKey(name: 'external-controller')  ExternalControllerStatus externalController,  String secret, @JsonKey(name: 'unified-delay')  bool? unifiedDelay,  List<String> authentication, @JsonKey(name: 'geo-auto-update')  bool geoAutoUpdate, @JsonKey(name: 'geo-update-interval')  int geoUpdateInterval, @JsonKey(name: 'geox-url')  Map<String, String> geoXUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleAccountsSchema? tailscale)  $default,) {final _that = this;
 switch (_that) {
 case _UpdateParams():
 return $default(_that.tun,_that.mixedPort,_that.allowLan,_that.findProcessMode,_that.mode,_that.logLevel,_that.ipv6,_that.tcpConcurrent,_that.externalController,_that.secret,_that.unifiedDelay,_that.authentication,_that.geoAutoUpdate,_that.geoUpdateInterval,_that.geoXUrl,_that.skipCertVerify,_that.tailscale);case _:
@@ -1143,7 +1143,7 @@ return $default(_that.tun,_that.mixedPort,_that.allowLan,_that.findProcessMode,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(toJson: _tunCoreJson)  Tun tun, @JsonKey(name: 'mixed-port')  int mixedPort, @JsonKey(name: 'allow-lan')  bool allowLan, @JsonKey(name: 'find-process-mode')  FindProcessMode findProcessMode,  Mode mode, @JsonKey(name: 'log-level')  LogLevel logLevel,  bool? ipv6, @JsonKey(name: 'tcp-concurrent')  bool? tcpConcurrent, @JsonKey(name: 'external-controller')  ExternalControllerStatus externalController,  String secret, @JsonKey(name: 'unified-delay')  bool? unifiedDelay,  List<String> authentication, @JsonKey(name: 'geo-auto-update')  bool geoAutoUpdate, @JsonKey(name: 'geo-update-interval')  int geoUpdateInterval, @JsonKey(name: 'geox-url')  Map<String, String> geoXUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleProps? tailscale)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(toJson: _tunCoreJson)  Tun tun, @JsonKey(name: 'mixed-port')  int mixedPort, @JsonKey(name: 'allow-lan')  bool allowLan, @JsonKey(name: 'find-process-mode')  FindProcessMode findProcessMode,  Mode mode, @JsonKey(name: 'log-level')  LogLevel logLevel,  bool? ipv6, @JsonKey(name: 'tcp-concurrent')  bool? tcpConcurrent, @JsonKey(name: 'external-controller')  ExternalControllerStatus externalController,  String secret, @JsonKey(name: 'unified-delay')  bool? unifiedDelay,  List<String> authentication, @JsonKey(name: 'geo-auto-update')  bool geoAutoUpdate, @JsonKey(name: 'geo-update-interval')  int geoUpdateInterval, @JsonKey(name: 'geox-url')  Map<String, String> geoXUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(includeIfNull: false)  TailscaleAccountsSchema? tailscale)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdateParams() when $default != null:
 return $default(_that.tun,_that.mixedPort,_that.allowLan,_that.findProcessMode,_that.mode,_that.logLevel,_that.ipv6,_that.tcpConcurrent,_that.externalController,_that.secret,_that.unifiedDelay,_that.authentication,_that.geoAutoUpdate,_that.geoUpdateInterval,_that.geoXUrl,_that.skipCertVerify,_that.tailscale);case _:
@@ -1189,7 +1189,7 @@ class _UpdateParams implements UpdateParams {
 }
 
 @override@JsonKey(name: 'skip-cert-verify') final  bool skipCertVerify;
-@override@JsonKey(includeIfNull: false) final  TailscaleProps? tailscale;
+@override@JsonKey(includeIfNull: false) final  TailscaleAccountsSchema? tailscale;
 
 /// Create a copy of UpdateParams
 /// with the given fields replaced by the non-null parameter values.
@@ -1226,11 +1226,11 @@ abstract mixin class _$UpdateParamsCopyWith<$Res> implements $UpdateParamsCopyWi
   factory _$UpdateParamsCopyWith(_UpdateParams value, $Res Function(_UpdateParams) _then) = __$UpdateParamsCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(toJson: _tunCoreJson) Tun tun,@JsonKey(name: 'mixed-port') int mixedPort,@JsonKey(name: 'allow-lan') bool allowLan,@JsonKey(name: 'find-process-mode') FindProcessMode findProcessMode, Mode mode,@JsonKey(name: 'log-level') LogLevel logLevel, bool? ipv6,@JsonKey(name: 'tcp-concurrent') bool? tcpConcurrent,@JsonKey(name: 'external-controller') ExternalControllerStatus externalController, String secret,@JsonKey(name: 'unified-delay') bool? unifiedDelay, List<String> authentication,@JsonKey(name: 'geo-auto-update') bool geoAutoUpdate,@JsonKey(name: 'geo-update-interval') int geoUpdateInterval,@JsonKey(name: 'geox-url') Map<String, String> geoXUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleProps? tailscale
+@JsonKey(toJson: _tunCoreJson) Tun tun,@JsonKey(name: 'mixed-port') int mixedPort,@JsonKey(name: 'allow-lan') bool allowLan,@JsonKey(name: 'find-process-mode') FindProcessMode findProcessMode, Mode mode,@JsonKey(name: 'log-level') LogLevel logLevel, bool? ipv6,@JsonKey(name: 'tcp-concurrent') bool? tcpConcurrent,@JsonKey(name: 'external-controller') ExternalControllerStatus externalController, String secret,@JsonKey(name: 'unified-delay') bool? unifiedDelay, List<String> authentication,@JsonKey(name: 'geo-auto-update') bool geoAutoUpdate,@JsonKey(name: 'geo-update-interval') int geoUpdateInterval,@JsonKey(name: 'geox-url') Map<String, String> geoXUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(includeIfNull: false) TailscaleAccountsSchema? tailscale
 });
 
 
-@override $TunCopyWith<$Res> get tun;@override $TailscalePropsCopyWith<$Res>? get tailscale;
+@override $TunCopyWith<$Res> get tun;@override $TailscaleAccountsSchemaCopyWith<$Res>? get tailscale;
 
 }
 /// @nodoc
@@ -1262,7 +1262,7 @@ as bool,geoUpdateInterval: null == geoUpdateInterval ? _self.geoUpdateInterval :
 as int,geoXUrl: null == geoXUrl ? _self._geoXUrl : geoXUrl // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,skipCertVerify: null == skipCertVerify ? _self.skipCertVerify : skipCertVerify // ignore: cast_nullable_to_non_nullable
 as bool,tailscale: freezed == tailscale ? _self.tailscale : tailscale // ignore: cast_nullable_to_non_nullable
-as TailscaleProps?,
+as TailscaleAccountsSchema?,
   ));
 }
 
@@ -1279,12 +1279,12 @@ $TunCopyWith<$Res> get tun {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TailscalePropsCopyWith<$Res>? get tailscale {
+$TailscaleAccountsSchemaCopyWith<$Res>? get tailscale {
     if (_self.tailscale == null) {
     return null;
   }
 
-  return $TailscalePropsCopyWith<$Res>(_self.tailscale!, (value) {
+  return $TailscaleAccountsSchemaCopyWith<$Res>(_self.tailscale!, (value) {
     return _then(_self.copyWith(tailscale: value));
   });
 }
@@ -1621,6 +1621,627 @@ $AccessControlPropsCopyWith<$Res> get accessControlProps {
     return _then(_self.copyWith(accessControlProps: value));
   });
 }
+}
+
+
+/// @nodoc
+mixin _$TailscaleAccountsSchema {
+
+@JsonKey(name: 'legacy-alias') bool get legacyAlias; List<TailscaleAccountSchema> get accounts;
+/// Create a copy of TailscaleAccountsSchema
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TailscaleAccountsSchemaCopyWith<TailscaleAccountsSchema> get copyWith => _$TailscaleAccountsSchemaCopyWithImpl<TailscaleAccountsSchema>(this as TailscaleAccountsSchema, _$identity);
+
+  /// Serializes this TailscaleAccountsSchema to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TailscaleAccountsSchema;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleAccountsSchema&&(identical(other.legacyAlias, _this.legacyAlias) || other.legacyAlias == _this.legacyAlias)&&const DeepCollectionEquality().equals(other.accounts, _this.accounts));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TailscaleAccountsSchema;
+  return Object.hash(runtimeType,_this.legacyAlias,const DeepCollectionEquality().hash(_this.accounts));
+}
+
+@override
+String toString() {
+  final _this = this as TailscaleAccountsSchema;
+  return 'TailscaleAccountsSchema(legacyAlias: ${_this.legacyAlias}, accounts: ${_this.accounts})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TailscaleAccountsSchemaCopyWith<$Res>  {
+  factory $TailscaleAccountsSchemaCopyWith(TailscaleAccountsSchema value, $Res Function(TailscaleAccountsSchema) _then) = _$TailscaleAccountsSchemaCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: 'legacy-alias') bool legacyAlias, List<TailscaleAccountSchema> accounts
+});
+
+
+
+
+}
+/// @nodoc
+class _$TailscaleAccountsSchemaCopyWithImpl<$Res>
+    implements $TailscaleAccountsSchemaCopyWith<$Res> {
+  _$TailscaleAccountsSchemaCopyWithImpl(this._self, this._then);
+
+  final TailscaleAccountsSchema _self;
+  final $Res Function(TailscaleAccountsSchema) _then;
+
+/// Create a copy of TailscaleAccountsSchema
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? legacyAlias = null,Object? accounts = null,}) {
+  return _then(TailscaleAccountsSchema(
+legacyAlias: null == legacyAlias ? _self.legacyAlias : legacyAlias // ignore: cast_nullable_to_non_nullable
+as bool,accounts: null == accounts ? _self.accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<TailscaleAccountSchema>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TailscaleAccountsSchema].
+extension TailscaleAccountsSchemaPatterns on TailscaleAccountsSchema {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscaleAccountsSchema value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountsSchema() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscaleAccountsSchema value)  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountsSchema():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscaleAccountsSchema value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountsSchema() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'legacy-alias')  bool legacyAlias,  List<TailscaleAccountSchema> accounts)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TailscaleAccountsSchema() when $default != null:
+return $default(_that.legacyAlias,_that.accounts);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'legacy-alias')  bool legacyAlias,  List<TailscaleAccountSchema> accounts)  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccountsSchema():
+return $default(_that.legacyAlias,_that.accounts);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'legacy-alias')  bool legacyAlias,  List<TailscaleAccountSchema> accounts)?  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccountsSchema() when $default != null:
+return $default(_that.legacyAlias,_that.accounts);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TailscaleAccountsSchema implements TailscaleAccountsSchema {
+  const _TailscaleAccountsSchema({@JsonKey(name: 'legacy-alias') this.legacyAlias = false,  List<TailscaleAccountSchema> accounts = const []}): _accounts = accounts;
+  factory _TailscaleAccountsSchema.fromJson(Map<String, dynamic> json) => _$TailscaleAccountsSchemaFromJson(json);
+
+@override@JsonKey(name: 'legacy-alias') final  bool legacyAlias;
+ final  List<TailscaleAccountSchema> _accounts;
+@override@JsonKey() List<TailscaleAccountSchema> get accounts {
+  if (_accounts is EqualUnmodifiableListView) return _accounts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_accounts);
+}
+
+
+/// Create a copy of TailscaleAccountsSchema
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TailscaleAccountsSchemaCopyWith<_TailscaleAccountsSchema> get copyWith => __$TailscaleAccountsSchemaCopyWithImpl<_TailscaleAccountsSchema>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TailscaleAccountsSchemaToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleAccountsSchema&&(identical(other.legacyAlias, legacyAlias) || other.legacyAlias == legacyAlias)&&const DeepCollectionEquality().equals(other.accounts, _accounts));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,legacyAlias,const DeepCollectionEquality().hash(_accounts));
+}
+
+@override
+String toString() {
+    return 'TailscaleAccountsSchema(legacyAlias: $legacyAlias, accounts: $accounts)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TailscaleAccountsSchemaCopyWith<$Res> implements $TailscaleAccountsSchemaCopyWith<$Res> {
+  factory _$TailscaleAccountsSchemaCopyWith(_TailscaleAccountsSchema value, $Res Function(_TailscaleAccountsSchema) _then) = __$TailscaleAccountsSchemaCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: 'legacy-alias') bool legacyAlias, List<TailscaleAccountSchema> accounts
+});
+
+
+
+
+}
+/// @nodoc
+class __$TailscaleAccountsSchemaCopyWithImpl<$Res>
+    implements _$TailscaleAccountsSchemaCopyWith<$Res> {
+  __$TailscaleAccountsSchemaCopyWithImpl(this._self, this._then);
+
+  final _TailscaleAccountsSchema _self;
+  final $Res Function(_TailscaleAccountsSchema) _then;
+
+/// Create a copy of TailscaleAccountsSchema
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? legacyAlias = null,Object? accounts = null,}) {
+  return _then(_TailscaleAccountsSchema(
+legacyAlias: null == legacyAlias ? _self.legacyAlias : legacyAlias // ignore: cast_nullable_to_non_nullable
+as bool,accounts: null == accounts ? _self._accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<TailscaleAccountSchema>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TailscaleAccountSchema {
+
+ String get id; String get label; bool get enable;@JsonKey(name: 'state-dir') String get stateDir; String get hostname;@JsonKey(name: 'auth-key') String get authKey;@JsonKey(name: 'control-url') String get controlUrl; bool get ephemeral; bool get udp;@JsonKey(name: 'accept-routes') bool get acceptRoutes;@JsonKey(name: 'exit-node') String get exitNode;@JsonKey(name: 'exit-node-allow-lan-access') bool get exitNodeAllowLanAccess;@JsonKey(name: 'dialer-proxy') String get dialerProxy;@JsonKey(name: 'peer-cidrs') List<String> get peerCidrs;@JsonKey(name: 'peer-domains') List<String> get peerDomains;@JsonKey(name: 'route-cidrs') List<String> get routeCidrs;@JsonKey(name: 'extra-rules') List<String> get extraRules;
+/// Create a copy of TailscaleAccountSchema
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TailscaleAccountSchemaCopyWith<TailscaleAccountSchema> get copyWith => _$TailscaleAccountSchemaCopyWithImpl<TailscaleAccountSchema>(this as TailscaleAccountSchema, _$identity);
+
+  /// Serializes this TailscaleAccountSchema to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TailscaleAccountSchema;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TailscaleAccountSchema&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.stateDir, _this.stateDir) || other.stateDir == _this.stateDir)&&(identical(other.hostname, _this.hostname) || other.hostname == _this.hostname)&&(identical(other.authKey, _this.authKey) || other.authKey == _this.authKey)&&(identical(other.controlUrl, _this.controlUrl) || other.controlUrl == _this.controlUrl)&&(identical(other.ephemeral, _this.ephemeral) || other.ephemeral == _this.ephemeral)&&(identical(other.udp, _this.udp) || other.udp == _this.udp)&&(identical(other.acceptRoutes, _this.acceptRoutes) || other.acceptRoutes == _this.acceptRoutes)&&(identical(other.exitNode, _this.exitNode) || other.exitNode == _this.exitNode)&&(identical(other.exitNodeAllowLanAccess, _this.exitNodeAllowLanAccess) || other.exitNodeAllowLanAccess == _this.exitNodeAllowLanAccess)&&(identical(other.dialerProxy, _this.dialerProxy) || other.dialerProxy == _this.dialerProxy)&&const DeepCollectionEquality().equals(other.peerCidrs, _this.peerCidrs)&&const DeepCollectionEquality().equals(other.peerDomains, _this.peerDomains)&&const DeepCollectionEquality().equals(other.routeCidrs, _this.routeCidrs)&&const DeepCollectionEquality().equals(other.extraRules, _this.extraRules));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TailscaleAccountSchema;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.enable,_this.stateDir,_this.hostname,_this.authKey,_this.controlUrl,_this.ephemeral,_this.udp,_this.acceptRoutes,_this.exitNode,_this.exitNodeAllowLanAccess,_this.dialerProxy,const DeepCollectionEquality().hash(_this.peerCidrs),const DeepCollectionEquality().hash(_this.peerDomains),const DeepCollectionEquality().hash(_this.routeCidrs),const DeepCollectionEquality().hash(_this.extraRules));
+}
+
+@override
+String toString() {
+  final _this = this as TailscaleAccountSchema;
+  return 'TailscaleAccountSchema(id: ${_this.id}, label: ${_this.label}, enable: ${_this.enable}, stateDir: ${_this.stateDir}, hostname: ${_this.hostname}, authKey: ${_this.authKey}, controlUrl: ${_this.controlUrl}, ephemeral: ${_this.ephemeral}, udp: ${_this.udp}, acceptRoutes: ${_this.acceptRoutes}, exitNode: ${_this.exitNode}, exitNodeAllowLanAccess: ${_this.exitNodeAllowLanAccess}, dialerProxy: ${_this.dialerProxy}, peerCidrs: ${_this.peerCidrs}, peerDomains: ${_this.peerDomains}, routeCidrs: ${_this.routeCidrs}, extraRules: ${_this.extraRules})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TailscaleAccountSchemaCopyWith<$Res>  {
+  factory $TailscaleAccountSchemaCopyWith(TailscaleAccountSchema value, $Res Function(TailscaleAccountSchema) _then) = _$TailscaleAccountSchemaCopyWithImpl;
+@useResult
+$Res call({
+ String id, String label, bool enable,@JsonKey(name: 'state-dir') String stateDir, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl, bool ephemeral, bool udp,@JsonKey(name: 'accept-routes') bool acceptRoutes,@JsonKey(name: 'exit-node') String exitNode,@JsonKey(name: 'exit-node-allow-lan-access') bool exitNodeAllowLanAccess,@JsonKey(name: 'dialer-proxy') String dialerProxy,@JsonKey(name: 'peer-cidrs') List<String> peerCidrs,@JsonKey(name: 'peer-domains') List<String> peerDomains,@JsonKey(name: 'route-cidrs') List<String> routeCidrs,@JsonKey(name: 'extra-rules') List<String> extraRules
+});
+
+
+
+
+}
+/// @nodoc
+class _$TailscaleAccountSchemaCopyWithImpl<$Res>
+    implements $TailscaleAccountSchemaCopyWith<$Res> {
+  _$TailscaleAccountSchemaCopyWithImpl(this._self, this._then);
+
+  final TailscaleAccountSchema _self;
+  final $Res Function(TailscaleAccountSchema) _then;
+
+/// Create a copy of TailscaleAccountSchema
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? enable = null,Object? stateDir = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? ephemeral = null,Object? udp = null,Object? acceptRoutes = null,Object? exitNode = null,Object? exitNodeAllowLanAccess = null,Object? dialerProxy = null,Object? peerCidrs = null,Object? peerDomains = null,Object? routeCidrs = null,Object? extraRules = null,}) {
+  return _then(TailscaleAccountSchema(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+as bool,stateDir: null == stateDir ? _self.stateDir : stateDir // ignore: cast_nullable_to_non_nullable
+as String,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_nullable_to_non_nullable
+as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
+as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
+as String,ephemeral: null == ephemeral ? _self.ephemeral : ephemeral // ignore: cast_nullable_to_non_nullable
+as bool,udp: null == udp ? _self.udp : udp // ignore: cast_nullable_to_non_nullable
+as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
+as bool,exitNode: null == exitNode ? _self.exitNode : exitNode // ignore: cast_nullable_to_non_nullable
+as String,exitNodeAllowLanAccess: null == exitNodeAllowLanAccess ? _self.exitNodeAllowLanAccess : exitNodeAllowLanAccess // ignore: cast_nullable_to_non_nullable
+as bool,dialerProxy: null == dialerProxy ? _self.dialerProxy : dialerProxy // ignore: cast_nullable_to_non_nullable
+as String,peerCidrs: null == peerCidrs ? _self.peerCidrs : peerCidrs // ignore: cast_nullable_to_non_nullable
+as List<String>,peerDomains: null == peerDomains ? _self.peerDomains : peerDomains // ignore: cast_nullable_to_non_nullable
+as List<String>,routeCidrs: null == routeCidrs ? _self.routeCidrs : routeCidrs // ignore: cast_nullable_to_non_nullable
+as List<String>,extraRules: null == extraRules ? _self.extraRules : extraRules // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TailscaleAccountSchema].
+extension TailscaleAccountSchemaPatterns on TailscaleAccountSchema {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TailscaleAccountSchema value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountSchema() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TailscaleAccountSchema value)  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountSchema():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TailscaleAccountSchema value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TailscaleAccountSchema() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  bool enable, @JsonKey(name: 'state-dir')  String stateDir,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl,  bool ephemeral,  bool udp, @JsonKey(name: 'accept-routes')  bool acceptRoutes, @JsonKey(name: 'exit-node')  String exitNode, @JsonKey(name: 'exit-node-allow-lan-access')  bool exitNodeAllowLanAccess, @JsonKey(name: 'dialer-proxy')  String dialerProxy, @JsonKey(name: 'peer-cidrs')  List<String> peerCidrs, @JsonKey(name: 'peer-domains')  List<String> peerDomains, @JsonKey(name: 'route-cidrs')  List<String> routeCidrs, @JsonKey(name: 'extra-rules')  List<String> extraRules)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TailscaleAccountSchema() when $default != null:
+return $default(_that.id,_that.label,_that.enable,_that.stateDir,_that.hostname,_that.authKey,_that.controlUrl,_that.ephemeral,_that.udp,_that.acceptRoutes,_that.exitNode,_that.exitNodeAllowLanAccess,_that.dialerProxy,_that.peerCidrs,_that.peerDomains,_that.routeCidrs,_that.extraRules);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  bool enable, @JsonKey(name: 'state-dir')  String stateDir,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl,  bool ephemeral,  bool udp, @JsonKey(name: 'accept-routes')  bool acceptRoutes, @JsonKey(name: 'exit-node')  String exitNode, @JsonKey(name: 'exit-node-allow-lan-access')  bool exitNodeAllowLanAccess, @JsonKey(name: 'dialer-proxy')  String dialerProxy, @JsonKey(name: 'peer-cidrs')  List<String> peerCidrs, @JsonKey(name: 'peer-domains')  List<String> peerDomains, @JsonKey(name: 'route-cidrs')  List<String> routeCidrs, @JsonKey(name: 'extra-rules')  List<String> extraRules)  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccountSchema():
+return $default(_that.id,_that.label,_that.enable,_that.stateDir,_that.hostname,_that.authKey,_that.controlUrl,_that.ephemeral,_that.udp,_that.acceptRoutes,_that.exitNode,_that.exitNodeAllowLanAccess,_that.dialerProxy,_that.peerCidrs,_that.peerDomains,_that.routeCidrs,_that.extraRules);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  bool enable, @JsonKey(name: 'state-dir')  String stateDir,  String hostname, @JsonKey(name: 'auth-key')  String authKey, @JsonKey(name: 'control-url')  String controlUrl,  bool ephemeral,  bool udp, @JsonKey(name: 'accept-routes')  bool acceptRoutes, @JsonKey(name: 'exit-node')  String exitNode, @JsonKey(name: 'exit-node-allow-lan-access')  bool exitNodeAllowLanAccess, @JsonKey(name: 'dialer-proxy')  String dialerProxy, @JsonKey(name: 'peer-cidrs')  List<String> peerCidrs, @JsonKey(name: 'peer-domains')  List<String> peerDomains, @JsonKey(name: 'route-cidrs')  List<String> routeCidrs, @JsonKey(name: 'extra-rules')  List<String> extraRules)?  $default,) {final _that = this;
+switch (_that) {
+case _TailscaleAccountSchema() when $default != null:
+return $default(_that.id,_that.label,_that.enable,_that.stateDir,_that.hostname,_that.authKey,_that.controlUrl,_that.ephemeral,_that.udp,_that.acceptRoutes,_that.exitNode,_that.exitNodeAllowLanAccess,_that.dialerProxy,_that.peerCidrs,_that.peerDomains,_that.routeCidrs,_that.extraRules);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TailscaleAccountSchema implements TailscaleAccountSchema {
+  const _TailscaleAccountSchema({this.id = '', this.label = '', this.enable = true, @JsonKey(name: 'state-dir') this.stateDir = '', this.hostname = '', @JsonKey(name: 'auth-key') this.authKey = '', @JsonKey(name: 'control-url') this.controlUrl = '', this.ephemeral = false, this.udp = true, @JsonKey(name: 'accept-routes') this.acceptRoutes = true, @JsonKey(name: 'exit-node') this.exitNode = '', @JsonKey(name: 'exit-node-allow-lan-access') this.exitNodeAllowLanAccess = false, @JsonKey(name: 'dialer-proxy') this.dialerProxy = '', @JsonKey(name: 'peer-cidrs')  List<String> peerCidrs = const [], @JsonKey(name: 'peer-domains')  List<String> peerDomains = const [], @JsonKey(name: 'route-cidrs')  List<String> routeCidrs = const [], @JsonKey(name: 'extra-rules')  List<String> extraRules = const []}): _peerCidrs = peerCidrs,_peerDomains = peerDomains,_routeCidrs = routeCidrs,_extraRules = extraRules;
+  factory _TailscaleAccountSchema.fromJson(Map<String, dynamic> json) => _$TailscaleAccountSchemaFromJson(json);
+
+@override@JsonKey() final  String id;
+@override@JsonKey() final  String label;
+@override@JsonKey() final  bool enable;
+@override@JsonKey(name: 'state-dir') final  String stateDir;
+@override@JsonKey() final  String hostname;
+@override@JsonKey(name: 'auth-key') final  String authKey;
+@override@JsonKey(name: 'control-url') final  String controlUrl;
+@override@JsonKey() final  bool ephemeral;
+@override@JsonKey() final  bool udp;
+@override@JsonKey(name: 'accept-routes') final  bool acceptRoutes;
+@override@JsonKey(name: 'exit-node') final  String exitNode;
+@override@JsonKey(name: 'exit-node-allow-lan-access') final  bool exitNodeAllowLanAccess;
+@override@JsonKey(name: 'dialer-proxy') final  String dialerProxy;
+ final  List<String> _peerCidrs;
+@override@JsonKey(name: 'peer-cidrs') List<String> get peerCidrs {
+  if (_peerCidrs is EqualUnmodifiableListView) return _peerCidrs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_peerCidrs);
+}
+
+ final  List<String> _peerDomains;
+@override@JsonKey(name: 'peer-domains') List<String> get peerDomains {
+  if (_peerDomains is EqualUnmodifiableListView) return _peerDomains;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_peerDomains);
+}
+
+ final  List<String> _routeCidrs;
+@override@JsonKey(name: 'route-cidrs') List<String> get routeCidrs {
+  if (_routeCidrs is EqualUnmodifiableListView) return _routeCidrs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_routeCidrs);
+}
+
+ final  List<String> _extraRules;
+@override@JsonKey(name: 'extra-rules') List<String> get extraRules {
+  if (_extraRules is EqualUnmodifiableListView) return _extraRules;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_extraRules);
+}
+
+
+/// Create a copy of TailscaleAccountSchema
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TailscaleAccountSchemaCopyWith<_TailscaleAccountSchema> get copyWith => __$TailscaleAccountSchemaCopyWithImpl<_TailscaleAccountSchema>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TailscaleAccountSchemaToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TailscaleAccountSchema&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.stateDir, stateDir) || other.stateDir == stateDir)&&(identical(other.hostname, hostname) || other.hostname == hostname)&&(identical(other.authKey, authKey) || other.authKey == authKey)&&(identical(other.controlUrl, controlUrl) || other.controlUrl == controlUrl)&&(identical(other.ephemeral, ephemeral) || other.ephemeral == ephemeral)&&(identical(other.udp, udp) || other.udp == udp)&&(identical(other.acceptRoutes, acceptRoutes) || other.acceptRoutes == acceptRoutes)&&(identical(other.exitNode, exitNode) || other.exitNode == exitNode)&&(identical(other.exitNodeAllowLanAccess, exitNodeAllowLanAccess) || other.exitNodeAllowLanAccess == exitNodeAllowLanAccess)&&(identical(other.dialerProxy, dialerProxy) || other.dialerProxy == dialerProxy)&&const DeepCollectionEquality().equals(other.peerCidrs, _peerCidrs)&&const DeepCollectionEquality().equals(other.peerDomains, _peerDomains)&&const DeepCollectionEquality().equals(other.routeCidrs, _routeCidrs)&&const DeepCollectionEquality().equals(other.extraRules, _extraRules));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,label,enable,stateDir,hostname,authKey,controlUrl,ephemeral,udp,acceptRoutes,exitNode,exitNodeAllowLanAccess,dialerProxy,const DeepCollectionEquality().hash(_peerCidrs),const DeepCollectionEquality().hash(_peerDomains),const DeepCollectionEquality().hash(_routeCidrs),const DeepCollectionEquality().hash(_extraRules));
+}
+
+@override
+String toString() {
+    return 'TailscaleAccountSchema(id: $id, label: $label, enable: $enable, stateDir: $stateDir, hostname: $hostname, authKey: $authKey, controlUrl: $controlUrl, ephemeral: $ephemeral, udp: $udp, acceptRoutes: $acceptRoutes, exitNode: $exitNode, exitNodeAllowLanAccess: $exitNodeAllowLanAccess, dialerProxy: $dialerProxy, peerCidrs: $peerCidrs, peerDomains: $peerDomains, routeCidrs: $routeCidrs, extraRules: $extraRules)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TailscaleAccountSchemaCopyWith<$Res> implements $TailscaleAccountSchemaCopyWith<$Res> {
+  factory _$TailscaleAccountSchemaCopyWith(_TailscaleAccountSchema value, $Res Function(_TailscaleAccountSchema) _then) = __$TailscaleAccountSchemaCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String label, bool enable,@JsonKey(name: 'state-dir') String stateDir, String hostname,@JsonKey(name: 'auth-key') String authKey,@JsonKey(name: 'control-url') String controlUrl, bool ephemeral, bool udp,@JsonKey(name: 'accept-routes') bool acceptRoutes,@JsonKey(name: 'exit-node') String exitNode,@JsonKey(name: 'exit-node-allow-lan-access') bool exitNodeAllowLanAccess,@JsonKey(name: 'dialer-proxy') String dialerProxy,@JsonKey(name: 'peer-cidrs') List<String> peerCidrs,@JsonKey(name: 'peer-domains') List<String> peerDomains,@JsonKey(name: 'route-cidrs') List<String> routeCidrs,@JsonKey(name: 'extra-rules') List<String> extraRules
+});
+
+
+
+
+}
+/// @nodoc
+class __$TailscaleAccountSchemaCopyWithImpl<$Res>
+    implements _$TailscaleAccountSchemaCopyWith<$Res> {
+  __$TailscaleAccountSchemaCopyWithImpl(this._self, this._then);
+
+  final _TailscaleAccountSchema _self;
+  final $Res Function(_TailscaleAccountSchema) _then;
+
+/// Create a copy of TailscaleAccountSchema
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = null,Object? enable = null,Object? stateDir = null,Object? hostname = null,Object? authKey = null,Object? controlUrl = null,Object? ephemeral = null,Object? udp = null,Object? acceptRoutes = null,Object? exitNode = null,Object? exitNodeAllowLanAccess = null,Object? dialerProxy = null,Object? peerCidrs = null,Object? peerDomains = null,Object? routeCidrs = null,Object? extraRules = null,}) {
+  return _then(_TailscaleAccountSchema(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+as bool,stateDir: null == stateDir ? _self.stateDir : stateDir // ignore: cast_nullable_to_non_nullable
+as String,hostname: null == hostname ? _self.hostname : hostname // ignore: cast_nullable_to_non_nullable
+as String,authKey: null == authKey ? _self.authKey : authKey // ignore: cast_nullable_to_non_nullable
+as String,controlUrl: null == controlUrl ? _self.controlUrl : controlUrl // ignore: cast_nullable_to_non_nullable
+as String,ephemeral: null == ephemeral ? _self.ephemeral : ephemeral // ignore: cast_nullable_to_non_nullable
+as bool,udp: null == udp ? _self.udp : udp // ignore: cast_nullable_to_non_nullable
+as bool,acceptRoutes: null == acceptRoutes ? _self.acceptRoutes : acceptRoutes // ignore: cast_nullable_to_non_nullable
+as bool,exitNode: null == exitNode ? _self.exitNode : exitNode // ignore: cast_nullable_to_non_nullable
+as String,exitNodeAllowLanAccess: null == exitNodeAllowLanAccess ? _self.exitNodeAllowLanAccess : exitNodeAllowLanAccess // ignore: cast_nullable_to_non_nullable
+as bool,dialerProxy: null == dialerProxy ? _self.dialerProxy : dialerProxy // ignore: cast_nullable_to_non_nullable
+as String,peerCidrs: null == peerCidrs ? _self._peerCidrs : peerCidrs // ignore: cast_nullable_to_non_nullable
+as List<String>,peerDomains: null == peerDomains ? _self._peerDomains : peerDomains // ignore: cast_nullable_to_non_nullable
+as List<String>,routeCidrs: null == routeCidrs ? _self._routeCidrs : routeCidrs // ignore: cast_nullable_to_non_nullable
+as List<String>,extraRules: null == extraRules ? _self._extraRules : extraRules // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
 }
 
 

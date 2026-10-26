@@ -344,16 +344,28 @@ class CoreController {
     return _interface.getMemoryStats();
   }
 
-  Future<TailscaleState?> getTailscaleState() async {
-    final value = await _interface.getTailscaleState();
+  Future<TailscaleAccountsState?> getTailscaleAccountsState() async {
+    final value = await _interface.getTailscaleAccountsState();
     if (value.isEmpty) {
       return null;
     }
-    return TailscaleState.fromJson(json.decode(value));
+    return TailscaleAccountsState.fromJson(json.decode(value));
+  }
+
+  Future<String> startTailscaleLogin(String id) async {
+    return _interface.startTailscaleLogin(id);
+  }
+
+  Future<String> logoutTailscale(String id) async {
+    return _interface.logoutTailscale(id);
   }
 
   Future<String> reconnectTailscale() async {
     return _interface.reconnectTailscale();
+  }
+
+  Future<String> updateTailscale(TailscaleAccountsSchema schema) async {
+    return _interface.updateTailscale(schema);
   }
 
   void resetTraffic() {

@@ -220,18 +220,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m79(label) => "${label} must be a single item";
 
-  static String m80(value) => "Peak ${value}";
+  static String m80(name) =>
+      "The name TAILNET-${name} is already taken by another account";
 
-  static String m81(value) => "Total ${value}";
+  static String m81(online, total) => "${online}/${total} online";
 
-  static String m82(transport) => "${transport} Headers";
+  static String m82(value) => "Peak ${value}";
 
-  static String m83(label) => "${label} must be a URL";
+  static String m83(value) => "Total ${value}";
 
-  static String m84(count) =>
+  static String m84(transport) => "${transport} Headers";
+
+  static String m85(label) => "${label} must be a URL";
+
+  static String m86(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
-  static String m85(count) => "${Intl.plural(count, other: '${count}y ago')}";
+  static String m87(count) => "${Intl.plural(count, other: '${count}y ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -961,9 +966,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1800,6 +1806,92 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxy": MessageLookupByLibrary.simpleMessage("System proxy"),
     "tab": MessageLookupByLibrary.simpleMessage("Tab"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("Tab animation"),
+    "tailscaleAcceptRoutes": MessageLookupByLibrary.simpleMessage(
+      "Accept subnet routes",
+    ),
+    "tailscaleAccountLabel": MessageLookupByLibrary.simpleMessage("Label"),
+    "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("Accounts"),
+    "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage("Add account"),
+    "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage(
+      "Apply changes",
+    ),
+    "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("Auth key"),
+    "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
+      "Follow tailnet changes",
+    ),
+    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
+      "Re-applies the tailnet config 30 seconds after peers or routes change. This reconnects every tailnet account.",
+    ),
+    "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
+      "Control server URL",
+    ),
+    "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage(
+      "Delete account",
+    ),
+    "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage(
+      "Dial through proxy",
+    ),
+    "tailscaleEditAccount": MessageLookupByLibrary.simpleMessage(
+      "Edit account",
+    ),
+    "tailscaleEphemeral": MessageLookupByLibrary.simpleMessage(
+      "Ephemeral node",
+    ),
+    "tailscaleExitNode": MessageLookupByLibrary.simpleMessage("Exit node"),
+    "tailscaleExitNodeAllowLanAccess": MessageLookupByLibrary.simpleMessage(
+      "Allow LAN access",
+    ),
+    "tailscaleExitNodeAutoAny": MessageLookupByLibrary.simpleMessage(
+      "Any (auto)",
+    ),
+    "tailscaleExitNodeNone": MessageLookupByLibrary.simpleMessage("None"),
+    "tailscaleExtraRules": MessageLookupByLibrary.simpleMessage("Extra rules"),
+    "tailscaleHostname": MessageLookupByLibrary.simpleMessage("Hostname"),
+    "tailscaleInactive": MessageLookupByLibrary.simpleMessage("Inactive"),
+    "tailscaleLabelConflict": m80,
+    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
+      "Keep the TAILSCALE compatibility group",
+    ),
+    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
+      "Old rules and groups that point at TAILSCALE keep working. Rewrite them to TAILNET, then turn this off.",
+    ),
+    "tailscaleLogin": MessageLookupByLibrary.simpleMessage("Log in"),
+    "tailscaleLogout": MessageLookupByLibrary.simpleMessage("Log out"),
+    "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
+      "MagicDNS suffix",
+    ),
+    "tailscaleNeedsLogin": MessageLookupByLibrary.simpleMessage("Needs login"),
+    "tailscaleNoState": MessageLookupByLibrary.simpleMessage("No state"),
+    "tailscaleNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "Tailscale is not available in this build",
+    ),
+    "tailscaleOnlinePeerCount": m81,
+    "tailscaleOpenAuthUrl": MessageLookupByLibrary.simpleMessage(
+      "Open login page",
+    ),
+    "tailscalePeers": MessageLookupByLibrary.simpleMessage("Peers"),
+    "tailscalePendingVpnRestart": MessageLookupByLibrary.simpleMessage(
+      "Pending VPN restart",
+    ),
+    "tailscaleRoutes": MessageLookupByLibrary.simpleMessage(
+      "Advertised routes",
+    ),
+    "tailscaleRunning": MessageLookupByLibrary.simpleMessage("Running"),
+    "tailscaleStarting": MessageLookupByLibrary.simpleMessage("Starting"),
+    "tailscaleStateDirLegacy": MessageLookupByLibrary.simpleMessage(
+      "This account keeps the state directory of the previous single-node setup",
+    ),
+    "tailscaleStopped": MessageLookupByLibrary.simpleMessage("Stopped"),
+    "tailscaleTailnet": MessageLookupByLibrary.simpleMessage("Tailnet"),
+    "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
+      "Tailscale IPs",
+    ),
+    "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
+      "Unapplied changes",
+    ),
+    "tailscaleWaitingApproval": MessageLookupByLibrary.simpleMessage(
+      "Waiting for admin approval",
+    ),
     "tapIconToRetry": MessageLookupByLibrary.simpleMessage(
       "Tap the icon to retry",
     ),
@@ -1831,11 +1923,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Uploaded"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxy port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
-    "trafficPeak": m80,
-    "trafficTotal": m81,
+    "trafficPeak": m82,
+    "trafficTotal": m83,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
     "transport": MessageLookupByLibrary.simpleMessage("Transport"),
-    "transportHeaders": m82,
+    "transportHeaders": m84,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "TUN could not be authorized, so it was turned off.",
@@ -1867,7 +1959,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("Upload bandwidth"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m83,
+    "urlTip": m85,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "usedShort": MessageLookupByLibrary.simpleMessage("used"),
@@ -1892,8 +1984,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Write to system also sets the system clock; Android ignores it.",
     ),
-    "yearsAgo": m84,
-    "yearsAgoShort": m85,
+    "yearsAgo": m86,
+    "yearsAgoShort": m87,
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };

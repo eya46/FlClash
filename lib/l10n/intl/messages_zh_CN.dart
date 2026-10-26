@@ -192,17 +192,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m79(label) => "${label}只能是一项";
 
-  static String m80(value) => "峰值 ${value}";
+  static String m80(name) => "名字 TAILNET-${name} 已被其他账户使用";
 
-  static String m81(value) => "累计 ${value}";
+  static String m81(online, total) => "${online}/${total} 在线";
 
-  static String m82(transport) => "${transport} 请求头";
+  static String m82(value) => "峰值 ${value}";
 
-  static String m83(label) => "${label}必须为URL";
+  static String m83(value) => "累计 ${value}";
 
-  static String m84(count) => "${count} 年前";
+  static String m84(transport) => "${transport} 请求头";
 
-  static String m85(count) => "${count} 年前";
+  static String m85(label) => "${label}必须为URL";
+
+  static String m86(count) => "${count} 年前";
+
+  static String m87(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1402,6 +1406,70 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxy": MessageLookupByLibrary.simpleMessage("系统代理"),
     "tab": MessageLookupByLibrary.simpleMessage("标签页"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("选项卡动画"),
+    "tailscaleAcceptRoutes": MessageLookupByLibrary.simpleMessage("接受子网路由"),
+    "tailscaleAccountLabel": MessageLookupByLibrary.simpleMessage("标签"),
+    "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("账户"),
+    "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage("添加账户"),
+    "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage("应用变更"),
+    "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("认证密钥"),
+    "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
+      "跟随 tailnet 变化",
+    ),
+    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
+      "节点或路由变化 30 秒后重新应用 tailnet 配置，这会重连所有 tailnet 账户。",
+    ),
+    "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage("控制服务器地址"),
+    "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage("删除账户"),
+    "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage("经代理拨号"),
+    "tailscaleEditAccount": MessageLookupByLibrary.simpleMessage("编辑账户"),
+    "tailscaleEphemeral": MessageLookupByLibrary.simpleMessage("临时节点"),
+    "tailscaleExitNode": MessageLookupByLibrary.simpleMessage("出口节点"),
+    "tailscaleExitNodeAllowLanAccess": MessageLookupByLibrary.simpleMessage(
+      "允许访问局域网",
+    ),
+    "tailscaleExitNodeAutoAny": MessageLookupByLibrary.simpleMessage("任意（自动）"),
+    "tailscaleExitNodeNone": MessageLookupByLibrary.simpleMessage("无"),
+    "tailscaleExtraRules": MessageLookupByLibrary.simpleMessage("附加规则"),
+    "tailscaleHostname": MessageLookupByLibrary.simpleMessage("主机名"),
+    "tailscaleInactive": MessageLookupByLibrary.simpleMessage("未激活"),
+    "tailscaleLabelConflict": m80,
+    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
+      "保留 TAILSCALE 兼容组",
+    ),
+    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
+      "指向 TAILSCALE 的旧规则和旧分组继续有效。改写为 TAILNET 后即可关闭此选项。",
+    ),
+    "tailscaleLogin": MessageLookupByLibrary.simpleMessage("登录"),
+    "tailscaleLogout": MessageLookupByLibrary.simpleMessage("登出"),
+    "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
+      "MagicDNS 后缀",
+    ),
+    "tailscaleNeedsLogin": MessageLookupByLibrary.simpleMessage("需要登录"),
+    "tailscaleNoState": MessageLookupByLibrary.simpleMessage("无状态"),
+    "tailscaleNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "此构建不支持 Tailscale",
+    ),
+    "tailscaleOnlinePeerCount": m81,
+    "tailscaleOpenAuthUrl": MessageLookupByLibrary.simpleMessage("打开登录页面"),
+    "tailscalePeers": MessageLookupByLibrary.simpleMessage("节点"),
+    "tailscalePendingVpnRestart": MessageLookupByLibrary.simpleMessage(
+      "等待 VPN 重启",
+    ),
+    "tailscaleRoutes": MessageLookupByLibrary.simpleMessage("通告路由"),
+    "tailscaleRunning": MessageLookupByLibrary.simpleMessage("运行中"),
+    "tailscaleStarting": MessageLookupByLibrary.simpleMessage("启动中"),
+    "tailscaleStateDirLegacy": MessageLookupByLibrary.simpleMessage(
+      "此账户沿用旧单节点设置的状态目录",
+    ),
+    "tailscaleStopped": MessageLookupByLibrary.simpleMessage("已停止"),
+    "tailscaleTailnet": MessageLookupByLibrary.simpleMessage("Tailnet"),
+    "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
+      "Tailscale IP",
+    ),
+    "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
+      "有未应用的变更",
+    ),
+    "tailscaleWaitingApproval": MessageLookupByLibrary.simpleMessage("等待管理员批准"),
     "tapIconToRetry": MessageLookupByLibrary.simpleMessage("点击图标重试"),
     "tapToAuthorize": MessageLookupByLibrary.simpleMessage("点击授权"),
     "target": MessageLookupByLibrary.simpleMessage("目标"),
@@ -1429,11 +1497,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("上传总量"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy端口"),
     "traffic": MessageLookupByLibrary.simpleMessage("流量"),
-    "trafficPeak": m80,
-    "trafficTotal": m81,
+    "trafficPeak": m82,
+    "trafficTotal": m83,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("流量统计"),
     "transport": MessageLookupByLibrary.simpleMessage("传输协议"),
-    "transportHeaders": m82,
+    "transportHeaders": m84,
     "tun": MessageLookupByLibrary.simpleMessage("虚拟网卡"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "虚拟网卡授权失败，已关闭。",
@@ -1461,7 +1529,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("上行带宽"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m83,
+    "urlTip": m85,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "usedShort": MessageLookupByLibrary.simpleMessage("已用"),
@@ -1484,8 +1552,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "写入系统会同时设置系统时钟，Android 上不生效。",
     ),
-    "yearsAgo": m84,
-    "yearsAgoShort": m85,
+    "yearsAgo": m86,
+    "yearsAgoShort": m87,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };

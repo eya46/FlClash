@@ -17,7 +17,7 @@ UpdateParams updateParams(Ref ref) {
           ),
         ),
       )
-      .copyWith(tailscale: ref.watch(tailscaleSettingProvider));
+      .copyWith(tailscale: ref.watch(tailscaleAccountsProvider).schema);
 }
 
 @riverpod
@@ -210,7 +210,7 @@ SharedState sharedState(Ref ref) {
       selectedMap: selectedMap,
       testUrl: testUrl,
       skipCertVerify: !appSetting.checkCertificate,
-      tailscale: ref.watch(tailscaleSettingProvider),
+      tailscale: ref.watch(tailscaleAccountsProvider).schema,
     ),
     vpnOptions: ref.watch(vpnOptionsProvider).value,
   );

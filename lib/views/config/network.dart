@@ -4,8 +4,10 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/config/override.dart';
 import 'package:fl_clash/views/config/tun.dart';
+import 'package:fl_clash/views/tailscale.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -205,190 +207,16 @@ class InterfaceNameModeItem extends ConsumerWidget {
   }
 }
 
-class TailscaleEnableItem extends ConsumerWidget {
-  const TailscaleEnableItem({super.key});
+class TailscaleEntryItem extends StatelessWidget {
+  const TailscaleEntryItem({super.key});
 
   @override
-  Widget build(BuildContext context, ref) {
-    final enable = ref.watch(
-      tailscaleSettingProvider.select((state) => state.enable),
-    );
-    return ListItem.toggle(
-      title: const Text('Enable Tailscale'),
-      subtitle: const Text('Use tsnet for Tailscale subnet routes.'),
-      value: enable,
-      onChanged: (bool value) {
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(enable: value));
-      },
-    );
-  }
-}
-
-class TailscaleAcceptRoutesItem extends ConsumerWidget {
-  const TailscaleAcceptRoutesItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final acceptRoutes = ref.watch(
-      tailscaleSettingProvider.select((state) => state.acceptRoutes),
-    );
-    return ListItem.toggle(
-      title: const Text('Accept Tailscale Routes'),
-      subtitle: const Text(
-        'Advertised subnet routes are handled by Tailscale instead of Mihomo.',
-      ),
-      value: acceptRoutes,
-      onChanged: (bool value) {
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(acceptRoutes: value));
-      },
-    );
-  }
-}
-
-class TailscaleHostnameItem extends ConsumerWidget {
-  const TailscaleHostnameItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final appLocalizations = context.appLocalizations;
-    final hostname = ref.watch(
-      tailscaleSettingProvider.select((state) => state.hostname),
-    );
-    return ListItem.input(
-      title: const Text('Tailscale Hostname'),
-      subtitle: Text(
-        hostname.isEmpty ? appLocalizations.defaultText : hostname,
-      ),
-      dialogTitle: 'Tailscale Hostname',
-      value: hostname,
-      resetValue: '',
-      onChanged: (String? value) {
-        if (value == null) {
-          return;
-        }
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(hostname: value));
-      },
-    );
-  }
-}
-
-class TailscaleAuthKeyItem extends ConsumerWidget {
-  const TailscaleAuthKeyItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final appLocalizations = context.appLocalizations;
-    final authKey = ref.watch(
-      tailscaleSettingProvider.select((state) => state.authKey),
-    );
-    return ListItem.input(
-      title: const Text('Tailscale Auth Key'),
-      subtitle: Text(
-        authKey.isEmpty ? appLocalizations.defaultText : 'Configured',
-      ),
-      dialogTitle: 'Tailscale Auth Key',
-      value: authKey,
-      resetValue: '',
-      onChanged: (String? value) {
-        if (value == null) {
-          return;
-        }
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(authKey: value));
-      },
-    );
-  }
-}
-
-class TailscaleControlUrlItem extends ConsumerWidget {
-  const TailscaleControlUrlItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final appLocalizations = context.appLocalizations;
-    final controlUrl = ref.watch(
-      tailscaleSettingProvider.select((state) => state.controlUrl),
-    );
-    return ListItem.input(
-      title: const Text('Tailscale Control URL'),
-      subtitle: Text(
-        controlUrl.isEmpty ? appLocalizations.defaultText : controlUrl,
-      ),
-      dialogTitle: 'Tailscale Control URL',
-      value: controlUrl,
-      resetValue: '',
-      validator: (String? value) {
-        if (value == null || value.isEmpty) {
-          return null;
-        }
-        if (!value.isUrl) {
-          return appLocalizations.urlTip('Control URL');
-        }
-        return null;
-      },
-      onChanged: (String? value) {
-        if (value == null) {
-          return;
-        }
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(controlUrl: value));
-      },
-    );
-  }
-}
-
-class TailscaleRouteControlPlaneViaProxyItem extends ConsumerWidget {
-  const TailscaleRouteControlPlaneViaProxyItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final enabled = ref.watch(
-      tailscaleSettingProvider.select(
-        (state) => state.routeControlPlaneViaProxy,
-      ),
-    );
-    return ListItem.toggle(
-      title: const Text('Route control plane via proxy'),
-      subtitle: const Text(
-        'Off (recommended): control-plane traffic bypasses all rules and goes out the physical NIC, so a broken proxy node cannot stall Tailscale.',
-      ),
-      value: enabled,
-      onChanged: (bool value) {
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(routeControlPlaneViaProxy: value));
-      },
-    );
-  }
-}
-
-class TailscaleRouteDerpViaProxyItem extends ConsumerWidget {
-  const TailscaleRouteDerpViaProxyItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final enabled = ref.watch(
-      tailscaleSettingProvider.select((state) => state.routeDerpViaProxy),
-    );
-    return ListItem.toggle(
-      title: const Text('Route DERP via proxy'),
-      subtitle: const Text(
-        'Off (recommended): DERP relay traffic bypasses rules. Turn on only if your proxy path to a DERP region is reliably faster than the direct one.',
-      ),
-      value: enabled,
-      onChanged: (bool value) {
-        ref
-            .read(tailscaleSettingProvider.notifier)
-            .update((state) => state.copyWith(routeDerpViaProxy: value));
-      },
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const GlyphIcon(AppGlyphs.vpn),
+      title: const Text('Tailscale'),
+      subtitle: Text(context.appLocalizations.tailscaleAccounts),
+      widget: const TailscaleView(),
     );
   }
 }
@@ -757,6 +585,7 @@ class NetworkListView extends StatelessWidget {
         if (system.isAndroid) const VpnSections(),
         if (system.isDesktop) const SystemProxySection(),
         const NetworkOptionsSection(),
+        generateSection(items: const [TailscaleEntryItem()]),
         TunSection(
           isDesktop: system.isDesktop,
           isLinux: system.isLinux,

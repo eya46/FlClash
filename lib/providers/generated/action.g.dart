@@ -91,7 +91,7 @@ final class SetupActionProvider extends $NotifierProvider<SetupAction, void> {
   }
 }
 
-String _$setupActionHash() => r'977f9f442ea6ea5171bc8e2314203e8d890edab1';
+String _$setupActionHash() => r'b9016f58fc64b3034a78b17353ca2f1ab083aaa4';
 
 abstract class _$SetupAction extends $Notifier<void> {
   void build();
@@ -104,6 +104,193 @@ abstract class _$SetupAction extends $Notifier<void> {
             as $ClassProviderElement<
               AnyNotifier<void, void>,
               void,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// The tailnet schema the Core last accepted, from either a full setup or
+/// [SetupAction.applyTailscaleChanges]. Against it the UI tells an edited
+/// account model from an applied one.
+
+@ProviderFor(AppliedTailscaleSchema)
+final appliedTailscaleSchemaProvider = AppliedTailscaleSchemaProvider._();
+
+/// The tailnet schema the Core last accepted, from either a full setup or
+/// [SetupAction.applyTailscaleChanges]. Against it the UI tells an edited
+/// account model from an applied one.
+final class AppliedTailscaleSchemaProvider
+    extends
+        $NotifierProvider<AppliedTailscaleSchema, TailscaleAccountsSchema?> {
+  /// The tailnet schema the Core last accepted, from either a full setup or
+  /// [SetupAction.applyTailscaleChanges]. Against it the UI tells an edited
+  /// account model from an applied one.
+  AppliedTailscaleSchemaProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appliedTailscaleSchemaProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appliedTailscaleSchemaHash();
+
+  @$internal
+  @override
+  AppliedTailscaleSchema create() => AppliedTailscaleSchema();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TailscaleAccountsSchema? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TailscaleAccountsSchema?>(value),
+    );
+  }
+}
+
+String _$appliedTailscaleSchemaHash() =>
+    r'91ded113303f7ac81714723176839b3e80197970';
+
+/// The tailnet schema the Core last accepted, from either a full setup or
+/// [SetupAction.applyTailscaleChanges]. Against it the UI tells an edited
+/// account model from an applied one.
+
+abstract class _$AppliedTailscaleSchema
+    extends $Notifier<TailscaleAccountsSchema?> {
+  TailscaleAccountsSchema? build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref as $Ref<TailscaleAccountsSchema?, TailscaleAccountsSchema?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<TailscaleAccountsSchema?, TailscaleAccountsSchema?>,
+              TailscaleAccountsSchema?,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(hasUnappliedTailscaleChanges)
+final hasUnappliedTailscaleChangesProvider =
+    HasUnappliedTailscaleChangesProvider._();
+
+final class HasUnappliedTailscaleChangesProvider
+    extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  HasUnappliedTailscaleChangesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'hasUnappliedTailscaleChangesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$hasUnappliedTailscaleChangesHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return hasUnappliedTailscaleChanges(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$hasUnappliedTailscaleChangesHash() =>
+    r'f46e3422da719c629dee598021b5daaac1a5b036';
+
+/// Polls the Core's per-account tailnet state, merges each snapshot into the
+/// account model, and keeps one delay test ready to bring a just-logged-in
+/// outbound up. The poll itself starts every enabled account's tsnet backend,
+/// which is the accepted cost of the login flow.
+
+@ProviderFor(TailscaleAccountsSnapshot)
+final tailscaleAccountsSnapshotProvider = TailscaleAccountsSnapshotProvider._();
+
+/// Polls the Core's per-account tailnet state, merges each snapshot into the
+/// account model, and keeps one delay test ready to bring a just-logged-in
+/// outbound up. The poll itself starts every enabled account's tsnet backend,
+/// which is the accepted cost of the login flow.
+final class TailscaleAccountsSnapshotProvider
+    extends
+        $NotifierProvider<TailscaleAccountsSnapshot, TailscaleAccountsState?> {
+  /// Polls the Core's per-account tailnet state, merges each snapshot into the
+  /// account model, and keeps one delay test ready to bring a just-logged-in
+  /// outbound up. The poll itself starts every enabled account's tsnet backend,
+  /// which is the accepted cost of the login flow.
+  TailscaleAccountsSnapshotProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'tailscaleAccountsSnapshotProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$tailscaleAccountsSnapshotHash();
+
+  @$internal
+  @override
+  TailscaleAccountsSnapshot create() => TailscaleAccountsSnapshot();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TailscaleAccountsState? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TailscaleAccountsState?>(value),
+    );
+  }
+}
+
+String _$tailscaleAccountsSnapshotHash() =>
+    r'8c586beb8f9f4f0f10e9291e5b28657c8bf101ea';
+
+/// Polls the Core's per-account tailnet state, merges each snapshot into the
+/// account model, and keeps one delay test ready to bring a just-logged-in
+/// outbound up. The poll itself starts every enabled account's tsnet backend,
+/// which is the accepted cost of the login flow.
+
+abstract class _$TailscaleAccountsSnapshot
+    extends $Notifier<TailscaleAccountsState?> {
+  TailscaleAccountsState? build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref as $Ref<TailscaleAccountsState?, TailscaleAccountsState?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<TailscaleAccountsState?, TailscaleAccountsState?>,
+              TailscaleAccountsState?,
               Object?,
               Object?
             >;

@@ -225,18 +225,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m79(label) => "${label} debe ser un solo elemento";
 
-  static String m80(value) => "Pico: ${value}";
+  static String m80(name) => "El nombre TAILNET-${name} ya lo usa otra cuenta";
 
-  static String m81(value) => "Total: ${value}";
+  static String m81(online, total) => "${online}/${total} en línea";
 
-  static String m82(transport) => "Encabezados ${transport}";
+  static String m82(value) => "Pico: ${value}";
 
-  static String m83(label) => "${label} debe ser una URL";
+  static String m83(value) => "Total: ${value}";
 
-  static String m84(count) =>
+  static String m84(transport) => "Encabezados ${transport}";
+
+  static String m85(label) => "${label} debe ser una URL";
+
+  static String m86(count) =>
       "${Intl.plural(count, one: 'hace 1 año', other: 'hace ${count} años')}";
 
-  static String m85(count) => "${Intl.plural(count, other: 'hace ${count} a')}";
+  static String m87(count) => "${Intl.plural(count, other: 'hace ${count} a')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1028,9 +1032,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Introduce el contenido de la regla",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),
@@ -1945,6 +1950,96 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabAnimation": MessageLookupByLibrary.simpleMessage(
       "Animación de pestañas",
     ),
+    "tailscaleAcceptRoutes": MessageLookupByLibrary.simpleMessage(
+      "Aceptar rutas de subred",
+    ),
+    "tailscaleAccountLabel": MessageLookupByLibrary.simpleMessage("Etiqueta"),
+    "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("Cuentas"),
+    "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage(
+      "Añadir cuenta",
+    ),
+    "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage(
+      "Aplicar cambios",
+    ),
+    "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage(
+      "Clave de autenticación",
+    ),
+    "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
+      "Seguir los cambios del tailnet",
+    ),
+    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
+      "Vuelve a aplicar la configuración del tailnet 30 segundos después de que cambien los pares o las rutas. Esto reconecta todas las cuentas del tailnet.",
+    ),
+    "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
+      "URL del servidor de control",
+    ),
+    "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage(
+      "Eliminar cuenta",
+    ),
+    "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage(
+      "Conectar mediante proxy",
+    ),
+    "tailscaleEditAccount": MessageLookupByLibrary.simpleMessage(
+      "Editar cuenta",
+    ),
+    "tailscaleEphemeral": MessageLookupByLibrary.simpleMessage("Nodo efímero"),
+    "tailscaleExitNode": MessageLookupByLibrary.simpleMessage("Nodo de salida"),
+    "tailscaleExitNodeAllowLanAccess": MessageLookupByLibrary.simpleMessage(
+      "Permitir acceso a la LAN",
+    ),
+    "tailscaleExitNodeAutoAny": MessageLookupByLibrary.simpleMessage(
+      "Cualquiera (auto)",
+    ),
+    "tailscaleExitNodeNone": MessageLookupByLibrary.simpleMessage("Ninguno"),
+    "tailscaleExtraRules": MessageLookupByLibrary.simpleMessage(
+      "Reglas adicionales",
+    ),
+    "tailscaleHostname": MessageLookupByLibrary.simpleMessage("Nombre de host"),
+    "tailscaleInactive": MessageLookupByLibrary.simpleMessage("Inactivo"),
+    "tailscaleLabelConflict": m80,
+    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
+      "Mantener el grupo de compatibilidad TAILSCALE",
+    ),
+    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
+      "Las reglas y grupos antiguos que apunten a TAILSCALE siguen funcionando. Reescríbelos a TAILNET y desactiva esta opción.",
+    ),
+    "tailscaleLogin": MessageLookupByLibrary.simpleMessage("Iniciar sesión"),
+    "tailscaleLogout": MessageLookupByLibrary.simpleMessage("Cerrar sesión"),
+    "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
+      "Sufijo MagicDNS",
+    ),
+    "tailscaleNeedsLogin": MessageLookupByLibrary.simpleMessage(
+      "Requiere inicio de sesión",
+    ),
+    "tailscaleNoState": MessageLookupByLibrary.simpleMessage("Sin estado"),
+    "tailscaleNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "Tailscale no está disponible en esta compilación",
+    ),
+    "tailscaleOnlinePeerCount": m81,
+    "tailscaleOpenAuthUrl": MessageLookupByLibrary.simpleMessage(
+      "Abrir la página de inicio de sesión",
+    ),
+    "tailscalePeers": MessageLookupByLibrary.simpleMessage("Pares"),
+    "tailscalePendingVpnRestart": MessageLookupByLibrary.simpleMessage(
+      "Pendiente de reiniciar la VPN",
+    ),
+    "tailscaleRoutes": MessageLookupByLibrary.simpleMessage("Rutas anunciadas"),
+    "tailscaleRunning": MessageLookupByLibrary.simpleMessage("En ejecución"),
+    "tailscaleStarting": MessageLookupByLibrary.simpleMessage("Iniciando"),
+    "tailscaleStateDirLegacy": MessageLookupByLibrary.simpleMessage(
+      "Esta cuenta conserva el directorio de estado de la configuración anterior de un solo nodo",
+    ),
+    "tailscaleStopped": MessageLookupByLibrary.simpleMessage("Detenido"),
+    "tailscaleTailnet": MessageLookupByLibrary.simpleMessage("Tailnet"),
+    "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
+      "Direcciones IP de Tailscale",
+    ),
+    "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
+      "Cambios sin aplicar",
+    ),
+    "tailscaleWaitingApproval": MessageLookupByLibrary.simpleMessage(
+      "Esperando la aprobación del administrador",
+    ),
     "tapIconToRetry": MessageLookupByLibrary.simpleMessage(
       "Toca el icono para reintentar",
     ),
@@ -1978,11 +2073,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Subido"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Puerto TProxy"),
     "traffic": MessageLookupByLibrary.simpleMessage("Tráfico"),
-    "trafficPeak": m80,
-    "trafficTotal": m81,
+    "trafficPeak": m82,
+    "trafficTotal": m83,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Uso de tráfico"),
     "transport": MessageLookupByLibrary.simpleMessage("Transporte"),
-    "transportHeaders": m82,
+    "transportHeaders": m84,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "No se pudo autorizar TUN, por lo que se desactivó.",
@@ -2018,7 +2113,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ancho de banda de subida",
     ),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m83,
+    "urlTip": m85,
     "useHosts": MessageLookupByLibrary.simpleMessage("Usar hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Usar hosts del sistema",
@@ -2047,8 +2142,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Escribir en el sistema también ajusta el reloj del sistema; Android lo ignora.",
     ),
-    "yearsAgo": m84,
-    "yearsAgoShort": m85,
+    "yearsAgo": m86,
+    "yearsAgoShort": m87,
     "yes": MessageLookupByLibrary.simpleMessage("Sí"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Chino simplificado"),
   };

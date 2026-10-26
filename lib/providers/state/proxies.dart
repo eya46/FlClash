@@ -26,8 +26,9 @@ Group _withoutSelection(Group group) {
 
 bool _hasSelection(Proxy proxy) => proxy.now?.isNotEmpty ?? false;
 
-// With tsnet accepting subnet routes, the tailnet's own RFC1918 ranges must
-// leave the system-proxy bypass list or the peer subnets never reach TUN.
+// With a tailnet account routing an enabled RFC1918 subnet into the tailnet,
+// those ranges must leave the system-proxy bypass list or the subnet traffic
+// never reaches the core.
 const _tailscaleProxyBypassPrivatePatterns = {
   '10.*',
   '172.16.*',
@@ -42,9 +43,9 @@ const _tailscaleProxyBypassPrivatePatterns = {
 
 List<String> _effectiveProxyBypassDomain(
   List<String> bypassDomain,
-  TailscaleProps tailscale,
+  bool tailnetCarriesPrivateRoute,
 ) {
-  if (!tailscale.enable || !tailscale.acceptRoutes) {
+  if (!tailnetCarriesPrivateRoute) {
     return bypassDomain;
   }
   return bypassDomain
@@ -68,7 +69,9 @@ ProxyState proxyState(Ref ref) {
       ),
     ),
   );
-  final tailscale = ref.watch(tailscaleSettingProvider);
+  final tailnetCarriesPrivateRoute = ref.watch(
+    tailscaleAccountsProvider.select((state) => state.hasEnabledPrivateRoute),
+  );
   final mixedPort = ref.watch(
     patchClashConfigProvider.select((state) => state.mixedPort),
   );
@@ -77,7 +80,7 @@ ProxyState proxyState(Ref ref) {
     systemProxy: systemProxySelector.systemProxy,
     bassDomain: _effectiveProxyBypassDomain(
       systemProxySelector.bypassDomain,
-      tailscale,
+      tailnetCarriesPrivateRoute,
     ),
     port: mixedPort,
   );

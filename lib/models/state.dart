@@ -231,6 +231,9 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     @Default([]) List<String> authentication,
     @Default({}) Map<String, dynamic> injectedProxyProviders,
     @Default({}) Map<String, dynamic> injectedRuleProviders,
+    // Tailnet MagicDNS suffixes to route through their account's outbound,
+    // as `suffix` -> `tailscale://TAILNET-<label>`.
+    @Default({}) Map<String, String> tailscaleNameserverPolicy,
     String? matchTarget,
     @Default(false) bool safeMode,
   }) = _MakeRealProfileState;

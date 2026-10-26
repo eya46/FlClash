@@ -1,90 +1,112 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/features/form/form.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
-import 'package:fl_clash/views/config/network.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String _backendStateLabel(String state) {
-  return switch (state) {
-    'Running' => 'Connected',
-    'Starting' => 'Connecting...',
-    'Stopped' => 'Stopped',
-    'NeedsLogin' => 'Login Required',
-    'NeedsMachineAuth' => 'Awaiting Approval',
-    'NoState' => 'Not Initialized',
-    _ => state.isEmpty ? 'Unknown' : state,
-  };
-}
+const _stubBuildError = 'tailscale not available in this build';
 
-Color _statusColor(TailscaleState? state) {
-  if (state == null) return Colors.grey;
-  if (state.error.isNotEmpty) return Colors.red;
-  return switch (state.backendState) {
-    'Running' when state.onlinePeerCount > 0 => Colors.green,
-    'Running' => Colors.amber,
-    'Starting' => Colors.blue,
-    'NeedsLogin' || 'NeedsMachineAuth' => Colors.orange,
-    _ => Colors.grey,
-  };
-}
-
-IconData _statusIcon(TailscaleState? state) {
-  if (state == null) return Icons.help_outline;
-  if (state.error.isNotEmpty) return Icons.error;
-  return switch (state.backendState) {
-    'Running' when state.onlinePeerCount > 0 => Icons.check_circle,
-    'Running' => Icons.warning_amber_rounded,
-    'Starting' => Icons.sync,
-    'NeedsLogin' || 'NeedsMachineAuth' => Icons.login,
-    'Stopped' => Icons.stop_circle_outlined,
-    _ => Icons.help_outline,
-  };
-}
-
-String? _healthHint(TailscaleState state) {
-  if (state.error.isNotEmpty) return null;
-  if (state.backendState == 'NeedsLogin') {
-    return 'Complete sign-in below to connect to your Tailnet.';
-  }
-  if (state.backendState == 'NeedsMachineAuth') {
-    return 'A Tailnet admin needs to approve this device.';
-  }
-  if (state.backendState == 'Running') {
-    if (state.peerCount == 0) {
-      return 'No peers found. Ensure other devices are connected to your Tailnet.';
-    }
-    if (state.onlinePeerCount == 0) {
-      return 'All peers appear offline. Check Tailscale on your other devices.';
-    }
-    if (state.routes.isEmpty) {
-      return 'Connected but no subnet routes found. Enable subnet routes in your Tailscale admin console.';
-    }
-    if (Platform.isAndroid) {
-      return 'Android VPN mode may limit tsnet connectivity. '
-          'If internal IPs are unreachable, try using a desktop device as the primary Tailscale node.';
+TailscaleAccountProps? _accountOf(TailscaleAccounts accounts, String id) {
+  for (final account in accounts.accounts) {
+    if (account.id == id) {
+      return account;
     }
   }
   return null;
 }
 
-String _formatRelativeTime(String isoTime) {
-  if (isoTime.isEmpty) return 'Never';
+TailscaleAccountState? _stateOf(TailscaleAccountsState? snapshot, String id) {
+  for (final entry in snapshot?.accounts ?? const <TailscaleAccountState>[]) {
+    if (entry.id == id) {
+      return entry;
+    }
+  }
+  return null;
+}
+
+String _backendStateLabel(AppLocalizations appLocalizations, String state) {
+  return switch (state) {
+    'Running' => appLocalizations.tailscaleRunning,
+    'Starting' => appLocalizations.tailscaleStarting,
+    'Stopped' => appLocalizations.tailscaleStopped,
+    'NeedsLogin' => appLocalizations.tailscaleNeedsLogin,
+    'NeedsMachineAuth' => appLocalizations.tailscaleWaitingApproval,
+    'NoState' => appLocalizations.tailscaleNoState,
+    _ => appLocalizations.unknown,
+  };
+}
+
+String _accountStateLabel(
+  AppLocalizations appLocalizations,
+  TailscaleAccountProps account,
+  TailscaleAccountState? state,
+) {
+  if (!account.enable) {
+    return appLocalizations.disabled;
+  }
+  if (state == null || !state.present) {
+    return appLocalizations.tailscaleInactive;
+  }
+  return _backendStateLabel(appLocalizations, state.backendState);
+}
+
+({Color color, Glyph glyph}) _accountStatusMarks(
+  ColorScheme colorScheme,
+  TailscaleAccountProps account,
+  TailscaleAccountState? state,
+) {
+  if (!account.enable) {
+    return (color: colorScheme.onSurfaceVariant, glyph: AppGlyphs.block);
+  }
+  if (state == null || !state.present) {
+    return (color: colorScheme.onSurfaceVariant, glyph: AppGlyphs.vpn);
+  }
+  if (state.error.isNotEmpty) {
+    return (color: colorScheme.error, glyph: AppGlyphs.error);
+  }
+  return switch (state.backendState) {
+    'Running' when state.onlinePeerCount > 0 => (
+      color: colorScheme.success,
+      glyph: AppGlyphs.verified,
+    ),
+    'Running' => (color: colorScheme.success, glyph: AppGlyphs.checkCircle),
+    'Starting' => (color: colorScheme.primary, glyph: AppGlyphs.sync),
+    'NeedsLogin' ||
+    'NeedsMachineAuth' => (color: colorScheme.warning, glyph: AppGlyphs.key),
+    _ => (color: colorScheme.onSurfaceVariant, glyph: AppGlyphs.block),
+  };
+}
+
+String _accountDisplayName(TailscaleAccountProps account) {
+  return account.label.isEmpty ? account.outboundName : account.label;
+}
+
+String _peerEntryTitle(TailscalePeerEntry peer) {
+  if (peer.dnsName.isNotEmpty) {
+    return peer.dnsName;
+  }
+  if (peer.tailscaleIps.isNotEmpty) {
+    return peer.tailscaleIps.first;
+  }
+  return peer.key;
+}
+
+String? _relativeTime(BuildContext context, String isoTime) {
+  if (isoTime.isEmpty) {
+    return null;
+  }
   final time = DateTime.tryParse(isoTime);
-  if (time == null) return isoTime;
-  final diff = DateTime.now().toUtc().difference(time);
-  if (diff.isNegative) return 'Just now';
-  if (diff.inSeconds < 10) return 'Just now';
-  if (diff.inSeconds < 60) return '${diff.inSeconds}s ago';
-  if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-  if (diff.inHours < 24) return '${diff.inHours}h ago';
-  return '${diff.inDays}d ago';
+  if (time == null) {
+    return null;
+  }
+  return time.toLocal().getLastUpdateTimeDesc(context);
 }
 
 String _formatBytes(int bytes) {
@@ -102,43 +124,6 @@ String _formatBytes(int bytes) {
   return '$formatted ${units[unit]}';
 }
 
-({String label, Color color, IconData icon}) _peerConnectionBadge(
-  TailscalePeerInfo peer,
-) {
-  switch (peer.connectionType) {
-    case TailscalePeerConnectionType.direct:
-      return (
-        label: peer.curAddr.isNotEmpty ? 'Direct · ${peer.curAddr}' : 'Direct',
-        color: Colors.green,
-        icon: Icons.flash_on,
-      );
-    case TailscalePeerConnectionType.derp:
-      return (
-        label: peer.relay.isNotEmpty ? 'DERP · ${peer.relay}' : 'DERP relay',
-        color: Colors.blue,
-        icon: Icons.cloud_outlined,
-      );
-    case TailscalePeerConnectionType.idle:
-      return (
-        label: 'Idle (no path yet)',
-        color: Colors.amber.shade700,
-        icon: Icons.hourglass_empty,
-      );
-    case TailscalePeerConnectionType.offline:
-      return (
-        label: 'Offline',
-        color: Colors.grey,
-        icon: Icons.cloud_off_outlined,
-      );
-    case TailscalePeerConnectionType.unknown:
-      return (
-        label: 'Unknown',
-        color: Colors.grey,
-        icon: Icons.help_outline,
-      );
-  }
-}
-
 class TailscaleView extends ConsumerStatefulWidget {
   const TailscaleView({super.key});
 
@@ -147,661 +132,918 @@ class TailscaleView extends ConsumerStatefulWidget {
 }
 
 class _TailscaleViewState extends ConsumerState<TailscaleView> {
-  TailscaleState? _tailscaleState;
-  Timer? _timer;
-  bool _isLoading = true;
-  bool _isReconnecting = false;
+  bool _applying = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _refresh();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      _refresh(silent: true);
-    });
-    ref.listenManual(tailscaleSettingProvider, (prev, next) {
-      if (prev != next) {
-        _refresh(silent: true);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _refresh({bool silent = false}) async {
-    if (!silent && mounted) {
-      setState(() {
-        _isLoading = true;
-      });
-    }
-    final tailscaleState = await coreController.getTailscaleState();
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _tailscaleState = tailscaleState;
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _reconnect() async {
-    if (_isReconnecting) return;
-    setState(() {
-      _isReconnecting = true;
-    });
-    try {
-      final error = await coreController.reconnectTailscale();
-      if (!mounted) return;
-      if (error.isNotEmpty) {
-        context.showNotifier('Reconnect failed: $error');
-      }
-      await _refresh();
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isReconnecting = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _openAuthUrl(String authUrl) async {
-    final uri = Uri.tryParse(authUrl);
-    if (uri == null) {
-      context.showNotifier('Invalid Tailscale auth URL');
-      return;
-    }
-    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!mounted) {
-      return;
-    }
-    if (!launched) {
-      context.showNotifier('Failed to open Tailscale auth URL');
-    }
-  }
-
-  void _toggleRoute({
-    required TailscaleProps tailscaleProps,
-    required String route,
-    required bool enabled,
-  }) {
-    final disabledRoutes = Set<String>.from(tailscaleProps.disabledRoutes);
-    if (enabled) {
-      disabledRoutes.remove(route);
-    } else {
-      disabledRoutes.add(route);
-    }
-    final sortedRoutes = disabledRoutes.toList()..sort();
-    ref
-        .read(tailscaleSettingProvider.notifier)
-        .update((state) => state.copyWith(disabledRoutes: sortedRoutes));
-  }
-
-  List<Widget> _buildStatusItems(TailscaleState? tailscaleState) {
-    if (tailscaleState == null) {
-      return [
-        const ListItem(
-          leading: Icon(Icons.info_outline),
-          title: Text('Status'),
-          subtitle: Text('Waiting for Tailscale state...'),
-        ),
-      ];
-    }
-
-    final color = _statusColor(tailscaleState);
-    final statusItems = <Widget>[
-      ListItem.open(
-        leading: Icon(_statusIcon(tailscaleState), color: color),
-        title: Text(
-          _backendStateLabel(tailscaleState.backendState),
-          style: TextStyle(fontWeight: FontWeight.bold, color: color),
-        ),
-        subtitle: tailscaleState.peerCount > 0
-            ? Text(
-                '${tailscaleState.onlinePeerCount}/${tailscaleState.peerCount} peers online'
-                '${tailscaleState.lastHandshake.isNotEmpty ? '  ·  Last activity: ${_formatRelativeTime(tailscaleState.lastHandshake)}' : ''}'
-                '  ·  Tap for details',
-              )
-            : const Text('Tap to view connection details'),
-        trailing: const Icon(Icons.chevron_right),
-        widget: const TailscaleStatusView(),
+  Future<void> _handleAddOrUpdate([TailscaleAccountProps? account]) async {
+    final accounts = ref.read(tailscaleAccountsProvider);
+    final result = await showFormSheet<TailscaleAccountProps>(
+      context: context,
+      builder: (_) => _AccountForm(
+        account: account,
+        otherAccounts: [
+          for (final item in accounts.accounts)
+            if (item.id != account?.id) item,
+        ],
       ),
-    ];
-
-    final hint = _healthHint(tailscaleState);
-    if (hint != null) {
-      statusItems.add(
-        ListItem(
-          leading: Icon(
-            Icons.tips_and_updates_outlined,
-            color: Colors.amber.shade700,
-          ),
-          title: const Text('Hint'),
-          subtitle: Text(hint),
-        ),
-      );
+    );
+    if (result == null) {
+      return;
     }
-
-    if (tailscaleState.error.isNotEmpty) {
-      statusItems.add(
-        ListItem(
-          leading: const Icon(Icons.error_outline, color: Colors.red),
-          title: const Text('Error'),
-          subtitle: Text(tailscaleState.error),
-        ),
+    ref.read(tailscaleAccountsProvider.notifier).update((state) {
+      return state.copyWith(
+        accounts: account == null
+            ? [...state.accounts, result]
+            : [
+                for (final item in state.accounts)
+                  item.id == account.id ? result : item,
+              ],
       );
-    }
-
-    if (tailscaleState.tailnet.isNotEmpty) {
-      statusItems.add(
-        ListItem(
-          leading: const Icon(Icons.account_tree_outlined),
-          title: const Text('Tailnet'),
-          subtitle: Text(tailscaleState.tailnet),
-        ),
-      );
-    }
-
-    final tailscaleIps = tailscaleState.tailscaleIps.join(', ');
-    if (tailscaleIps.isNotEmpty) {
-      statusItems.add(
-        ListItem(
-          leading: const Icon(Icons.dns_outlined),
-          title: const Text('Tailscale IPs'),
-          subtitle: Text(tailscaleIps),
-        ),
-      );
-    }
-
-    if (tailscaleState.magicDnsSuffix.isNotEmpty) {
-      statusItems.add(
-        ListItem(
-          leading: const Icon(Icons.domain_outlined),
-          title: const Text('Magic DNS Suffix'),
-          subtitle: Text(tailscaleState.magicDnsSuffix),
-        ),
-      );
-    }
-
-    if (tailscaleState.authUrl.isNotEmpty) {
-      statusItems.add(
-        ListItem(
-          leading: const Icon(Icons.login, color: Colors.orange),
-          title: const Text('Complete Sign-In'),
-          subtitle: Text(tailscaleState.authUrl),
-          trailing: const Icon(Icons.launch),
-          onTap: () {
-            _openAuthUrl(tailscaleState.authUrl);
-          },
-        ),
-      );
-    }
-
-    return statusItems;
+    });
   }
 
-  List<Widget> _buildRouteItems(
-    TailscaleState? tailscaleState,
-    TailscaleProps tailscaleProps,
-    Set<String> appliedVpnRoutes,
+  Widget _accountRow(
+    AppLocalizations appLocalizations,
+    TailscaleAccountProps account,
+    TailscaleAccountsState? snapshot,
   ) {
-    final routes = tailscaleState?.routes ?? const <String>[];
-    if (routes.isEmpty) {
-      return [
-        const ListItem(
-          leading: Icon(Icons.route_outlined),
-          title: Text('Advertised Routes'),
-          subtitle: Text(
-            'No subnet routes have been reported by Tailscale yet.',
-          ),
+    final state = _stateOf(snapshot, account.id);
+    final marks = _accountStatusMarks(context.colorScheme, account, state);
+    final subtitleParts = <String>[
+      account.outboundName,
+      _accountStateLabel(appLocalizations, account, state),
+      if (state != null &&
+          state.present &&
+          state.backendState == 'Running' &&
+          state.peerCount > 0)
+        appLocalizations.tailscaleOnlinePeerCount(
+          state.onlinePeerCount,
+          state.peerCount,
         ),
-      ];
-    }
+    ];
+    return ListItem.open(
+      key: ValueKey(account.id),
+      leading: GlyphIcon(marks.glyph, color: marks.color),
+      title: Text(_accountDisplayName(account)),
+      subtitle: Text(subtitleParts.join('  ·  ')),
+      widget: TailscaleAccountView(accountId: account.id),
+    );
+  }
 
-    final disabledRoutes = Set<String>.from(tailscaleProps.disabledRoutes);
-    return routes
-        .map((route) {
-          final enabled = !disabledRoutes.contains(route);
-          final pending = Platform.isAndroid &&
-              isTailscaleSubnetNeedingVpnRoute(route) &&
-              !appliedVpnRoutes.contains(route);
-          final baseSubtitle = enabled
-              ? 'Handled by tsnet when matched.'
-              : 'Excluded from tsnet matching.';
-          return ListItem.checkbox(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(child: Text(route)),
-                if (pending) ...[
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Text(
-                      'Pending VPN restart',
-                      style: TextStyle(fontSize: 11, color: Colors.orange),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            subtitle: Text(
-              pending
-                  ? '$baseSubtitle Toggle the VPN off/on so Android picks '
-                      'up this subnet.'
-                  : baseSubtitle,
-            ),
-            value: enabled,
-            onChanged: (value) {
-              _toggleRoute(
-                tailscaleProps: tailscaleProps,
-                route: route,
-                enabled: value ?? false,
-              );
-            },
-          );
-        })
-        .toList(growable: false);
+  Future<void> _applyChanges() async {
+    if (_applying) {
+      return;
+    }
+    setState(() {
+      _applying = true;
+    });
+    String? error;
+    try {
+      await ref.read(setupActionProvider.notifier).applyTailscaleChanges();
+    } on MessageException catch (exception) {
+      error = exception.message;
+    } catch (exception) {
+      error = exception.toString();
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _applying = false;
+    });
+    if (error != null) {
+      context.showNotifier(error, level: MessageLevel.error);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final tailscaleProps = ref.watch(tailscaleSettingProvider);
-    final appliedVpnRoutes =
-        ref.watch(tailscaleRuntimeRoutesProvider).toSet();
-    final isEnabled = tailscaleProps.enable;
+    final appLocalizations = context.appLocalizations;
+    final accounts = ref.watch(tailscaleAccountsProvider);
+    final snapshot = ref.watch(tailscaleAccountsSnapshotProvider);
+    final hasUnapplied = ref.watch(hasUnappliedTailscaleChangesProvider);
 
     final sections = <Widget>[
-      generateSection(
-        title: 'Connection',
-        items: const [TailscaleEnableItem(), TailscaleAcceptRoutesItem()],
-      ),
-      generateSection(
-        title: 'Authentication',
-        items: const [
-          TailscaleHostnameItem(),
-          TailscaleAuthKeyItem(),
-          TailscaleControlUrlItem(),
-        ],
-      ),
-      generateSection(
-        title: 'Status',
-        items: _buildStatusItems(_tailscaleState),
-      ),
-      generateSection(
-        title: 'Advertised Routes',
-        items: _buildRouteItems(
-          _tailscaleState,
-          tailscaleProps,
-          appliedVpnRoutes,
+      if (hasUnapplied)
+        generateSection(
+          items: [
+            ListItem(
+              leading: GlyphIcon(
+                AppGlyphs.warning,
+                color: context.colorScheme.warning,
+              ),
+              title: Text(appLocalizations.tailscaleUnappliedChanges),
+              trailing: _applying
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const GlyphIcon(AppGlyphs.check),
+              onTap: _applying ? null : _applyChanges,
+            ),
+          ],
         ),
+      generateSection(
+        title: appLocalizations.tailscaleAccounts,
+        items: accounts.accounts.isEmpty
+            ? [
+                ListItem(
+                  leading: const GlyphIcon(AppGlyphs.addCircle),
+                  title: Text(appLocalizations.tailscaleAddAccount),
+                  onTap: () => _handleAddOrUpdate(),
+                ),
+              ]
+            : [
+                for (final account in accounts.accounts)
+                  _accountRow(appLocalizations, account, snapshot),
+              ],
       ),
       generateSection(
-        title: 'Routing',
-        items: const [
-          TailscaleRouteControlPlaneViaProxyItem(),
-          TailscaleRouteDerpViaProxyItem(),
+        items: [
+          ListItem.toggle(
+            title: Text(appLocalizations.tailscaleAutoFollow),
+            subtitle: Text(appLocalizations.tailscaleAutoFollowDesc),
+            value: accounts.autoFollow,
+            onChanged: (value) {
+              ref
+                  .read(tailscaleAccountsProvider.notifier)
+                  .update((state) => state.copyWith(autoFollow: value));
+            },
+          ),
+          ListItem.toggle(
+            title: Text(appLocalizations.tailscaleLegacyAlias),
+            subtitle: Text(appLocalizations.tailscaleLegacyAliasDesc),
+            value: accounts.legacyAlias,
+            onChanged: (value) {
+              ref
+                  .read(tailscaleAccountsProvider.notifier)
+                  .update((state) => state.copyWith(legacyAlias: value));
+            },
+          ),
         ],
       ),
     ];
 
     return CommonScaffold(
       title: 'Tailscale',
-      isLoading: _isLoading && _tailscaleState == null,
-      actions: [
-        if (isEnabled)
-          _isReconnecting
-              ? const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                )
-              : IconButton(
-                  onPressed: _reconnect,
-                  tooltip: 'Reconnect',
-                  icon: const Icon(Icons.refresh),
-                ),
-        IconButton(
-          onPressed: () {
-            _refresh();
-          },
-          tooltip: 'Refresh',
-          icon: const Icon(Icons.sync),
+      iconActions: [
+        if (hasUnapplied)
+          IconButtonData(
+            glyph: AppGlyphs.check,
+            tooltip: appLocalizations.tailscaleApplyChanges,
+            isLoading: _applying,
+            onPressed: _applying ? null : _applyChanges,
+          ),
+        IconButtonData(
+          glyph: AppGlyphs.add,
+          tooltip: appLocalizations.tailscaleAddAccount,
+          onPressed: () => _handleAddOrUpdate(),
         ),
       ],
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-            top: context.sectionsTopPadding,
-            bottom: 16 + context.bottomInset,
-          ),
-          children: sections,
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+          top: context.sectionsTopPadding,
+          bottom: 16 + context.bottomInset,
         ),
+        children: sections,
       ),
     );
   }
 }
 
-class TailscaleStatusView extends StatefulWidget {
-  const TailscaleStatusView({super.key});
+class TailscaleAccountView extends ConsumerStatefulWidget {
+  const TailscaleAccountView({super.key, required this.accountId});
+
+  final String accountId;
 
   @override
-  State<TailscaleStatusView> createState() => _TailscaleStatusViewState();
+  ConsumerState<TailscaleAccountView> createState() =>
+      _TailscaleAccountViewState();
 }
 
-class _TailscaleStatusViewState extends State<TailscaleStatusView> {
-  TailscaleState? _tailscaleState;
-  Timer? _timer;
-  bool _isLoading = true;
+class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
+  bool _applying = false;
+
+  void _updateAccount(
+    TailscaleAccountProps Function(TailscaleAccountProps account) update,
+  ) {
+    ref.read(tailscaleAccountsProvider.notifier).update((state) {
+      return state.copyWith(
+        accounts: [
+          for (final item in state.accounts)
+            item.id == widget.accountId ? update(item) : item,
+        ],
+      );
+    });
+  }
+
+  Future<void> _handleAddOrUpdate(TailscaleAccountProps account) async {
+    final accounts = ref.read(tailscaleAccountsProvider);
+    final result = await showFormSheet<TailscaleAccountProps>(
+      context: context,
+      builder: (_) => _AccountForm(
+        account: account,
+        otherAccounts: [
+          for (final item in accounts.accounts)
+            if (item.id != account.id) item,
+        ],
+      ),
+    );
+    if (result != null) {
+      _updateAccount((_) => result);
+    }
+  }
+
+  Future<void> _applyChanges() async {
+    if (_applying) {
+      return;
+    }
+    setState(() {
+      _applying = true;
+    });
+    String? error;
+    try {
+      await ref.read(setupActionProvider.notifier).applyTailscaleChanges();
+    } on MessageException catch (exception) {
+      error = exception.message;
+    } catch (exception) {
+      error = exception.toString();
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _applying = false;
+    });
+    if (error != null) {
+      context.showNotifier(error, level: MessageLevel.error);
+    }
+  }
+
+  Future<void> _handleDelete(TailscaleAccountProps account) async {
+    final appLocalizations = context.appLocalizations;
+    final res = await dialogs.showMessage(
+      title: appLocalizations.tip,
+      message: TextSpan(
+        text: appLocalizations.deleteTip(_accountDisplayName(account)),
+      ),
+      destructive: true,
+      confirmText: appLocalizations.delete,
+    );
+    if (res != true) {
+      return;
+    }
+    ref.read(tailscaleAccountsProvider.notifier).update((state) {
+      return state.copyWith(
+        accounts: [
+          for (final item in state.accounts)
+            if (item.id != widget.accountId) item,
+        ],
+      );
+    });
+    if (mounted) {
+      Navigator.of(context).maybePop();
+    }
+  }
+
+  Future<void> _handleLogin() async {
+    final error = await coreController.startTailscaleLogin(widget.accountId);
+    if (!mounted) {
+      return;
+    }
+    if (error.isNotEmpty) {
+      context.showNotifier(error, level: MessageLevel.error);
+    }
+  }
+
+  Future<void> _handleLogout() async {
+    final error = await coreController.logoutTailscale(widget.accountId);
+    if (!mounted) {
+      return;
+    }
+    if (error.isNotEmpty) {
+      context.showNotifier(error, level: MessageLevel.error);
+    }
+  }
+
+  void _openAuthUrl(String authUrl) {
+    final uri = Uri.tryParse(authUrl);
+    if (uri == null) {
+      return;
+    }
+    launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Widget? _statusSubtitle(
+    AppLocalizations appLocalizations,
+    TailscaleAccountState? state,
+  ) {
+    final lines = <Widget>[];
+    final error = state?.error ?? '';
+    if (error == _stubBuildError) {
+      lines.add(Text(appLocalizations.tailscaleNotAvailable));
+    } else if (error.isNotEmpty) {
+      lines.add(Text(error));
+    }
+    if (state != null &&
+        state.present &&
+        state.backendState == 'Running' &&
+        state.peerCount > 0) {
+      lines.add(
+        Text(
+          appLocalizations.tailscaleOnlinePeerCount(
+            state.onlinePeerCount,
+            state.peerCount,
+          ),
+        ),
+      );
+    }
+    if (lines.isEmpty) {
+      return null;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: lines,
+    );
+  }
+
+  List<Widget> _buildStatusItems(
+    AppLocalizations appLocalizations,
+    TailscaleAccountProps account,
+    TailscaleAccountState? state,
+  ) {
+    final marks = _accountStatusMarks(context.colorScheme, account, state);
+    final items = <Widget>[
+      ListItem(
+        leading: GlyphIcon(marks.glyph, color: marks.color),
+        title: Text(
+          _accountStateLabel(appLocalizations, account, state),
+          style: AppTextStyle.headline.of(context).copyWith(color: marks.color),
+        ),
+        subtitle: _statusSubtitle(appLocalizations, state),
+      ),
+    ];
+
+    if (state != null && state.backendState == 'NeedsLogin') {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.key),
+          title: Text(appLocalizations.tailscaleLogin),
+          onTap: _handleLogin,
+        ),
+      );
+    }
+
+    if (state != null && state.present && state.backendState.isNotEmpty) {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.lockOpen),
+          title: Text(appLocalizations.tailscaleLogout),
+          onTap: _handleLogout,
+        ),
+      );
+    }
+
+    if (state != null && state.authUrl.isNotEmpty) {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.openExternal),
+          title: Text(appLocalizations.tailscaleOpenAuthUrl),
+          subtitle: Text(state.authUrl),
+          onTap: () {
+            _openAuthUrl(state.authUrl);
+          },
+        ),
+      );
+    }
+
+    if (state != null && state.tailnet.isNotEmpty) {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.connections),
+          title: Text(appLocalizations.tailscaleTailnet),
+          subtitle: Text(state.tailnet),
+        ),
+      );
+    }
+
+    if (state != null && state.tailscaleIps.isNotEmpty) {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.locate),
+          title: Text(appLocalizations.tailscaleTailscaleIps),
+          subtitle: Text(state.tailscaleIps.join(', ')),
+        ),
+      );
+    }
+
+    if (state != null && state.magicDnsSuffix.isNotEmpty) {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.dns),
+          title: Text(appLocalizations.tailscaleMagicDnsSuffix),
+          subtitle: Text(state.magicDnsSuffix),
+        ),
+      );
+    }
+
+    if (account.stateDir == 'tailscale') {
+      items.add(
+        ListItem(
+          leading: GlyphIcon(
+            AppGlyphs.info,
+            color: context.colorScheme.warning,
+          ),
+          title: Text(appLocalizations.tailscaleStateDirLegacy),
+        ),
+      );
+    }
+
+    return items;
+  }
+
+  List<Widget> _buildExitNodeItems(
+    AppLocalizations appLocalizations,
+    TailscaleAccountProps account,
+  ) {
+    final exitPeers = [
+      for (final peer in account.peers)
+        if (peer.exitNodeOption) peer,
+    ];
+    String optionLabel(String value) {
+      if (value.isEmpty) {
+        return appLocalizations.tailscaleExitNodeNone;
+      }
+      if (value == 'auto:any') {
+        return appLocalizations.tailscaleExitNodeAutoAny;
+      }
+      for (final peer in exitPeers) {
+        if (peer.tailscaleIps.contains(value)) {
+          return peer.dnsName.isNotEmpty ? peer.dnsName : value;
+        }
+      }
+      return value;
+    }
+
+    return [
+      ListItem<String>.options(
+        title: Text(appLocalizations.tailscaleExitNode),
+        options: [
+          '',
+          'auto:any',
+          for (final peer in exitPeers) ...peer.tailscaleIps,
+        ],
+        value: account.exitNode,
+        textBuilder: optionLabel,
+        onChanged: (value) {
+          _updateAccount((account) => account.copyWith(exitNode: value));
+        },
+      ),
+      ListItem.toggle(
+        title: Text(appLocalizations.tailscaleExitNodeAllowLanAccess),
+        value: account.exitNodeAllowLanAccess,
+        onChanged: (value) {
+          _updateAccount(
+            (account) => account.copyWith(exitNodeAllowLanAccess: value),
+          );
+        },
+      ),
+    ];
+  }
+
+  List<Widget> _buildRouteItems(
+    AppLocalizations appLocalizations,
+    TailscaleAccountProps account,
+    Set<String> appliedVpnRoutes,
+  ) {
+    return [
+      ListItem.toggle(
+        title: Text(appLocalizations.tailscaleAcceptRoutes),
+        value: account.acceptRoutes,
+        onChanged: (value) {
+          _updateAccount((account) => account.copyWith(acceptRoutes: value));
+        },
+      ),
+      if (account.routes.isEmpty)
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.layers),
+          title: Text(
+            appLocalizations.nullTip(appLocalizations.tailscaleRoutes),
+          ),
+        )
+      else
+        for (final route in account.routes)
+          ListItem.checkbox(
+            title: Text(route.cidr),
+            subtitle:
+                route.enabled &&
+                    system.isAndroid &&
+                    isTailscaleSubnetNeedingVpnRoute(route.cidr) &&
+                    !appliedVpnRoutes.contains(route.cidr)
+                ? Text(appLocalizations.tailscalePendingVpnRestart)
+                : null,
+            value: route.enabled,
+            onChanged: (value) {
+              _updateAccount((account) {
+                return account.copyWith(
+                  routes: [
+                    for (final item in account.routes)
+                      item.cidr == route.cidr
+                          ? item.copyWith(enabled: value ?? false)
+                          : item,
+                  ],
+                );
+              });
+            },
+          ),
+    ];
+  }
+
+  List<Widget> _buildPeerItems(
+    AppLocalizations appLocalizations,
+    TailscaleAccountProps account,
+    TailscaleAccountState? state,
+  ) {
+    if (account.peers.isEmpty) {
+      return [
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.devices),
+          title: Text(
+            appLocalizations.nullTip(appLocalizations.tailscalePeers),
+          ),
+        ),
+      ];
+    }
+
+    final livePeers = {
+      for (final peer in state?.peers ?? const <TailscalePeerInfo>[])
+        if (peer.mergeKey.isNotEmpty) peer.mergeKey: peer,
+    };
+
+    return [
+      for (final peer in account.peers)
+        _peerItem(appLocalizations, peer, livePeers[peer.key]),
+    ];
+  }
+
+  Widget _peerItem(
+    AppLocalizations appLocalizations,
+    TailscalePeerEntry peer,
+    TailscalePeerInfo? live,
+  ) {
+    final badge = _peerBadge(live);
+    return ListItem.checkbox(
+      leading: GlyphIcon(
+        badge.glyph,
+        color: live?.online == true
+            ? badge.color
+            : context.colorScheme.onSurfaceVariant,
+      ),
+      title: Text(_peerEntryTitle(peer)),
+      subtitle: _peerSubtitle(appLocalizations, peer, live),
+      value: peer.enabled,
+      onChanged: (value) {
+        _updateAccount((account) {
+          return account.copyWith(
+            peers: [
+              for (final item in account.peers)
+                item.key == peer.key
+                    ? item.copyWith(enabled: value ?? false)
+                    : item,
+            ],
+          );
+        });
+      },
+    );
+  }
+
+  ({Color color, Glyph glyph}) _peerBadge(TailscalePeerInfo? peer) {
+    final colorScheme = context.colorScheme;
+    if (peer == null) {
+      return (color: colorScheme.onSurfaceVariant, glyph: AppGlyphs.devices);
+    }
+    return switch (peer.connectionType) {
+      TailscalePeerConnectionType.direct => (
+        color: colorScheme.success,
+        glyph: AppGlyphs.bolt,
+      ),
+      TailscalePeerConnectionType.derp => (
+        color: colorScheme.primary,
+        glyph: AppGlyphs.link,
+      ),
+      TailscalePeerConnectionType.idle => (
+        color: colorScheme.warning,
+        glyph: AppGlyphs.clock,
+      ),
+      _ => (color: colorScheme.onSurfaceVariant, glyph: AppGlyphs.block),
+    };
+  }
+
+  Widget? _peerSubtitle(
+    AppLocalizations appLocalizations,
+    TailscalePeerEntry peer,
+    TailscalePeerInfo? live,
+  ) {
+    final lines = <Widget>[
+      if (peer.tailscaleIps.isNotEmpty)
+        Text(
+          peer.tailscaleIps.join(', '),
+          style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
+        ),
+      if (live != null && live.primaryRoutes.isNotEmpty)
+        Text(
+          '${appLocalizations.tailscaleRoutes}: ${live.primaryRoutes.join(', ')}',
+        ),
+      if (peer.exitNodeOption) Text(appLocalizations.tailscaleExitNode),
+    ];
+    if (live != null) {
+      final connectionDetail = switch (live.connectionType) {
+        TailscalePeerConnectionType.direct => live.curAddr,
+        TailscalePeerConnectionType.derp => live.relay,
+        _ => '',
+      };
+      final metaParts = <String>[
+        ?_relativeTime(context, live.lastHandshake),
+        if (connectionDetail.isNotEmpty) connectionDetail,
+        if (live.rxBytes > 0 || live.txBytes > 0)
+          '↓ ${_formatBytes(live.rxBytes)} · ↑ ${_formatBytes(live.txBytes)}',
+      ];
+      if (metaParts.isNotEmpty) {
+        lines.add(Text(metaParts.join('  ·  ')));
+      }
+    }
+    if (lines.isEmpty) {
+      return null;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: lines,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    final accounts = ref.watch(tailscaleAccountsProvider);
+    final snapshot = ref.watch(tailscaleAccountsSnapshotProvider);
+    final appliedVpnRoutes = ref.watch(tailscaleRuntimeRoutesProvider).toSet();
+    final account = _accountOf(accounts, widget.accountId);
+    if (account == null) {
+      return const CommonScaffold(title: 'Tailscale', body: SizedBox.shrink());
+    }
+    final state = _stateOf(snapshot, widget.accountId);
+    final hasUnapplied = ref.watch(hasUnappliedTailscaleChangesProvider);
+
+    final sections = <Widget>[
+      generateSection(
+        title: appLocalizations.status,
+        items: _buildStatusItems(appLocalizations, account, state),
+      ),
+      generateSection(
+        title: appLocalizations.account,
+        items: [
+          ListItem.toggle(
+            title: Text(appLocalizations.enabled),
+            value: account.enable,
+            onChanged: (value) {
+              _updateAccount((account) => account.copyWith(enable: value));
+            },
+          ),
+          ListItem(
+            leading: const GlyphIcon(AppGlyphs.edit),
+            title: Text(appLocalizations.tailscaleEditAccount),
+            onTap: () => _handleAddOrUpdate(account),
+          ),
+          ListItem(
+            leading: GlyphIcon(
+              AppGlyphs.delete,
+              color: context.colorScheme.error,
+            ),
+            title: Text(appLocalizations.tailscaleDeleteAccount),
+            onTap: () => _handleDelete(account),
+          ),
+        ],
+      ),
+      generateSection(
+        title: appLocalizations.tailscaleExitNode,
+        items: _buildExitNodeItems(appLocalizations, account),
+      ),
+      generateSection(
+        title: appLocalizations.tailscaleRoutes,
+        items: _buildRouteItems(appLocalizations, account, appliedVpnRoutes),
+      ),
+      generateSection(
+        title: appLocalizations.tailscalePeers,
+        items: _buildPeerItems(appLocalizations, account, state),
+      ),
+      generateSection(
+        items: [
+          ListItem.open(
+            leading: const GlyphIcon(AppGlyphs.rules),
+            title: Text(appLocalizations.tailscaleExtraRules),
+            subtitle: Text(
+              account.extraRules.isEmpty
+                  ? appLocalizations.none
+                  : appLocalizations.itemsCount(account.extraRules.length),
+            ),
+            widget: ListEditView(
+              title: appLocalizations.tailscaleExtraRules,
+              items: account.extraRules,
+              titleBuilder: (item) => Text(item),
+            ),
+            onChanged: (items) {
+              if (items is! List) {
+                return;
+              }
+              _updateAccount(
+                (account) =>
+                    account.copyWith(extraRules: List<String>.from(items)),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+
+    return CommonScaffold(
+      title: _accountDisplayName(account),
+      iconActions: [
+        if (hasUnapplied)
+          IconButtonData(
+            glyph: AppGlyphs.check,
+            tooltip: appLocalizations.tailscaleApplyChanges,
+            isLoading: _applying,
+            onPressed: _applying ? null : _applyChanges,
+          ),
+      ],
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+          top: context.sectionsTopPadding,
+          bottom: 16 + context.bottomInset,
+        ),
+        children: sections,
+      ),
+    );
+  }
+}
+
+class _AccountForm extends StatefulWidget {
+  final TailscaleAccountProps? account;
+  final List<TailscaleAccountProps> otherAccounts;
+
+  const _AccountForm({required this.account, required this.otherAccounts});
+
+  @override
+  State<_AccountForm> createState() => _AccountFormState();
+}
+
+class _AccountFormState extends State<_AccountForm> {
+  late final TextEditingController _labelController;
+  late final TextEditingController _controlUrlController;
+  late final TextEditingController _hostnameController;
+  late final TextEditingController _authKeyController;
+  bool _attempted = false;
 
   @override
   void initState() {
     super.initState();
-    _refresh();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      _refresh(silent: true);
-    });
+    final account = widget.account;
+    _labelController = TextEditingController(text: account?.label);
+    _controlUrlController = TextEditingController(text: account?.controlUrl);
+    _hostnameController = TextEditingController(text: account?.hostname);
+    _authKeyController = TextEditingController(text: account?.authKey);
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _labelController.dispose();
+    _controlUrlController.dispose();
+    _hostnameController.dispose();
+    _authKeyController.dispose();
     super.dispose();
   }
 
-  Future<void> _refresh({bool silent = false}) async {
-    if (!silent && mounted) {
-      setState(() {
-        _isLoading = true;
-      });
+  String? _labelIssue() {
+    final appLocalizations = context.appLocalizations;
+    final label = _labelController.text.trim();
+    if (label.isEmpty) {
+      return appLocalizations.emptyTip(appLocalizations.tailscaleAccountLabel);
     }
-    final state = await coreController.getTailscaleState();
-    if (!mounted) return;
+    final derived = 'TAILNET-${sanitizeTailscaleLabel(label)}';
+    final taken = widget.otherAccounts.any(
+      (account) => account.outboundName == derived,
+    );
+    if (taken) {
+      return appLocalizations.tailscaleLabelConflict(derived);
+    }
+    return null;
+  }
+
+  String? _controlUrlIssue() {
+    final value = _controlUrlController.text.trim();
+    if (value.isEmpty) {
+      return null;
+    }
+    if (!value.isUrl) {
+      return context.appLocalizations.urlTip(
+        context.appLocalizations.tailscaleControlUrl,
+      );
+    }
+    return null;
+  }
+
+  void _handleSave() {
     setState(() {
-      _tailscaleState = state;
-      _isLoading = false;
+      _attempted = true;
     });
-  }
-
-  List<Widget> _buildPeerItems(TailscaleState? tailscaleState) {
-    final peers = tailscaleState?.peers ?? const <TailscalePeerInfo>[];
-    if (peers.isEmpty) {
-      return [
-        const ListItem(
-          leading: Icon(Icons.devices_other_outlined),
-          title: Text('Peers'),
-          subtitle: Text('No peers reported by Tailscale yet.'),
-        ),
-      ];
+    if (_labelIssue() != null || _controlUrlIssue() != null) {
+      return;
     }
-
-    return peers.map((peer) {
-      final badge = _peerConnectionBadge(peer);
-      final details = <Widget>[];
-      if (peer.tailscaleIps.isNotEmpty) {
-        details.add(
-          Text(
-            peer.tailscaleIps.join(', '),
-            style: const TextStyle(
-              fontFeatures: [FontFeature.tabularFigures()],
-            ),
-          ),
-        );
-      }
-      if (peer.primaryRoutes.isNotEmpty) {
-        details.add(
-          Text('Routes: ${peer.primaryRoutes.join(', ')}'),
-        );
-      }
-      if (peer.exitNode) {
-        details.add(
-          const Text(
-            'Exit node · in use',
-            style: TextStyle(fontWeight: FontWeight.w500),
-          ),
-        );
-      } else if (peer.exitNodeOption) {
-        details.add(const Text('Advertises exit-node option'));
-      }
-      final metaParts = <String>[];
-      if (peer.lastHandshake.isNotEmpty) {
-        metaParts.add('Handshake ${_formatRelativeTime(peer.lastHandshake)}');
-      }
-      if (peer.rxBytes > 0 || peer.txBytes > 0) {
-        metaParts.add(
-          'Rx ${_formatBytes(peer.rxBytes)} · Tx ${_formatBytes(peer.txBytes)}',
-        );
-      }
-      if (metaParts.isNotEmpty) {
-        details.add(Text(metaParts.join('  ·  ')));
-      }
-
-      final subtitle = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 2, bottom: 6),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(badge.icon, size: 14, color: badge.color),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    badge.label,
-                    style: TextStyle(
-                      color: badge.color,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ...details,
-        ],
-      );
-
-      return ListItem(
-        leading: Icon(
-          peer.online ? Icons.computer : Icons.desktop_access_disabled,
-          color: peer.online ? badge.color : Colors.grey,
-        ),
-        title: Text(
-          peer.displayName,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        subtitle: subtitle,
-      );
-    }).toList(growable: false);
-  }
-
-  List<Widget> _buildDerpItems(TailscaleState? tailscaleState) {
-    final regions = tailscaleState?.derp ?? const <TailscaleDerpInfo>[];
-    if (regions.isEmpty) {
-      return [
-        const ListItem(
-          leading: Icon(Icons.cloud_outlined),
-          title: Text('DERP regions'),
-          subtitle: Text(
-            'DERP map unavailable. Latency appears after a region has been probed.',
-          ),
-        ),
-      ];
-    }
-
-    final sorted = [...regions]..sort((a, b) {
-      if (a.preferred != b.preferred) return a.preferred ? -1 : 1;
-      if (a.inUse != b.inUse) return a.inUse ? -1 : 1;
-      if (a.custom != b.custom) return a.custom ? 1 : -1;
-      final la = a.latencyMs;
-      final lb = b.latencyMs;
-      if (la >= 0 && lb >= 0 && la != lb) return la.compareTo(lb);
-      if (la < 0 && lb >= 0) return 1;
-      if (lb < 0 && la >= 0) return -1;
-      return a.regionId.compareTo(b.regionId);
-    });
-
-    return sorted.map((region) {
-      final latency = region.latencyMs;
-      final (latencyLabel, latencyColor) = _derpLatencyLabel(latency);
-
-      final tags = <Widget>[];
-      if (region.preferred) {
-        tags.add(_derpTag('Preferred', Colors.green));
-      }
-      if (region.inUse) {
-        tags.add(_derpTag('In use', Colors.blue));
-      }
-      if (region.custom) {
-        tags.add(_derpTag('Custom', Colors.deepPurple));
-      }
-      if (region.avoid) {
-        tags.add(_derpTag('Avoid', Colors.grey));
-      }
-
-      final titleText = region.regionName.isNotEmpty
-          ? '${region.regionCode.toUpperCase()} · ${region.regionName}'
-          : region.regionCode.toUpperCase().isNotEmpty
-              ? region.regionCode.toUpperCase()
-              : '#${region.regionId}';
-
-      final subtitleChildren = <Widget>[];
-      if (tags.isNotEmpty) {
-        subtitleChildren.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 2, bottom: 6),
-            child: Wrap(spacing: 6, runSpacing: 4, children: tags),
-          ),
-        );
-      }
-      if (region.nodes.isNotEmpty) {
-        subtitleChildren.add(Text(region.nodes.join(', ')));
-      }
-
-      return ListItem(
-        leading: Icon(
-          region.preferred
-              ? Icons.star
-              : region.custom
-                  ? Icons.dns_outlined
-                  : Icons.cloud_outlined,
-          color: region.preferred
-              ? Colors.amber.shade700
-              : region.inUse
-                  ? Colors.blue
-                  : null,
-        ),
-        title: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: Text(
-                titleText,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              latencyLabel,
-              style: TextStyle(
-                fontFeatures: const [FontFeature.tabularFigures()],
-                color: latencyColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        subtitle: subtitleChildren.isEmpty
-            ? null
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: subtitleChildren,
-              ),
-      );
-    }).toList(growable: false);
-  }
-
-  (String, Color?) _derpLatencyLabel(int ms) {
-    if (ms < 0) return ('—', Colors.grey);
-    if (ms < 60) return ('$ms ms', Colors.green);
-    if (ms < 150) return ('$ms ms', Colors.lightGreen);
-    if (ms < 300) return ('$ms ms', Colors.amber.shade700);
-    return ('$ms ms', Colors.red);
-  }
-
-  Widget _derpTag(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
+    final base = widget.account ?? TailscaleAccountProps(id: uuidV4);
+    Navigator.of(context).pop(
+      base.copyWith(
+        label: _labelController.text.trim(),
+        controlUrl: _controlUrlController.text.trim(),
+        hostname: _hostnameController.text.trim(),
+        authKey: _authKeyController.text.trim(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = _tailscaleState;
-    final sections = <Widget>[
-      generateSection(
-        title: 'Peers',
-        items: _buildPeerItems(state),
-      ),
-      generateSection(
-        title: 'DERP relays',
-        items: _buildDerpItems(state),
-      ),
-    ];
-
-    return CommonScaffold(
-      title: 'Connection status',
-      isLoading: _isLoading && state == null,
-      actions: [
-        IconButton(
-          onPressed: () => _refresh(),
-          tooltip: 'Refresh',
-          icon: const Icon(Icons.sync),
+    final appLocalizations = context.appLocalizations;
+    final labelIssue = _attempted ? _labelIssue() : null;
+    final controlUrlIssue = _attempted ? _controlUrlIssue() : null;
+    return FormPage(
+      title: widget.account == null
+          ? appLocalizations.tailscaleAddAccount
+          : appLocalizations.tailscaleEditAccount,
+      onSave: _handleSave,
+      error: labelIssue ?? controlUrlIssue,
+      children: [
+        generateSection(
+          items: [
+            FormRow(
+              title: appLocalizations.tailscaleAccountLabel,
+              invalid: labelIssue != null,
+              trailing: FormRowTextField(
+                controller: _labelController,
+                autofocus: widget.account == null,
+                hintText: 'work',
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                inputFormatters: TextInputLimits.limit(TextInputLimits.name),
+                onChanged: (_) {
+                  if (_attempted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
+            FormRow(
+              title: appLocalizations.tailscaleControlUrl,
+              invalid: controlUrlIssue != null,
+              trailing: FormRowTextField(
+                controller: _controlUrlController,
+                hintText: 'https://',
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                inputFormatters: TextInputLimits.limit(TextInputLimits.url),
+                onChanged: (_) {
+                  if (_attempted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
+            FormRow(
+              title: appLocalizations.tailscaleHostname,
+              trailing: FormRowTextField(
+                controller: _hostnameController,
+                hintText: appLocalizations.defaultText,
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                inputFormatters: TextInputLimits.limit(TextInputLimits.name),
+              ),
+            ),
+            FormRow(
+              title: appLocalizations.tailscaleAuthKey,
+              trailing: FormRowSecretTextField(
+                controller: _authKeyController,
+                hintText: appLocalizations.defaultText,
+                textInputAction: TextInputAction.done,
+                inputFormatters: TextInputLimits.limit(
+                  TextInputLimits.password,
+                ),
+                onFieldSubmitted: (_) => _handleSave(),
+              ),
+            ),
+          ],
         ),
       ],
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-            top: context.sectionsTopPadding,
-            bottom: 16 + context.bottomInset,
-          ),
-          children: sections,
-        ),
-      ),
     );
   }
 }

@@ -36,11 +36,12 @@ class NetworkSetting extends _$NetworkSetting with AutoDisposeNotifierMixin {
   }
 }
 
-@riverpod
-class TailscaleSetting extends _$TailscaleSetting with AutoDisposeNotifierMixin {
+@Riverpod(name: 'tailscaleAccountsProvider')
+class _TailscaleAccounts extends _$TailscaleAccounts
+    with AutoDisposeNotifierMixin {
   @override
-  TailscaleProps build() {
-    return const TailscaleProps();
+  TailscaleAccounts build() {
+    return defaultTailscaleAccounts;
   }
 }
 
@@ -109,7 +110,7 @@ Config _config(Ref ref) {
   final windowProps = ref.watch(windowSettingProvider);
   final vpnProps = ref.watch(vpnSettingProvider);
   final networkProps = ref.watch(networkSettingProvider);
-  final tailscaleProps = ref.watch(tailscaleSettingProvider);
+  final tailscaleAccounts = ref.watch(tailscaleAccountsProvider);
   final themeProps = ref.watch(themeSettingProvider);
   final currentProfileId = ref.watch(currentProfileIdProvider);
   final davProps = ref.watch(davSettingProvider);
@@ -122,7 +123,7 @@ Config _config(Ref ref) {
     windowProps: windowProps,
     vpnProps: vpnProps,
     networkProps: networkProps,
-    tailscaleProps: tailscaleProps,
+    tailscaleAccounts: tailscaleAccounts,
     themeProps: themeProps,
     currentProfileId: currentProfileId,
     davProps: davProps,
@@ -138,6 +139,7 @@ void writeConfig(Ref ref, Config config) {
   ref.read(windowSettingProvider.notifier).value = config.windowProps;
   ref.read(vpnSettingProvider.notifier).value = config.vpnProps;
   ref.read(networkSettingProvider.notifier).value = config.networkProps;
+  ref.read(tailscaleAccountsProvider.notifier).value = config.tailscaleAccounts;
   ref.read(themeSettingProvider.notifier).value = config.themeProps;
   ref.read(currentProfileIdProvider.notifier).value = config.currentProfileId;
   ref.read(davSettingProvider.notifier).value = config.davProps;
@@ -155,7 +157,9 @@ List<Override> buildConfigOverrides(Config config) {
     windowSettingProvider.overrideWithBuild((_, _) => config.windowProps),
     vpnSettingProvider.overrideWithBuild((_, _) => config.vpnProps),
     networkSettingProvider.overrideWithBuild((_, _) => config.networkProps),
-    tailscaleSettingProvider.overrideWithBuild((_, _) => config.tailscaleProps),
+    tailscaleAccountsProvider.overrideWithBuild(
+      (_, _) => config.tailscaleAccounts,
+    ),
     themeSettingProvider.overrideWithBuild((_, _) => config.themeProps),
     currentProfileIdProvider.overrideWithBuild(
       (_, _) => config.currentProfileId,

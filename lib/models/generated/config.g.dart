@@ -282,33 +282,113 @@ Map<String, dynamic> _$NetworkPropsToJson(_NetworkProps instance) =>
       'authentication': instance.authentication,
     };
 
-_TailscaleProps _$TailscalePropsFromJson(Map<String, dynamic> json) =>
-    _TailscaleProps(
-      enable: json['enable'] as bool? ?? false,
-      acceptRoutes: json['accept-routes'] as bool? ?? true,
-      hostname: json['hostname'] as String? ?? '',
-      authKey: json['auth-key'] as String? ?? '',
-      controlUrl: json['control-url'] as String? ?? '',
-      disabledRoutes:
-          (json['disabled-routes'] as List<dynamic>?)
+_TailscalePeerEntry _$TailscalePeerEntryFromJson(Map<String, dynamic> json) =>
+    _TailscalePeerEntry(
+      key: json['key'] as String,
+      dnsName: json['dns-name'] as String? ?? '',
+      tailscaleIps:
+          (json['tailscale-ips'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      routeControlPlaneViaProxy:
-          json['route-control-plane-via-proxy'] as bool? ?? false,
-      routeDerpViaProxy: json['route-derp-via-proxy'] as bool? ?? false,
+      exitNodeOption: json['exit-node-option'] as bool? ?? false,
+      enabled: json['enabled'] as bool? ?? true,
     );
 
-Map<String, dynamic> _$TailscalePropsToJson(_TailscaleProps instance) =>
+Map<String, dynamic> _$TailscalePeerEntryToJson(_TailscalePeerEntry instance) =>
     <String, dynamic>{
-      'enable': instance.enable,
-      'accept-routes': instance.acceptRoutes,
-      'hostname': instance.hostname,
-      'auth-key': instance.authKey,
-      'control-url': instance.controlUrl,
-      'disabled-routes': instance.disabledRoutes,
-      'route-control-plane-via-proxy': instance.routeControlPlaneViaProxy,
-      'route-derp-via-proxy': instance.routeDerpViaProxy,
+      'key': instance.key,
+      'dns-name': instance.dnsName,
+      'tailscale-ips': instance.tailscaleIps,
+      'exit-node-option': instance.exitNodeOption,
+      'enabled': instance.enabled,
+    };
+
+_TailscaleRouteEntry _$TailscaleRouteEntryFromJson(Map<String, dynamic> json) =>
+    _TailscaleRouteEntry(
+      cidr: json['cidr'] as String,
+      enabled: json['enabled'] as bool? ?? true,
+    );
+
+Map<String, dynamic> _$TailscaleRouteEntryToJson(
+  _TailscaleRouteEntry instance,
+) => <String, dynamic>{'cidr': instance.cidr, 'enabled': instance.enabled};
+
+_TailscaleAccountProps _$TailscaleAccountPropsFromJson(
+  Map<String, dynamic> json,
+) => _TailscaleAccountProps(
+  id: json['id'] as String,
+  label: json['label'] as String? ?? '',
+  enable: json['enable'] as bool? ?? true,
+  stateDir: json['state-dir'] as String? ?? '',
+  hostname: json['hostname'] as String? ?? '',
+  authKey: json['auth-key'] as String? ?? '',
+  controlUrl: json['control-url'] as String? ?? '',
+  ephemeral: json['ephemeral'] as bool? ?? false,
+  udp: json['udp'] as bool? ?? true,
+  acceptRoutes: json['accept-routes'] as bool? ?? true,
+  exitNode: json['exit-node'] as String? ?? '',
+  exitNodeAllowLanAccess: json['exit-node-allow-lan-access'] as bool? ?? false,
+  dialerProxy: json['dialer-proxy'] as String? ?? '',
+  magicDnsSuffix: json['magic-dns-suffix'] as String? ?? '',
+  peers:
+      (json['peers'] as List<dynamic>?)
+          ?.map((e) => TailscalePeerEntry.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  routes:
+      (json['routes'] as List<dynamic>?)
+          ?.map((e) => TailscaleRouteEntry.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  extraRules:
+      (json['extra-rules'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TailscaleAccountPropsToJson(
+  _TailscaleAccountProps instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'label': instance.label,
+  'enable': instance.enable,
+  'state-dir': instance.stateDir,
+  'hostname': instance.hostname,
+  'auth-key': instance.authKey,
+  'control-url': instance.controlUrl,
+  'ephemeral': instance.ephemeral,
+  'udp': instance.udp,
+  'accept-routes': instance.acceptRoutes,
+  'exit-node': instance.exitNode,
+  'exit-node-allow-lan-access': instance.exitNodeAllowLanAccess,
+  'dialer-proxy': instance.dialerProxy,
+  'magic-dns-suffix': instance.magicDnsSuffix,
+  'peers': instance.peers,
+  'routes': instance.routes,
+  'extra-rules': instance.extraRules,
+};
+
+_TailscaleAccounts _$TailscaleAccountsFromJson(Map<String, dynamic> json) =>
+    _TailscaleAccounts(
+      legacyAlias: json['legacy-alias'] as bool? ?? false,
+      autoFollow: json['autoFollow'] as bool? ?? false,
+      accounts:
+          (json['accounts'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    TailscaleAccountProps.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$TailscaleAccountsToJson(_TailscaleAccounts instance) =>
+    <String, dynamic>{
+      'legacy-alias': instance.legacyAlias,
+      'autoFollow': instance.autoFollow,
+      'accounts': instance.accounts,
     };
 
 _ProxiesStyleProps _$ProxiesStylePropsFromJson(Map<String, dynamic> json) =>
@@ -458,10 +538,10 @@ _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   vpnProps: json['vpnProps'] == null
       ? defaultVpnProps
       : VpnProps.fromJson(json['vpnProps'] as Map<String, dynamic>?),
-  tailscaleProps: json['tailscaleProps'] == null
-      ? defaultTailscaleProps
-      : TailscaleProps.fromJson(
-          json['tailscaleProps'] as Map<String, dynamic>?,
+  tailscaleAccounts: json['tailscaleAccounts'] == null
+      ? defaultTailscaleAccounts
+      : TailscaleAccounts.fromJson(
+          json['tailscaleAccounts'] as Map<String, dynamic>?,
         ),
   themeProps: ThemeProps.safeFromJson(
     json['themeProps'] as Map<String, Object?>?,
@@ -493,7 +573,7 @@ Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
   'davProps': instance.davProps,
   'networkProps': instance.networkProps,
   'vpnProps': instance.vpnProps,
-  'tailscaleProps': instance.tailscaleProps,
+  'tailscaleAccounts': instance.tailscaleAccounts,
   'themeProps': instance.themeProps,
   'proxiesStyleProps': instance.proxiesStyleProps,
   'windowGeometry': instance.windowProps,

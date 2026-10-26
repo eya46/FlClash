@@ -83,7 +83,7 @@ const defaultAppSettingProps = AppSettingProps();
 const defaultVpnProps = VpnProps();
 const defaultAuthenticationProps = AuthenticationProps();
 const defaultNetworkProps = NetworkProps();
-const defaultTailscaleProps = TailscaleProps();
+const defaultTailscaleAccounts = TailscaleAccounts();
 const defaultProxiesStyleProps = ProxiesStyleProps();
 const defaultWindowProps = WindowProps();
 const defaultAccessControlProps = AccessControlProps();
@@ -416,25 +416,96 @@ ProxyCardType proxyCardTypeSafeFromJson(Object? cardType) {
   };
 }
 
+// A fixed id makes the legacy-node migration deterministic.
+const legacyTailscaleAccountId = 'main';
+
+// Non `[A-Za-z0-9_-]` collapse to `-`, so `a b` and `a-b` derive one name.
+String sanitizeTailscaleLabel(String label) {
+  final sanitized = label.replaceAll(RegExp(r'[^A-Za-z0-9_-]'), '-');
+  return sanitized.isEmpty ? 'account' : sanitized;
+}
+
+Set<String> conflictingTailscaleLabels(
+  Iterable<TailscaleAccountProps> accounts,
+) {
+  final seen = <String>{};
+  final conflicts = <String>{};
+  for (final account in accounts) {
+    final name = 'TAILNET-${sanitizeTailscaleLabel(account.label)}';
+    if (!seen.add(name)) {
+      conflicts.add(name);
+    }
+  }
+  return conflicts;
+}
+
+// The account model's peer: last snapshot's data plus the user's toggle.
 @freezed
-abstract class TailscaleProps with _$TailscaleProps {
-  const factory TailscaleProps({
-    @Default(false) bool enable,
-    @JsonKey(name: 'accept-routes') @Default(true) bool acceptRoutes,
+abstract class TailscalePeerEntry with _$TailscalePeerEntry {
+  const factory TailscalePeerEntry({
+    required String key,
+    @JsonKey(name: 'dns-name') @Default('') String dnsName,
+    @JsonKey(name: 'tailscale-ips') @Default([]) List<String> tailscaleIps,
+    @JsonKey(name: 'exit-node-option') @Default(false) bool exitNodeOption,
+    @Default(true) bool enabled,
+  }) = _TailscalePeerEntry;
+
+  factory TailscalePeerEntry.fromJson(Map<String, Object?> json) =>
+      _$TailscalePeerEntryFromJson(json);
+}
+
+/// A disabled route derives no rule, so its traffic never enters the tailnet.
+@freezed
+abstract class TailscaleRouteEntry with _$TailscaleRouteEntry {
+  const factory TailscaleRouteEntry({
+    required String cidr,
+    @Default(true) bool enabled,
+  }) = _TailscaleRouteEntry;
+
+  factory TailscaleRouteEntry.fromJson(Map<String, Object?> json) =>
+      _$TailscaleRouteEntryFromJson(json);
+}
+
+@freezed
+abstract class TailscaleAccountProps with _$TailscaleAccountProps {
+  const factory TailscaleAccountProps({
+    required String id,
+    @Default('') String label,
+    @Default(true) bool enable,
+    // Migration-only passthrough holding the old <home>/tailscale directory.
+    @JsonKey(name: 'state-dir') @Default('') String stateDir,
     @Default('') String hostname,
     @JsonKey(name: 'auth-key') @Default('') String authKey,
     @JsonKey(name: 'control-url') @Default('') String controlUrl,
-    @JsonKey(name: 'disabled-routes') @Default([]) List<String> disabledRoutes,
-    @JsonKey(name: 'route-control-plane-via-proxy')
+    @Default(false) bool ephemeral,
+    @Default(true) bool udp,
+    @JsonKey(name: 'accept-routes') @Default(true) bool acceptRoutes,
+    @JsonKey(name: 'exit-node') @Default('') String exitNode,
+    @JsonKey(name: 'exit-node-allow-lan-access')
     @Default(false)
-    bool routeControlPlaneViaProxy,
-    @JsonKey(name: 'route-derp-via-proxy')
-    @Default(false)
-    bool routeDerpViaProxy,
-  }) = _TailscaleProps;
+    bool exitNodeAllowLanAccess,
+    @JsonKey(name: 'dialer-proxy') @Default('') String dialerProxy,
+    @JsonKey(name: 'magic-dns-suffix') @Default('') String magicDnsSuffix,
+    @Default([]) List<TailscalePeerEntry> peers,
+    @Default([]) List<TailscaleRouteEntry> routes,
+    @JsonKey(name: 'extra-rules') @Default([]) List<String> extraRules,
+  }) = _TailscaleAccountProps;
 
-  factory TailscaleProps.fromJson(Map<String, Object?>? json) =>
-      json == null ? defaultTailscaleProps : _$TailscalePropsFromJson(json);
+  factory TailscaleAccountProps.fromJson(Map<String, Object?> json) =>
+      _$TailscaleAccountPropsFromJson(json);
+}
+
+@freezed
+abstract class TailscaleAccounts with _$TailscaleAccounts {
+  const factory TailscaleAccounts({
+    @JsonKey(name: 'legacy-alias') @Default(false) bool legacyAlias,
+    @Default(false) bool autoFollow,
+    @Default([]) List<TailscaleAccountProps> accounts,
+  }) = _TailscaleAccounts;
+
+  factory TailscaleAccounts.fromJson(Map<String, Object?>? json) => json == null
+      ? defaultTailscaleAccounts
+      : _$TailscaleAccountsFromJson(json);
 }
 
 @freezed
@@ -531,7 +602,7 @@ abstract class Config with _$Config {
     DAVProps? davProps,
     @Default(defaultNetworkProps) NetworkProps networkProps,
     @Default(defaultVpnProps) VpnProps vpnProps,
-    @Default(defaultTailscaleProps) TailscaleProps tailscaleProps,
+    @Default(defaultTailscaleAccounts) TailscaleAccounts tailscaleAccounts,
     @JsonKey(fromJson: ThemeProps.safeFromJson) required ThemeProps themeProps,
     @Default(defaultProxiesStyleProps) ProxiesStyleProps proxiesStyleProps,
     // A new key opens every window once at defaultWindowSize.
@@ -547,7 +618,9 @@ abstract class Config with _$Config {
 
   factory Config.strictFromJson(Map<String, Object?> json) =>
       _withLegacyOverrideDns(
-        _$ConfigFromJson(_withLegacyTestUrl(_withLegacyRouteMode(json))),
+        _$ConfigFromJson(
+          _withLegacyTailscale(_withLegacyTestUrl(_withLegacyRouteMode(json))),
+        ),
         json,
       );
 
@@ -621,5 +694,33 @@ Map<String, Object?> _withLegacyRouteMode(Map<String, Object?> json) {
         ...Map<String, Object?>.from(clash),
         'tun': {...Map<String, Object?>.from(tun), 'route-address': <String>[]},
       },
+  };
+}
+
+Map<String, Object?> _withLegacyTailscale(Map<String, Object?> json) {
+  if (json.containsKey('tailscaleAccounts')) {
+    return json;
+  }
+  final legacy = json['tailscaleProps'];
+  if (legacy is! Map) {
+    return json;
+  }
+  return {
+    ...json,
+    'tailscaleAccounts': {
+      'legacy-alias': true,
+      'accounts': [
+        {
+          'id': legacyTailscaleAccountId,
+          'label': 'main',
+          'enable': legacy['enable'] == true,
+          'state-dir': 'tailscale',
+          'hostname': legacy['hostname'] ?? '',
+          'auth-key': legacy['auth-key'] ?? '',
+          'control-url': legacy['control-url'] ?? '',
+          'accept-routes': legacy['accept-routes'] ?? true,
+        },
+      ],
+    },
   };
 }

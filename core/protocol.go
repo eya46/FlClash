@@ -15,59 +15,61 @@ import (
 type CoreMethod string
 
 const (
-	messageMethod                  CoreMethod = "message"
-	initClashMethod                CoreMethod = "initClash"
-	getIsInitMethod                CoreMethod = "getIsInit"
-	forceGcMethod                  CoreMethod = "forceGc"
-	shutdownMethod                 CoreMethod = "shutdown"
-	validateConfigMethod           CoreMethod = "validateConfig"
-	decryptConfigMethod            CoreMethod = "decryptConfig"
-	validateProxiesMethod          CoreMethod = "validateProxies"
-	validateFiltersMethod          CoreMethod = "validateFilters"
-	convertProxiesMethod           CoreMethod = "convertProxies"
-	encodeShareLinksMethod         CoreMethod = "encodeShareLinks"
-	decodeShareLinksMethod         CoreMethod = "decodeShareLinks"
-	updateConfigMethod             CoreMethod = "updateConfig"
-	getProxiesMethod               CoreMethod = "getProxies"
-	changeProxyMethod              CoreMethod = "changeProxy"
-	getTrafficMethod               CoreMethod = "getTraffic"
-	getTotalTrafficMethod          CoreMethod = "getTotalTraffic"
-	resetTrafficMethod             CoreMethod = "resetTraffic"
-	asyncTestDelayMethod           CoreMethod = "asyncTestDelay"
-	probeMethod                    CoreMethod = "probe"
-	outboundIpMethod               CoreMethod = "outboundIp"
-	serviceCheckMethod             CoreMethod = "serviceCheck"
-	getConnectionsMethod           CoreMethod = "getConnections"
-	getConnectionCountMethod       CoreMethod = "getConnectionCount"
-	closeConnectionsMethod         CoreMethod = "closeConnections"
-	resetConnectionsMethod         CoreMethod = "resetConnections"
-	clearDnsCacheMethod            CoreMethod = "clearDnsCache"
-	closeConnectionMethod          CoreMethod = "closeConnection"
-	getExternalProvidersMethod     CoreMethod = "getExternalProviders"
-	getExternalProviderMethod      CoreMethod = "getExternalProvider"
-	getMemoryStatsMethod           CoreMethod = "getMemoryStats"
-	updateGeoDataMethod            CoreMethod = "updateGeoData"
-	updateExternalProviderMethod   CoreMethod = "updateExternalProvider"
-	sideLoadExternalProviderMethod CoreMethod = "sideLoadExternalProvider"
-	startLogMethod                 CoreMethod = "startLog"
-	stopLogMethod                  CoreMethod = "stopLog"
-	startListenerMethod            CoreMethod = "startListener"
-	stopListenerMethod             CoreMethod = "stopListener"
-	updateDnsMethod                CoreMethod = "updateDns"
-	crashMethod                    CoreMethod = "crash"
-	setupConfigMethod              CoreMethod = "setupConfig"
-	getConfigMethod                CoreMethod = "getConfig"
-	getProfileBaseMethod           CoreMethod = "getProfileBase"
-	getProfileOutboundsMethod      CoreMethod = "getProfileOutbounds"
-	getProxyDefinitionMethod       CoreMethod = "getProxyDefinition"
-	buildProfileMethod             CoreMethod = "buildProfile"
-	dumpRuleSetMethod              CoreMethod = "dumpRuleSet"
-	compileRuleSetMethod           CoreMethod = "compileRuleSet"
-	clearEffectMethod              CoreMethod = "clearEffect"
-	watchRouteMethod               CoreMethod = "watchRoute"
-	checkRoutesMethod              CoreMethod = "checkRoutes"
-	getTailscaleStateMethod        CoreMethod = "getTailscaleState"
-	reconnectTailscaleMethod       CoreMethod = "reconnectTailscale"
+	messageMethod                   CoreMethod = "message"
+	initClashMethod                 CoreMethod = "initClash"
+	getIsInitMethod                 CoreMethod = "getIsInit"
+	forceGcMethod                   CoreMethod = "forceGc"
+	shutdownMethod                  CoreMethod = "shutdown"
+	validateConfigMethod            CoreMethod = "validateConfig"
+	decryptConfigMethod             CoreMethod = "decryptConfig"
+	validateProxiesMethod           CoreMethod = "validateProxies"
+	validateFiltersMethod           CoreMethod = "validateFilters"
+	convertProxiesMethod            CoreMethod = "convertProxies"
+	encodeShareLinksMethod          CoreMethod = "encodeShareLinks"
+	decodeShareLinksMethod          CoreMethod = "decodeShareLinks"
+	updateConfigMethod              CoreMethod = "updateConfig"
+	getProxiesMethod                CoreMethod = "getProxies"
+	changeProxyMethod               CoreMethod = "changeProxy"
+	getTrafficMethod                CoreMethod = "getTraffic"
+	getTotalTrafficMethod           CoreMethod = "getTotalTraffic"
+	resetTrafficMethod              CoreMethod = "resetTraffic"
+	asyncTestDelayMethod            CoreMethod = "asyncTestDelay"
+	probeMethod                     CoreMethod = "probe"
+	outboundIpMethod                CoreMethod = "outboundIp"
+	serviceCheckMethod              CoreMethod = "serviceCheck"
+	getConnectionsMethod            CoreMethod = "getConnections"
+	getConnectionCountMethod        CoreMethod = "getConnectionCount"
+	closeConnectionsMethod          CoreMethod = "closeConnections"
+	resetConnectionsMethod          CoreMethod = "resetConnections"
+	clearDnsCacheMethod             CoreMethod = "clearDnsCache"
+	closeConnectionMethod           CoreMethod = "closeConnection"
+	getExternalProvidersMethod      CoreMethod = "getExternalProviders"
+	getExternalProviderMethod       CoreMethod = "getExternalProvider"
+	getMemoryStatsMethod            CoreMethod = "getMemoryStats"
+	updateGeoDataMethod             CoreMethod = "updateGeoData"
+	updateExternalProviderMethod    CoreMethod = "updateExternalProvider"
+	sideLoadExternalProviderMethod  CoreMethod = "sideLoadExternalProvider"
+	startLogMethod                  CoreMethod = "startLog"
+	stopLogMethod                   CoreMethod = "stopLog"
+	startListenerMethod             CoreMethod = "startListener"
+	stopListenerMethod              CoreMethod = "stopListener"
+	updateDnsMethod                 CoreMethod = "updateDns"
+	crashMethod                     CoreMethod = "crash"
+	setupConfigMethod               CoreMethod = "setupConfig"
+	getConfigMethod                 CoreMethod = "getConfig"
+	getProfileBaseMethod            CoreMethod = "getProfileBase"
+	getProfileOutboundsMethod       CoreMethod = "getProfileOutbounds"
+	getProxyDefinitionMethod        CoreMethod = "getProxyDefinition"
+	buildProfileMethod              CoreMethod = "buildProfile"
+	dumpRuleSetMethod               CoreMethod = "dumpRuleSet"
+	compileRuleSetMethod            CoreMethod = "compileRuleSet"
+	clearEffectMethod               CoreMethod = "clearEffect"
+	watchRouteMethod                CoreMethod = "watchRoute"
+	checkRoutesMethod               CoreMethod = "checkRoutes"
+	getTailscaleAccountsStateMethod CoreMethod = "getTailscaleAccountsState"
+	startTailscaleLoginMethod       CoreMethod = "startTailscaleLogin"
+	logoutTailscaleMethod           CoreMethod = "logoutTailscale"
+	reconnectTailscaleMethod        CoreMethod = "reconnectTailscale"
 )
 
 type MessageType string
@@ -101,11 +103,11 @@ type DecryptConfigParams struct {
 }
 
 type SetupParams struct {
-	SelectedMap    map[string]string `json:"selected-map"`
-	TestURL        string            `json:"test-url"`
-	SkipCertVerify bool              `json:"skip-cert-verify"`
-	Tailscale      *tailscaleSchema  `json:"tailscale"`
-	Base           *SetupBase        `json:"base,omitempty"`
+	SelectedMap    map[string]string        `json:"selected-map"`
+	TestURL        string                   `json:"test-url"`
+	SkipCertVerify bool                     `json:"skip-cert-verify"`
+	Tailscale      *tailscaleAccountsSchema `json:"tailscale"`
+	Base           *SetupBase               `json:"base,omitempty"`
 }
 
 type SetupBase struct {
@@ -133,34 +135,55 @@ type ProfileOutbound struct {
 }
 
 type UpdateParams struct {
-	Tun                *tunSchema         `json:"tun"`
-	AllowLan           *bool              `json:"allow-lan"`
-	MixedPort          *int               `json:"mixed-port"`
-	FindProcessMode    *P.FindProcessMode `json:"find-process-mode"`
-	Mode               *tunnel.TunnelMode `json:"mode"`
-	LogLevel           *log.LogLevel      `json:"log-level"`
-	IPv6               *bool              `json:"ipv6"`
-	TCPConcurrent      *bool              `json:"tcp-concurrent"`
-	ExternalController *string            `json:"external-controller"`
-	Secret             *string            `json:"secret"`
-	UnifiedDelay       *bool              `json:"unified-delay"`
-	Authentication     *[]string          `json:"authentication"`
-	GeoAutoUpdate      *bool              `json:"geo-auto-update"`
-	GeoUpdateInterval  *int               `json:"geo-update-interval"`
-	GeoXUrl            map[string]string  `json:"geox-url"`
-	SkipCertVerify     *bool              `json:"skip-cert-verify"`
-	Tailscale          *tailscaleSchema   `json:"tailscale"`
+	Tun                *tunSchema               `json:"tun"`
+	AllowLan           *bool                    `json:"allow-lan"`
+	MixedPort          *int                     `json:"mixed-port"`
+	FindProcessMode    *P.FindProcessMode       `json:"find-process-mode"`
+	Mode               *tunnel.TunnelMode       `json:"mode"`
+	LogLevel           *log.LogLevel            `json:"log-level"`
+	IPv6               *bool                    `json:"ipv6"`
+	TCPConcurrent      *bool                    `json:"tcp-concurrent"`
+	ExternalController *string                  `json:"external-controller"`
+	Secret             *string                  `json:"secret"`
+	UnifiedDelay       *bool                    `json:"unified-delay"`
+	Authentication     *[]string                `json:"authentication"`
+	GeoAutoUpdate      *bool                    `json:"geo-auto-update"`
+	GeoUpdateInterval  *int                     `json:"geo-update-interval"`
+	GeoXUrl            map[string]string        `json:"geox-url"`
+	SkipCertVerify     *bool                    `json:"skip-cert-verify"`
+	Tailscale          *tailscaleAccountsSchema `json:"tailscale"`
 }
 
-type tailscaleSchema struct {
-	Enable                    bool      `json:"enable"`
-	AcceptRoutes              *bool     `json:"accept-routes"`
-	Hostname                  *string   `json:"hostname"`
-	AuthKey                   *string   `json:"auth-key"`
-	ControlURL                *string   `json:"control-url"`
-	DisabledRoutes            *[]string `json:"disabled-routes"`
-	RouteControlPlaneViaProxy *bool     `json:"route-control-plane-via-proxy"`
-	RouteDERPViaProxy         *bool     `json:"route-derp-via-proxy"`
+// The v2 tailscale schema: one tailnet account maps to exactly one outbound
+// with its own state directory. Literal arrays arrive sorted by the host;
+// the accounts order is the user order and drives rule priority.
+type tailscaleAccountsSchema struct {
+	LegacyAlias bool                      `json:"legacy-alias"`
+	Accounts    []*tailscaleAccountSchema `json:"accounts"`
+}
+
+type tailscaleAccountSchema struct {
+	ID                     string   `json:"id"`
+	Label                  string   `json:"label"`
+	Enable                 bool     `json:"enable"`
+	StateDir               string   `json:"state-dir"`
+	Hostname               string   `json:"hostname"`
+	AuthKey                string   `json:"auth-key"`
+	ControlURL             string   `json:"control-url"`
+	Ephemeral              bool     `json:"ephemeral"`
+	UDP                    bool     `json:"udp"`
+	AcceptRoutes           bool     `json:"accept-routes"`
+	ExitNode               string   `json:"exit-node"`
+	ExitNodeAllowLANAccess bool     `json:"exit-node-allow-lan-access"`
+	DialerProxy            string   `json:"dialer-proxy"`
+	PeerCidrs              []string `json:"peer-cidrs"`
+	PeerDomains            []string `json:"peer-domains"`
+	RouteCidrs             []string `json:"route-cidrs"`
+	ExtraRules             []string `json:"extra-rules"`
+}
+
+type tailnetAccountParams struct {
+	ID string `json:"id"`
 }
 
 type tunSchema struct {

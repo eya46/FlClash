@@ -181,15 +181,17 @@ func applyConfigLocked(params *SetupParams) error {
 		cfg = fallback
 	}
 
-	if params.Tailscale != nil && params.Tailscale.Enable {
-		if injectErr := injectTailscaleProxy(cfg, params.Tailscale); injectErr != nil {
-			logError("tailscale outbound not applied: %v", injectErr)
-		}
+	// Capture the outgoing proxy map before the apply swaps it: the tailnet
+	// sweep after hub.ApplyConfig closes the tsnet servers it displaced.
+	previousProxies := tunnel.AllProxies()
+	if injectErr := injectTailnet(cfg, params.Tailscale); injectErr != nil {
+		logError("tailnet injection not applied: %v", injectErr)
 	}
 
 	currentSetupParams = params
 	currentConfig = cfg
 	hub.ApplyConfig(cfg)
+	closeReplacedTailnet(previousProxies, cfg.Proxies)
 	patchSelectGroup(params.SelectedMap)
 	bumpRouteEpoch()
 	updateListeners(cfg)
@@ -265,9 +267,10 @@ func updateConfig(params *UpdateParams) error {
 		changeRoute(routeChange)
 	}
 	if params.Tailscale != nil && !sameTailscaleSchema(params.Tailscale, currentSetupParams.GetTailscale()) {
-		// The Tailscale node lives inside an outbound, so changing its settings
-		// means rebuilding that proxy: re-apply the running setup with the new
-		// schema, which restarts tsnet from the same state directory.
+		// Every tailnet node lives inside an outbound, so changing the
+		// accounts means rebuilding them: re-apply the running setup with the
+		// new schema, which restarts each tsnet server from its own state
+		// directory.
 		reapply := *currentSetupParams
 		reapply.Tailscale = params.Tailscale
 		if err := applyConfigLocked(&reapply); err != nil {

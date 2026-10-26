@@ -48,7 +48,7 @@ final class UpdateParamsProvider
   }
 }
 
-String _$updateParamsHash() => r'c6cbf697ca7b9c5cd46369fac4dce091a1a43eab';
+String _$updateParamsHash() => r'40e2318f3ba08f4f4a91397df97ed38ad4880441';
 
 @ProviderFor(setupPatch)
 final setupPatchProvider = SetupPatchProvider._();
@@ -437,7 +437,7 @@ final class SharedStateProvider
   }
 }
 
-String _$sharedStateHash() => r'823203863aa3c01df38de1d10a8af25bf136600e';
+String _$sharedStateHash() => r'4214ddce872cb3832f9ac4982447b60ceb923494';
 
 @ProviderFor(vpnRouteAddress)
 final vpnRouteAddressProvider = VpnRouteAddressProvider._();
@@ -1793,7 +1793,7 @@ final class ProxyStateProvider
   }
 }
 
-String _$proxyStateHash() => r'2ec6e0476829c812ccd6228822fba8637f468f3f';
+String _$proxyStateHash() => r'af68763f802027e0601ab586e4f9459a478f8a6f';
 
 /// Watching the delay map instead would drop nodes one probe at a time, and
 /// reading it on any other rebuild would drop them whenever something

@@ -93,9 +93,16 @@ mixin CoreInterface {
 
   FutureOr<CoreMemoryStats?> getMemoryStats();
 
-  FutureOr<String> getTailscaleState();
+  FutureOr<String> getTailscaleAccountsState();
+
+  FutureOr<String> startTailscaleLogin(String id);
+
+  FutureOr<String> logoutTailscale(String id);
 
   FutureOr<String> reconnectTailscale();
+
+  /// Only the tailnet accounts are sent; the Core leaves absent keys alone.
+  FutureOr<String> updateTailscale(TailscaleAccountsSchema schema);
 
   FutureOr<void> resetTraffic();
 
@@ -656,12 +663,39 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  Future<String> getTailscaleState() async {
-    return await _invokeMethod<String>(method: CoreMethod.getTailscaleState) ?? '';
+  Future<String> getTailscaleAccountsState() async {
+    return await _invokeMethod<String>(
+          method: CoreMethod.getTailscaleAccountsState,
+        ) ??
+        '';
+  }
+
+  @override
+  Future<String> startTailscaleLogin(String id) async {
+    return _invokeMessage(
+      method: CoreMethod.startTailscaleLogin,
+      arguments: {'id': id},
+    );
+  }
+
+  @override
+  Future<String> logoutTailscale(String id) async {
+    return _invokeMessage(
+      method: CoreMethod.logoutTailscale,
+      arguments: {'id': id},
+    );
   }
 
   @override
   Future<String> reconnectTailscale() async {
     return _invokeMessage(method: CoreMethod.reconnectTailscale);
+  }
+
+  @override
+  Future<String> updateTailscale(TailscaleAccountsSchema schema) async {
+    return _invokeMessage(
+      method: CoreMethod.updateConfig,
+      arguments: {'tailscale': schema.toJson()},
+    );
   }
 }

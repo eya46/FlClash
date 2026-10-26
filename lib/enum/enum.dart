@@ -477,6 +477,7 @@ enum FunctionTag {
   dialerLoopNotifier,
   reloadPackages,
   clearDnsCache,
+  tailscaleAutoFollow,
 }
 
 enum DashboardWidget {
