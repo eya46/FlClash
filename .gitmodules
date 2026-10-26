@@ -2,9 +2,3 @@
 	path = core/Clash.Meta
 	url = https://github.com/eya46/Clash.Meta.git
 	branch = tsnet
-[submodule "plugins/flutter_distributor"]
-	path = plugins/flutter_distributor
-	url = https://github.com/eya46/flutter_distributor.git
-	branch = tsnet
-
-
