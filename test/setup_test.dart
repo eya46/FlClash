@@ -62,7 +62,8 @@ hooks:
     });
 
     test('packages every Linux format on every architecture', () {
-      expect(setup.createPackageTargets('linux', null), 'deb,appimage,rpm');
+      // eya46 fork: no rpm — RPM rejects '-' in semver prerelease versions.
+      expect(setup.createPackageTargets('linux', null), 'deb,appimage');
       expect(setup.createPackageTargets('linux', 'deb'), 'deb');
       expect(setup.createPackageTargets('macos', null), 'dmg');
     });
