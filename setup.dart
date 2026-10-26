@@ -7,7 +7,9 @@ import 'package:yaml/yaml.dart';
 
 const _allTargets = <String, String>{
   'android': 'apk',
-  'linux': 'deb,appimage,rpm',
+  // eya46 fork: no rpm — RPM rejects '-' in the Version field, incompatible
+  // with semver prerelease versions like 0.9.2-tsnet.x.
+  'linux': 'deb,appimage',
   'macos': 'dmg',
   'windows': 'exe,zip',
 };
@@ -273,7 +275,7 @@ Future<int> _ensureLinuxDependencies() async {
     ['libayatana-appindicator3-dev'],
     ['libsecret-1-dev'],
     ['locate'],
-    ['rpm', 'patchelf'],
+    ['patchelf'],
     ['libfuse2'],
   ];
 
