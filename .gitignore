@@ -27,6 +27,7 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+/.widget_preview/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
@@ -41,9 +42,12 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-#AI generated
-CLAUDE.md
-/.claude
+# Claude Code - ignore user-specific settings only
+.claude/settings.local.json
+.claude/worktrees/
+
+# Documentation (generated/planning artifacts)
+docs/
 
 
 # Android Studio will place build artifacts here
@@ -54,6 +58,7 @@ CLAUDE.md
 /android/**/build
 /android/common/**/.**/
 /android/common/local.*
+# Left in place by builds from before the gomobile Core.
 /android/core/**/includes/
 /android/core/**/cmake-build-*/
 /android/core/**/jniLibs/
@@ -63,8 +68,17 @@ CLAUDE.md
 /android/app/src/main/jniLibs/
 /services/helper/target
 /macos/**/Package.resolved
+/macos/build/
+/env.json
+/core_sha256.json
+/plugins/rust_api/.claude/
+/issue-triage/
 devtools_options.yaml
 
 # FVM Version Cache
 .fvm/
 .fvmrc
+/coverage/lcov.info
+
+# Local Go build output
+core/core.exe

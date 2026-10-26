@@ -1,0 +1,19 @@
+mixed-port: 7890
+mode: rule
+log-level: info
+allow-lan: false
+ipv6: false
+dns:
+  enable: true
+  listen: 127.0.0.1:1053
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+proxies:
+  - {name: DIRECT-PROBE, type: direct}
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies: [DIRECT-PROBE]
+rules:
+  - MATCH,PROXY

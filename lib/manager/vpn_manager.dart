@@ -1,10 +1,10 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/state.dart';
-import 'package:fl_clash/state.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class VpnManager extends ConsumerStatefulWidget {
@@ -20,33 +20,30 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
   @override
   void initState() {
     super.initState();
-    ref.listenManual(vpnStateProvider, (prev, next) {
-      if (prev != next) {
-        showTip(next);
-      }
-    });
+    ref.listenManual(
+      vpnOptionsProvider.select((state) => state.value?.effective),
+      (prev, next) {
+        final running = ref.read(runningVpnOptionsProvider)?.effective;
+        if (next != null &&
+            prev != next &&
+            running != null &&
+            running != next) {
+          _showRestartTip();
+        }
+      },
+    );
   }
 
-  void showTip(VpnState state) {
-    throttler.call(
-      FunctionTag.vpnTip,
-      () {
-        if (!ref.read(isStartProvider) || state == globalState.lastVpnState) {
-          return;
-        }
-        globalState.showNotifier(
-          appLocalizations.vpnConfigChangeDetected,
-          actionState: MessageActionState(
-            actionText: appLocalizations.restart,
-            action: () async {
-              await globalState.handleStop();
-              await appController.updateStatus(true);
-            },
-          ),
-        );
-      },
-      duration: const Duration(seconds: 6),
-      fire: true,
+  void _showRestartTip() {
+    dialogs.showNotifier(
+      currentAppLocalizations.vpnConfigChangeDetected,
+      level: MessageLevel.warning,
+      actionState: MessageActionState(
+        actionText: currentAppLocalizations.restart,
+        action: () async {
+          await ref.read(setupActionProvider.notifier).restartVpn();
+        },
+      ),
     );
   }
 

@@ -1,30 +1,30 @@
-package main
+package core
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime/debug"
-	"slices"
+	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/adapter/outbound"
-	TS "github.com/metacubex/mihomo/component/tailscale"
-	C "github.com/metacubex/mihomo/constant"
+	"github.com/metacubex/mihomo/config"
 	"github.com/metacubex/mihomo/log"
+	"github.com/metacubex/mihomo/tunnel"
+	"github.com/metacubex/tailscale/ipn/ipnstate"
+	"github.com/metacubex/tailscale/tsnet"
 )
 
-const defaultTailscaleAcceptRoutes = true
-
-var tailscaleApplyMu sync.Mutex
-
-func init() {
-	setupCrashLog()
-	TS.SetProxy(adapter.NewProxy(outbound.NewTailscale()))
-}
+// The Tailscale node runs as a mihomo outbound of the official `tailscale`
+// type, so profiles reference it by this name in groups and rules. Anything
+// the outbound does not model (disabled-routes, the control-plane and DERP
+// bypass toggles of the old in-tree manager) has no effect here.
+const tailscaleProxyName = "TAILSCALE"
 
 func setupCrashLog() {
 	crashPath := filepath.Join(os.TempDir(), "flclash_crash.log")
@@ -35,122 +35,48 @@ func setupCrashLog() {
 	debug.SetCrashOutput(f, debug.CrashOptions{})
 }
 
-func applyTailscale(schema *tailscaleSchema) error {
-	startedAt := time.Now()
-	config, err := toTailscaleConfig(schema)
+func init() {
+	setupCrashLog()
+}
+
+// injectTailscaleProxy adds the FlClash-managed Tailscale outbound to the
+// parsed config before it is applied, keeping the node's state in
+// <home>/tailscale as before. The tsnet server starts when mihomo dials the
+// proxy or resolves its DNS client.
+func injectTailscaleProxy(cfg *config.Config, schema *tailscaleSchema) error {
+	if cfg == nil || schema == nil || !schema.Enable {
+		return nil
+	}
+	option := outbound.TailscaleOption{
+		UDP: true,
+	}
+	option.Name = tailscaleProxyName
+	option.Hostname = trimString(schema.Hostname)
+	option.AuthKey = trimString(schema.AuthKey)
+	option.ControlURL = trimString(schema.ControlURL)
+	if schema.AcceptRoutes != nil {
+		option.AcceptRoutes = schema.AcceptRoutes
+	}
+	proxy, err := outbound.NewTailscale(option)
 	if err != nil {
-		return err
+		return fmt.Errorf("build tailscale outbound: %w", err)
 	}
-	log.Infoln("[TAILSCALE] core apply start: %s", summarizeCoreTailscaleConfig(config))
-	if config.Enable && config.Dir != "" {
-		logsDir := filepath.Join(config.Dir, "logs")
-		if err := os.MkdirAll(logsDir, 0o755); err != nil {
-			return fmt.Errorf("create tailscale logs dir: %w", err)
-		}
-		if err := os.Setenv("TS_LOGS_DIR", logsDir); err != nil {
-			return fmt.Errorf("set tailscale logs dir: %w", err)
-		}
+	cfg.Proxies[tailscaleProxyName] = adapter.NewProxy(proxy)
+	names := config.GetProxyNameList()
+	if !sortSearchString(names, tailscaleProxyName) {
+		config.SetProxyNameList(append(names, tailscaleProxyName))
 	}
-	if err := TS.ApplyConfig(config); err != nil {
-		log.Warnln("[TAILSCALE] core apply failed after %s: %s", time.Since(startedAt).Round(time.Millisecond), err.Error())
-		return err
-	}
-	log.Infoln("[TAILSCALE] core apply finished in %s", time.Since(startedAt).Round(time.Millisecond))
+	log.Infoln("[TAILSCALE] outbound %s injected (acceptRoutes=%v)", tailscaleProxyName, schema.AcceptRoutes != nil && *schema.AcceptRoutes)
 	return nil
 }
 
-func closeTailscale() {
-	startedAt := time.Now()
-	log.Infoln("[TAILSCALE] core close start")
-	if err := TS.Close(); err != nil {
-		log.Warnln("[TAILSCALE] close error: %s", err.Error())
-		return
-	}
-	log.Infoln("[TAILSCALE] core close finished in %s", time.Since(startedAt).Round(time.Millisecond))
-}
-
-func reconnectTailscale() error {
-	startedAt := time.Now()
-	log.Infoln("[TAILSCALE] core reconnect start")
-	if err := TS.Reconnect(); err != nil {
-		log.Warnln("[TAILSCALE] core reconnect failed after %s: %s", time.Since(startedAt).Round(time.Millisecond), err.Error())
-		return err
-	}
-	log.Infoln("[TAILSCALE] core reconnect finished in %s", time.Since(startedAt).Round(time.Millisecond))
-	return nil
-}
-
-func applyTailscaleAsync(schema *tailscaleSchema) {
-	snapshot := cloneTailscaleSchema(schema)
-	go func() {
-		queuedAt := time.Now()
-		defer func() {
-			if r := recover(); r != nil {
-				log.Errorln("[TAILSCALE] panic in applyTailscale: %v", r)
-			}
-		}()
-		log.Infoln("[TAILSCALE] core async apply queued")
-		tailscaleApplyMu.Lock()
-		defer tailscaleApplyMu.Unlock()
-		log.Infoln("[TAILSCALE] core async apply lock acquired after %s", time.Since(queuedAt).Round(time.Millisecond))
-
-		if err := applyTailscale(snapshot); err != nil {
-			log.Warnln("[TAILSCALE] apply config error: %s", err.Error())
+func sortSearchString(list []string, value string) bool {
+	for _, item := range list {
+		if item == value {
+			return true
 		}
-	}()
-}
-
-func summarizeCoreTailscaleConfig(config TS.Config) string {
-	return fmt.Sprintf(
-		"enable=%v acceptRoutes=%v dir=%q hostname=%q controlURL=%q authKeySet=%v disabledRoutes=%d",
-		config.Enable,
-		config.AcceptRoutes,
-		config.Dir,
-		config.Hostname,
-		config.ControlURL,
-		strings.TrimSpace(config.AuthKey) != "",
-		len(config.DisabledRoutes),
-	)
-}
-
-func toTailscaleConfig(schema *tailscaleSchema) (TS.Config, error) {
-	acceptRoutes := defaultTailscaleAcceptRoutes
-	if schema != nil && schema.AcceptRoutes != nil {
-		acceptRoutes = *schema.AcceptRoutes
 	}
-
-	config := TS.Config{
-		Enable:       schema != nil && schema.Enable,
-		AcceptRoutes: acceptRoutes,
-	}
-	if schema != nil && schema.DisabledRoutes != nil {
-		config.DisabledRoutes = append([]string(nil), (*schema.DisabledRoutes)...)
-	}
-	if schema != nil && schema.RouteControlPlaneViaProxy != nil {
-		config.RouteControlPlaneViaProxy = *schema.RouteControlPlaneViaProxy
-	}
-	if schema != nil && schema.RouteDERPViaProxy != nil {
-		config.RouteDERPViaProxy = *schema.RouteDERPViaProxy
-	}
-	if !config.Enable {
-		return config, nil
-	}
-
-	homeDir := strings.TrimSpace(C.Path.HomeDir())
-	if homeDir == "" {
-		return TS.Config{}, fmt.Errorf("tailscale home dir is empty")
-	}
-
-	stateDir := filepath.Join(homeDir, "tailscale")
-	if err := os.MkdirAll(stateDir, 0o755); err != nil {
-		return TS.Config{}, fmt.Errorf("create tailscale state dir: %w", err)
-	}
-
-	config.Dir = stateDir
-	config.Hostname = trimString(schema.Hostname)
-	config.AuthKey = trimString(schema.AuthKey)
-	config.ControlURL = trimString(schema.ControlURL)
-	return config, nil
+	return false
 }
 
 func trimString(value *string) string {
@@ -160,52 +86,236 @@ func trimString(value *string) string {
 	return strings.TrimSpace(*value)
 }
 
-func normalizeTailscaleRoutes(values []string) []string {
-	routes := make([]string, 0, len(values))
-	for _, value := range values {
-		value = strings.TrimSpace(value)
-		if value == "" {
-			continue
-		}
-		routes = append(routes, value)
+// closeTailscale tears the node down on shutdown; mihomo closes the outbound
+// itself too, this covers the paths where the config was never re-applied.
+func closeTailscale() {
+	proxy := findTailscaleOutbound()
+	if proxy == nil {
+		return
 	}
-	slices.Sort(routes)
-	return routes
+	startedAt := time.Now()
+	log.Infoln("[TAILSCALE] core close start")
+	if err := proxy.Close(); err != nil {
+		log.Warnln("[TAILSCALE] close error: %s", err.Error())
+		return
+	}
+	log.Infoln("[TAILSCALE] core close finished in %s", time.Since(startedAt).Round(time.Millisecond))
 }
 
-func cloneTailscaleSchema(schema *tailscaleSchema) *tailscaleSchema {
-	if schema == nil {
-		return nil
+// The outbound only carries Server when built with tailscale support
+// (with_gvisor and not no_tailscale); the stub build satisfies none of this,
+// so the assertion fails and the state falls back to "not available".
+type tailscaleOutbound interface {
+	Close() error
+	Server() *tsnet.Server
+}
+
+func findTailscaleOutbound() tailscaleOutbound {
+	for _, proxy := range tunnel.AllProxies() {
+		outboundProxy, ok := proxy.Adapter().(tailscaleOutbound)
+		if ok {
+			return outboundProxy
+		}
+	}
+	return nil
+}
+
+// handleReconnectTailscale re-applies the running config, which rebuilds the
+// Tailscale outbound and its tsnet server; the state directory keeps the node
+// logged in, so this is the reconnect the UI asks for.
+func handleReconnectTailscale() error {
+	configMu.Lock()
+	defer configMu.Unlock()
+	if currentSetupParams == nil {
+		return fmt.Errorf("tailscale reconnect: config not applied")
+	}
+	startedAt := time.Now()
+	log.Infoln("[TAILSCALE] core reconnect start")
+	err := applyConfigLocked(currentSetupParams)
+	if err != nil {
+		log.Warnln("[TAILSCALE] core reconnect failed after %s: %s", time.Since(startedAt).Round(time.Millisecond), err.Error())
+		return err
+	}
+	log.Infoln("[TAILSCALE] core reconnect finished in %s", time.Since(startedAt).Round(time.Millisecond))
+	return nil
+}
+
+func handleGetTailscaleState() string {
+	data, err := json.Marshal(tailscaleSnapshot())
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func tailscaleEnabled() bool {
+	if currentSetupParams == nil || currentSetupParams.Tailscale == nil {
+		return false
+	}
+	return currentSetupParams.Tailscale.Enable
+}
+
+func tailscaleSnapshot() map[string]any {
+	state := map[string]any{
+		"enable":            tailscaleEnabled(),
+		"backend-state":     "NeedsLogin",
+		"auth-url":          "",
+		"tailscale-ips":     []string{},
+		"routes":            []string{},
+		"tailnet":           "",
+		"magic-dns-suffix":  "",
+		"error":             "",
+		"peer-count":        0,
+		"online-peer-count": 0,
+		"last-handshake":    "",
+		"peers":             []map[string]any{},
+		"derp":              []map[string]any{},
+	}
+	if currentSetupParams != nil && currentSetupParams.Tailscale != nil {
+		schema := currentSetupParams.Tailscale
+		state["accept-routes"] = schema.AcceptRoutes != nil && *schema.AcceptRoutes
+		if schema.DisabledRoutes != nil {
+			routes := make([]string, 0, len(*schema.DisabledRoutes))
+			for _, route := range *schema.DisabledRoutes {
+				if route = strings.TrimSpace(route); route != "" {
+					routes = append(routes, route)
+				}
+			}
+			sort.Strings(routes)
+			state["disabled-routes"] = routes
+		}
 	}
 
-	cloned := *schema
-	if schema.AcceptRoutes != nil {
-		value := *schema.AcceptRoutes
-		cloned.AcceptRoutes = &value
+	proxy := findTailscaleOutbound()
+	if proxy == nil {
+		if !tailscaleEnabled() {
+			state["backend-state"] = ""
+		}
+		return state
 	}
-	if schema.Hostname != nil {
-		value := *schema.Hostname
-		cloned.Hostname = &value
+	server := proxy.Server()
+	if server == nil {
+		return state
 	}
-	if schema.AuthKey != nil {
-		value := *schema.AuthKey
-		cloned.AuthKey = &value
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	client, err := server.LocalClient()
+	if err != nil {
+		state["error"] = err.Error()
+		return state
 	}
-	if schema.ControlURL != nil {
-		value := *schema.ControlURL
-		cloned.ControlURL = &value
+	status, err := client.Status(ctx)
+	if err != nil {
+		state["error"] = err.Error()
+		return state
 	}
-	if schema.DisabledRoutes != nil {
-		value := append([]string(nil), (*schema.DisabledRoutes)...)
-		cloned.DisabledRoutes = &value
+	if status == nil {
+		return state
 	}
-	if schema.RouteControlPlaneViaProxy != nil {
-		value := *schema.RouteControlPlaneViaProxy
-		cloned.RouteControlPlaneViaProxy = &value
+
+	state["backend-state"] = status.BackendState
+	state["auth-url"] = status.AuthURL
+	if status.CurrentTailnet != nil {
+		state["tailnet"] = status.CurrentTailnet.Name
+		state["magic-dns-suffix"] = status.CurrentTailnet.MagicDNSSuffix
 	}
-	if schema.RouteDERPViaProxy != nil {
-		value := *schema.RouteDERPViaProxy
-		cloned.RouteDERPViaProxy = &value
+	ips := make([]string, 0, len(status.TailscaleIPs))
+	for _, addr := range status.TailscaleIPs {
+		ips = append(ips, addr.String())
 	}
-	return &cloned
+	state["tailscale-ips"] = ips
+
+	peers := make([]map[string]any, 0, len(status.Peer))
+	online := 0
+	var lastHandshake time.Time
+	for _, peer := range status.Peer {
+		if peer == nil {
+			continue
+		}
+		if peer.Online {
+			online++
+		}
+		if peer.LastHandshake.After(lastHandshake) {
+			lastHandshake = peer.LastHandshake
+		}
+		peers = append(peers, peerView(peer))
+	}
+	sort.Slice(peers, func(i, j int) bool {
+		return peers[i]["host-name"].(string) < peers[j]["host-name"].(string)
+	})
+	state["peers"] = peers
+	state["peer-count"] = len(peers)
+	state["online-peer-count"] = online
+	state["last-handshake"] = formatHandshake(lastHandshake)
+
+	if status.Self != nil {
+		routes := make([]string, 0, len(status.Self.PrimaryRoutes.AsSlice()))
+		for _, prefix := range status.Self.PrimaryRoutes.AsSlice() {
+			routes = append(routes, prefix.String())
+		}
+		sort.Strings(routes)
+		state["routes"] = routes
+	}
+	return state
+}
+
+func peerView(peer *ipnstate.PeerStatus) map[string]any {
+	connection := "idle"
+	switch {
+	case !peer.Online:
+		connection = "offline"
+	case peer.CurAddr != "":
+		connection = "direct"
+	case peer.Relay != "":
+		connection = "derp"
+	}
+	ips := make([]string, 0, len(peer.TailscaleIPs))
+	for _, addr := range peer.TailscaleIPs {
+		ips = append(ips, addr.String())
+	}
+	routes := make([]string, 0, len(peer.PrimaryRoutes.AsSlice()))
+	for _, prefix := range peer.PrimaryRoutes.AsSlice() {
+		routes = append(routes, prefix.String())
+	}
+	return map[string]any{
+		"host-name":        peer.HostName,
+		"dns-name":         peer.DNSName,
+		"tailscale-ips":    ips,
+		"primary-routes":   routes,
+		"online":           peer.Online,
+		"active":           peer.Active,
+		"exit-node":        peer.ExitNode,
+		"exit-node-option": peer.ExitNodeOption,
+		"connection-type":  connection,
+		"cur-addr":         peer.CurAddr,
+		"relay":            peer.Relay,
+		"last-handshake":   formatHandshake(peer.LastHandshake),
+		"rx-bytes":         peer.RxBytes,
+		"tx-bytes":         peer.TxBytes,
+	}
+}
+
+func formatHandshake(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+	return t.Format(time.RFC3339)
+}
+
+func sameTailscaleSchema(a, b *tailscaleSchema) bool {
+	if a == nil || b == nil {
+		return a == b
+	}
+	left, leftErr := json.Marshal(a)
+	right, rightErr := json.Marshal(b)
+	return leftErr == nil && rightErr == nil && string(left) == string(right)
+}
+
+// GetTailscale is nil-safe access to the applied setup's Tailscale schema.
+func (params *SetupParams) GetTailscale() *tailscaleSchema {
+	if params == nil {
+		return nil
+	}
+	return params.Tailscale
 }

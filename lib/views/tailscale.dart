@@ -244,10 +244,10 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
   List<Widget> _buildStatusItems(TailscaleState? tailscaleState) {
     if (tailscaleState == null) {
       return [
-        ListItem(
-          leading: const Icon(Icons.info_outline),
-          title: const Text('Status'),
-          subtitle: const Text('Waiting for Tailscale state...'),
+        const ListItem(
+          leading: Icon(Icons.info_outline),
+          title: Text('Status'),
+          subtitle: Text('Waiting for Tailscale state...'),
         ),
       ];
     }
@@ -268,7 +268,7 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
               )
             : const Text('Tap to view connection details'),
         trailing: const Icon(Icons.chevron_right),
-        delegate: const OpenDelegate(widget: TailscaleStatusView()),
+        widget: const TailscaleStatusView(),
       ),
     ];
 
@@ -352,10 +352,10 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
     final routes = tailscaleState?.routes ?? const <String>[];
     if (routes.isEmpty) {
       return [
-        ListItem(
-          leading: const Icon(Icons.route_outlined),
-          title: const Text('Advertised Routes'),
-          subtitle: const Text(
+        const ListItem(
+          leading: Icon(Icons.route_outlined),
+          title: Text('Advertised Routes'),
+          subtitle: Text(
             'No subnet routes have been reported by Tailscale yet.',
           ),
         ),
@@ -402,16 +402,14 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
                       'up this subnet.'
                   : baseSubtitle,
             ),
-            delegate: CheckboxDelegate(
-              value: enabled,
-              onChanged: (value) {
-                _toggleRoute(
-                  tailscaleProps: tailscaleProps,
-                  route: route,
-                  enabled: value ?? false,
-                );
-              },
-            ),
+            value: enabled,
+            onChanged: (value) {
+              _toggleRoute(
+                tailscaleProps: tailscaleProps,
+                route: route,
+                enabled: value ?? false,
+              );
+            },
           );
         })
         .toList(growable: false);
@@ -424,12 +422,12 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
         ref.watch(tailscaleRuntimeRoutesProvider).toSet();
     final isEnabled = tailscaleProps.enable;
 
-    final items = <Widget>[
-      ...generateSection(
+    final sections = <Widget>[
+      generateSection(
         title: 'Connection',
         items: const [TailscaleEnableItem(), TailscaleAcceptRoutesItem()],
       ),
-      ...generateSection(
+      generateSection(
         title: 'Authentication',
         items: const [
           TailscaleHostnameItem(),
@@ -437,11 +435,11 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
           TailscaleControlUrlItem(),
         ],
       ),
-      ...generateSection(
+      generateSection(
         title: 'Status',
         items: _buildStatusItems(_tailscaleState),
       ),
-      ...generateSection(
+      generateSection(
         title: 'Advertised Routes',
         items: _buildRouteItems(
           _tailscaleState,
@@ -449,7 +447,7 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
           appliedVpnRoutes,
         ),
       ),
-      ...generateSection(
+      generateSection(
         title: 'Routing',
         items: const [
           TailscaleRouteControlPlaneViaProxyItem(),
@@ -487,7 +485,13 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
       ],
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: generateListView(items),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+            top: context.sectionsTopPadding,
+            bottom: 16 + context.bottomInset,
+          ),
+          children: sections,
+        ),
       ),
     );
   }
@@ -538,10 +542,10 @@ class _TailscaleStatusViewState extends State<TailscaleStatusView> {
     final peers = tailscaleState?.peers ?? const <TailscalePeerInfo>[];
     if (peers.isEmpty) {
       return [
-        ListItem(
-          leading: const Icon(Icons.devices_other_outlined),
-          title: const Text('Peers'),
-          subtitle: const Text('No peers reported by Tailscale yet.'),
+        const ListItem(
+          leading: Icon(Icons.devices_other_outlined),
+          title: Text('Peers'),
+          subtitle: Text('No peers reported by Tailscale yet.'),
         ),
       ];
     }
@@ -633,10 +637,10 @@ class _TailscaleStatusViewState extends State<TailscaleStatusView> {
     final regions = tailscaleState?.derp ?? const <TailscaleDerpInfo>[];
     if (regions.isEmpty) {
       return [
-        ListItem(
-          leading: const Icon(Icons.cloud_outlined),
-          title: const Text('DERP regions'),
-          subtitle: const Text(
+        const ListItem(
+          leading: Icon(Icons.cloud_outlined),
+          title: Text('DERP regions'),
+          subtitle: Text(
             'DERP map unavailable. Latency appears after a region has been probed.',
           ),
         ),
@@ -767,12 +771,12 @@ class _TailscaleStatusViewState extends State<TailscaleStatusView> {
   @override
   Widget build(BuildContext context) {
     final state = _tailscaleState;
-    final items = <Widget>[
-      ...generateSection(
+    final sections = <Widget>[
+      generateSection(
         title: 'Peers',
         items: _buildPeerItems(state),
       ),
-      ...generateSection(
+      generateSection(
         title: 'DERP relays',
         items: _buildDerpItems(state),
       ),
@@ -790,7 +794,13 @@ class _TailscaleStatusViewState extends State<TailscaleStatusView> {
       ],
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: generateListView(items),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+            top: context.sectionsTopPadding,
+            bottom: 16 + context.bottomInset,
+          ),
+          children: sections,
+        ),
       ),
     );
   }
