@@ -1899,6 +1899,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage(
       "Применить изменения",
     ),
+    "tailscaleApplyFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось применить",
+    ),
     "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage(
       "Ключ авторизации",
     ),

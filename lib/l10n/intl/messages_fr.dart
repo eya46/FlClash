@@ -1960,6 +1960,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage(
       "Appliquer les modifications",
     ),
+    "tailscaleApplyFailed": MessageLookupByLibrary.simpleMessage(
+      "Échec de l\'application",
+    ),
     "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage(
       "Clé d\'authentification",
     ),

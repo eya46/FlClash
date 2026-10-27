@@ -982,6 +982,7 @@
   "tailscaleLogin": "로그인",
   "tailscaleLogout": "로그아웃",
   "tailscaleTest": "지연 시간 테스트",
+  "tailscaleApplyFailed": "적용 실패",
   "tailscaleOpenAuthUrl": "로그인 페이지 열기",
   "tailscaleWaitingApproval": "관리자 승인 대기 중",
   "tailscaleNeedsLogin": "로그인 필요",

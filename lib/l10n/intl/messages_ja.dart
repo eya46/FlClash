@@ -1558,6 +1558,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("アカウント"),
     "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage("アカウントを追加"),
     "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage("変更を適用"),
+    "tailscaleApplyFailed": MessageLookupByLibrary.simpleMessage("適用に失敗しました"),
     "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("認証キー"),
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "tailnet の変更に追従する",

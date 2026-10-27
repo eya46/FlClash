@@ -982,6 +982,7 @@
   "tailscaleLogin": "Iniciar sesión",
   "tailscaleLogout": "Cerrar sesión",
   "tailscaleTest": "Probar latencia",
+  "tailscaleApplyFailed": "Error al aplicar",
   "tailscaleOpenAuthUrl": "Abrir la página de inicio de sesión",
   "tailscaleWaitingApproval": "Esperando la aprobación del administrador",
   "tailscaleNeedsLogin": "Requiere inicio de sesión",

@@ -982,6 +982,7 @@
   "tailscaleLogin": "Log in",
   "tailscaleLogout": "Log out",
   "tailscaleTest": "Test latency",
+  "tailscaleApplyFailed": "Apply failed",
   "tailscaleOpenAuthUrl": "Open login page",
   "tailscaleWaitingApproval": "Waiting for admin approval",
   "tailscaleNeedsLogin": "Needs login",

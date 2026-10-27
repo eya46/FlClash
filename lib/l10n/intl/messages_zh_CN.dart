@@ -1411,6 +1411,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAccounts": MessageLookupByLibrary.simpleMessage("账户"),
     "tailscaleAddAccount": MessageLookupByLibrary.simpleMessage("添加账户"),
     "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage("应用变更"),
+    "tailscaleApplyFailed": MessageLookupByLibrary.simpleMessage("应用失败"),
     "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("认证密钥"),
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "跟随 tailnet 变化",

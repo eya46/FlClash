@@ -982,6 +982,7 @@
   "tailscaleLogin": "Se connecter",
   "tailscaleLogout": "Se déconnecter",
   "tailscaleTest": "Tester la latence",
+  "tailscaleApplyFailed": "Échec de l'application",
   "tailscaleOpenAuthUrl": "Ouvrir la page de connexion",
   "tailscaleWaitingApproval": "En attente d'approbation de l'administrateur",
   "tailscaleNeedsLogin": "Connexion requise",

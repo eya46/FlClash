@@ -1814,6 +1814,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleApplyChanges": MessageLookupByLibrary.simpleMessage(
       "Apply changes",
     ),
+    "tailscaleApplyFailed": MessageLookupByLibrary.simpleMessage(
+      "Apply failed",
+    ),
     "tailscaleAuthKey": MessageLookupByLibrary.simpleMessage("Auth key"),
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "Follow tailnet changes",

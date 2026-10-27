@@ -982,6 +982,7 @@
   "tailscaleLogin": "Войти",
   "tailscaleLogout": "Выйти",
   "tailscaleTest": "Тест задержки",
+  "tailscaleApplyFailed": "Не удалось применить",
   "tailscaleOpenAuthUrl": "Открыть страницу входа",
   "tailscaleWaitingApproval": "Ожидание одобрения администратором",
   "tailscaleNeedsLogin": "Требуется вход",

@@ -982,6 +982,7 @@
   "tailscaleLogin": "ログイン",
   "tailscaleLogout": "ログアウト",
   "tailscaleTest": "レイテンシ測定",
+  "tailscaleApplyFailed": "適用に失敗しました",
   "tailscaleOpenAuthUrl": "ログインページを開く",
   "tailscaleWaitingApproval": "管理者の承認を待っています",
   "tailscaleNeedsLogin": "要ログイン",

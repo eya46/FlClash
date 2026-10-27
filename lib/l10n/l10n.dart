@@ -8213,6 +8213,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Apply failed`
+  String get tailscaleApplyFailed {
+    return Intl.message(
+      'Apply failed',
+      name: 'tailscaleApplyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Open login page`
   String get tailscaleOpenAuthUrl {
     return Intl.message(

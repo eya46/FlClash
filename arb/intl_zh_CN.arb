@@ -982,6 +982,7 @@
   "tailscaleLogin": "登录",
   "tailscaleLogout": "登出",
   "tailscaleTest": "测试延迟",
+  "tailscaleApplyFailed": "应用失败",
   "tailscaleOpenAuthUrl": "打开登录页面",
   "tailscaleWaitingApproval": "等待管理员批准",
   "tailscaleNeedsLogin": "需要登录",

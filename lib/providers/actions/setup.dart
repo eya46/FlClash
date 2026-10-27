@@ -342,13 +342,14 @@ class SetupAction extends _$SetupAction {
 
   /// The one path that pushes the tailnet schema; it rebuilds every tsnet
   /// outbound, so every edit and apply lands here.
+  /// The MagicDNS suffix reaches the Core only through the profile's
+  /// nameserver-policy, so a tailnet apply has to rebuild the profile too;
+  /// the schema-only update path would leave DNS without the suffix.
   Future<void> applyTailscaleChanges() async {
-    final schema = ref.read(tailscaleAccountsProvider).schema;
-    final message = await _core.updateTailscale(schema);
-    if (message.isNotEmpty) {
-      throw MessageException(message);
+    final result = await _runSetup(silence: true);
+    if (result == _SetupTaskResult.failed) {
+      throw MessageException(currentAppLocalizations.tailscaleApplyFailed);
     }
-    ref.read(appliedTailscaleSchemaProvider.notifier).value = schema;
   }
 
   @protected
