@@ -1562,9 +1562,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "tailnet の変更に追従する",
     ),
-    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
-      "ピアやルートの変更から 30 秒後に tailnet 設定を再適用します。すべての tailnet アカウントが再接続されます。",
-    ),
     "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
       "コントロールサーバーURL",
     ),
@@ -1582,12 +1579,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleHostname": MessageLookupByLibrary.simpleMessage("ホスト名"),
     "tailscaleInactive": MessageLookupByLibrary.simpleMessage("非アクティブ"),
     "tailscaleLabelConflict": m80,
-    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
-      "TAILSCALE 互換グループを維持",
-    ),
-    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
-      "TAILSCALE を指す旧ルール・旧グループは引き続き機能します。TAILNET に書き換えた後、オフにしてください。",
-    ),
     "tailscaleLogin": MessageLookupByLibrary.simpleMessage("ログイン"),
     "tailscaleLogout": MessageLookupByLibrary.simpleMessage("ログアウト"),
     "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
@@ -1615,6 +1606,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
       "Tailscale IP",
     ),
+    "tailscaleTest": MessageLookupByLibrary.simpleMessage("レイテンシ測定"),
     "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
       "未適用の変更があります",
     ),

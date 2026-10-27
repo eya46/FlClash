@@ -96,7 +96,7 @@ func TestInjectTailnetOutboundsAndGroups(t *testing.T) {
 	cfg := parseDefaultTailnetConfig(t)
 	primary := tailnetAccount("work", true)
 	secondary := &tailscaleAccountSchema{ID: "id-second", Label: "home lan", Enable: true, UDP: true}
-	if err := injectTailnet(cfg, tailnetSchema(primary, secondary)); err != nil {
+	if err := injectTailnet(cfg, tailnetSchema(primary, secondary), nil); err != nil {
 		t.Fatalf("injectTailnet = %v", err)
 	}
 	for _, name := range []string{"TAILNET-work", "TAILNET-home-lan", tailnetGroupName} {
@@ -137,7 +137,7 @@ func TestInjectTailnetLegacyAliasGroup(t *testing.T) {
 	cfg := parseDefaultTailnetConfig(t)
 	schema := tailnetSchema(tailnetAccount("work", true))
 	schema.LegacyAlias = true
-	if err := injectTailnet(cfg, schema); err != nil {
+	if err := injectTailnet(cfg, schema, nil); err != nil {
 		t.Fatalf("injectTailnet = %v", err)
 	}
 	legacy, ok := cfg.Proxies[tailnetLegacyGroupName].Adapter().(*outboundgroup.Selector)
@@ -175,7 +175,7 @@ func TestInjectTailnetRulesOrderDedupAndNormalization(t *testing.T) {
 		RouteCidrs:  []string{"10.1.0.0/16"},
 		PeerCidrs:   []string{"100.101.1.23/32"},
 	}
-	if err := injectTailnet(cfg, tailnetSchema(first, second)); err != nil {
+	if err := injectTailnet(cfg, tailnetSchema(first, second), nil); err != nil {
 		t.Fatalf("injectTailnet = %v", err)
 	}
 	assertElementsEqual(t, "cfg.Rules", ruleSummaries(cfg.Rules), []string{
@@ -211,7 +211,7 @@ func TestInjectTailnetSkipsConflictingNames(t *testing.T) {
 	withTailnetHome(t)
 	cfg := parseDefaultTailnetConfig(t)
 	schema := tailnetSchema(tailnetAccount("a b", true), tailnetAccount("a-b", true))
-	if err := injectTailnet(cfg, schema); err != nil {
+	if err := injectTailnet(cfg, schema, nil); err != nil {
 		t.Fatalf("injectTailnet = %v", err)
 	}
 	if cfg.Proxies["TAILNET-a-b"] == nil {
@@ -225,7 +225,7 @@ func TestInjectTailnetSkipsConflictingNames(t *testing.T) {
 
 	cfg = parseDefaultTailnetConfig(t)
 	cfg.Proxies["TAILNET-taken"] = cfg.Proxies["DIRECT"]
-	if err := injectTailnet(cfg, tailnetSchema(tailnetAccount("taken", true))); err != nil {
+	if err := injectTailnet(cfg, tailnetSchema(tailnetAccount("taken", true)), nil); err != nil {
 		t.Fatalf("injectTailnet = %v", err)
 	}
 	if cfg.Proxies[tailnetGroupName] != nil {
@@ -236,7 +236,7 @@ func TestInjectTailnetSkipsConflictingNames(t *testing.T) {
 func TestInjectTailnetNoEnabledAccountsInjectsNothing(t *testing.T) {
 	withTailnetHome(t)
 	cfg := parseDefaultTailnetConfig(t)
-	if err := injectTailnet(cfg, tailnetSchema(tailnetAccount("work", false))); err != nil {
+	if err := injectTailnet(cfg, tailnetSchema(tailnetAccount("work", false)), nil); err != nil {
 		t.Fatalf("injectTailnet = %v", err)
 	}
 	if cfg.Proxies[tailnetGroupName] != nil || cfg.Proxies["TAILNET-work"] != nil {
@@ -245,7 +245,7 @@ func TestInjectTailnetNoEnabledAccountsInjectsNothing(t *testing.T) {
 	if len(cfg.Rules) != 0 {
 		t.Fatalf("rules injected for disabled account: %v", ruleSummaries(cfg.Rules))
 	}
-	if err := injectTailnet(cfg, nil); err != nil {
+	if err := injectTailnet(cfg, nil, nil); err != nil {
 		t.Fatalf("injectTailnet(nil schema) = %v", err)
 	}
 }
@@ -340,5 +340,46 @@ func TestHandleGetTailscaleAccountsStateReportsAccounts(t *testing.T) {
 		if payload.Accounts[i].Present {
 			t.Errorf("account %d present, want absent (no config applied in this test)", i)
 		}
+	}
+}
+
+func TestInjectTailnetReusesUnchangedOutbounds(t *testing.T) {
+	withTailnetHome(t)
+	clear(liveTailnetOutbounds)
+	t.Cleanup(func() { clear(liveTailnetOutbounds) })
+
+	account := func(authKey string) *tailscaleAccountSchema {
+		return &tailscaleAccountSchema{
+			ID: "id-work", Label: "work", Enable: true, UDP: true,
+			ControlURL: "https://control.example", AuthKey: authKey,
+		}
+	}
+
+	first := parseDefaultTailnetConfig(t)
+	if err := injectTailnet(first, tailnetSchema(account("key-one")), nil); err != nil {
+		t.Fatalf("first injectTailnet = %v", err)
+	}
+	running := first.Proxies["TAILNET-work"]
+	if running == nil {
+		t.Fatal("first injection built no outbound")
+	}
+
+	// The live map is what the tunnel would hand the next apply: the same
+	// proxies the first injection produced.
+	live := map[string]C.Proxy{"TAILNET-work": running}
+	second := parseDefaultTailnetConfig(t)
+	if err := injectTailnet(second, tailnetSchema(account("key-one")), live); err != nil {
+		t.Fatalf("second injectTailnet = %v", err)
+	}
+	if second.Proxies["TAILNET-work"] != running {
+		t.Fatal("an unchanged account rebuilt its outbound instead of reusing the running one")
+	}
+
+	third := parseDefaultTailnetConfig(t)
+	if err := injectTailnet(third, tailnetSchema(account("key-two")), live); err != nil {
+		t.Fatalf("third injectTailnet = %v", err)
+	}
+	if third.Proxies["TAILNET-work"] == running {
+		t.Fatal("a changed account kept the old outbound instead of rebuilding")
 	}
 }

@@ -26,6 +26,7 @@ import (
 	"github.com/metacubex/mihomo/tunnel"
 	"github.com/metacubex/tailscale/ipn"
 	"github.com/metacubex/tailscale/ipn/ipnstate"
+	"github.com/metacubex/tailscale/tailcfg"
 	"github.com/metacubex/tailscale/tsnet"
 )
 
@@ -41,6 +42,7 @@ const (
 	tailnetFallbackLabel   = "account"
 	tailnetStatusTimeout   = 5 * time.Second
 	tailnetLoginTimeout    = 30 * time.Second
+	tailnetPingTimeout     = 10 * time.Second
 )
 
 var errTailnetOutboundUnavailable = errors.New("tailscale outbound not available")
@@ -99,14 +101,49 @@ func tailnetAccounts(schema *tailscaleAccountsSchema) []*tailscaleAccountSchema 
 	return enabled
 }
 
+// An unchanged account must reuse the running outbound, not restart it; configMu guards.
+var liveTailnetOutbounds = map[string]string{}
+
+// Must cover every field newTailnetOutbound reads.
+func tailnetOutboundKey(account *tailscaleAccountSchema) string {
+	return fmt.Sprintf(
+		"%s\x00%s\x00%s\x00%s\x00%t\x00%t\x00%t\x00%s\x00%t\x00%s",
+		strings.TrimSpace(account.Hostname),
+		strings.TrimSpace(account.AuthKey),
+		strings.TrimSpace(account.ControlURL),
+		tailnetStateDir(account),
+		account.Ephemeral,
+		account.UDP,
+		account.AcceptRoutes,
+		strings.TrimSpace(account.ExitNode),
+		account.ExitNodeAllowLANAccess,
+		strings.TrimSpace(account.DialerProxy),
+	)
+}
+
+func reusableTailnetOutbound(name string, account *tailscaleAccountSchema, live map[string]C.Proxy) C.Proxy {
+	if liveTailnetOutbounds[name] != tailnetOutboundKey(account) {
+		return nil
+	}
+	proxy := live[name]
+	if proxy == nil {
+		return nil
+	}
+	if outboundProxy, ok := proxy.Adapter().(tailscaleOutbound); !ok || outboundProxy.Server() == nil {
+		return nil
+	}
+	return proxy
+}
+
 // injectTailnet adds the account outbounds, the TAILNET group, the legacy
 // TAILSCALE alias group and the front rules to a parsed config. Name clashes
 // skip the account rather than the whole config; a broken account must not
 // take the profile's proxies down with it.
-func injectTailnet(cfg *config.Config, schema *tailscaleAccountsSchema) error {
+func injectTailnet(cfg *config.Config, schema *tailscaleAccountsSchema, live map[string]C.Proxy) error {
 	if cfg == nil {
 		return nil
 	}
+	reused, rebuilt := 0, 0
 	var (
 		built []C.Proxy
 		names []string
@@ -125,10 +162,18 @@ func injectTailnet(cfg *config.Config, schema *tailscaleAccountsSchema) error {
 			continue
 		}
 		taken[name] = account.ID
-		proxy, err := newTailnetOutbound(account, name)
-		if err != nil {
-			log.Infoln("[TAILNET] skip account %s: %v", account.ID, err)
-			continue
+		proxy := reusableTailnetOutbound(name, account, live)
+		if proxy == nil {
+			var err error
+			proxy, err = newTailnetOutbound(account, name)
+			if err != nil {
+				log.Infoln("[TAILNET] skip account %s: %v", account.ID, err)
+				continue
+			}
+			liveTailnetOutbounds[name] = tailnetOutboundKey(account)
+			rebuilt++
+		} else {
+			reused++
 		}
 		cfg.Proxies[name] = proxy
 		built = append(built, proxy)
@@ -157,7 +202,7 @@ func injectTailnet(cfg *config.Config, schema *tailscaleAccountsSchema) error {
 	}
 	registerProxyNames(names...)
 	cfg.Rules = append(tailnetRules(schema, cfg), cfg.Rules...)
-	log.Infoln("[TAILNET] injected %d outbound(s) behind %s", len(built), tailnetGroupName)
+	log.Infoln("[TAILNET] %d outbound(s) behind %s: %d reused, %d built", len(built), tailnetGroupName, reused, rebuilt)
 	return nil
 }
 
@@ -317,6 +362,9 @@ func parseTailnetExtraRule(line string, cfg *config.Config) (C.Rule, error) {
 // the outbounds it applied itself, this covers the paths where the config was
 // never re-applied.
 func closeTailscale() {
+	configMu.Lock()
+	defer configMu.Unlock()
+	clear(liveTailnetOutbounds)
 	for _, proxy := range tunnel.AllProxies() {
 		if outboundProxy, ok := proxy.Adapter().(tailscaleOutbound); ok {
 			if err := outboundProxy.Close(); err != nil {
@@ -371,6 +419,8 @@ func handleReconnectTailscale() error {
 	}
 	startedAt := time.Now()
 	log.Infoln("[TAILNET] core reconnect start")
+	// A reconnect asked for the rebuild; reuse would carry the nodes over.
+	clear(liveTailnetOutbounds)
 	err := applyConfigLocked(currentSetupParams)
 	if err != nil {
 		log.Warnln("[TAILNET] core reconnect failed after %s: %s", time.Since(startedAt).Round(time.Millisecond), err.Error())
@@ -433,6 +483,60 @@ func findTailnetAccount(id string) *tailscaleAccountSchema {
 		}
 	}
 	return nil
+}
+
+// handlePingTailscale disco-pings through the account's tailnet, the same
+// primitive `tailscale ping` uses: real path latency, direct or via DERP.
+func handlePingTailscale(params tailnetPingParams) (string, error) {
+	account := findTailnetAccount(params.ID)
+	if account == nil {
+		return "", fmt.Errorf("tailscale account not found: %s", params.ID)
+	}
+	target, err := netip.ParseAddr(strings.TrimSpace(params.Target))
+	if err != nil {
+		return "", fmt.Errorf("invalid ping target: %w", err)
+	}
+	proxy := findTailscaleOutbound(tailnetProxyName(account.Label))
+	if proxy == nil || proxy.Server() == nil {
+		return "", errTailnetOutboundUnavailable
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), tailnetPingTimeout)
+	defer cancel()
+	client, err := proxy.Server().LocalClient()
+	if err != nil {
+		return "", err
+	}
+	result, err := client.Ping(ctx, target, tailcfg.PingDisco)
+	view := map[string]any{
+		"error":       "",
+		"latency-ms":  int64(0),
+		"node-name":   "",
+		"via":         "",
+		"endpoint":    "",
+		"derp-region": "",
+	}
+	if err != nil {
+		view["error"] = err.Error()
+	} else if result != nil {
+		view["error"] = result.Err
+		view["latency-ms"] = int64(result.LatencySeconds * 1000)
+		view["node-name"] = result.NodeName
+		view["endpoint"] = result.Endpoint
+		view["derp-region"] = result.DERPRegionCode
+		switch {
+		case result.Endpoint != "":
+			view["via"] = "direct"
+		case result.DERPRegionID != 0:
+			view["via"] = "derp"
+		case result.PeerRelay != "":
+			view["via"] = "peer-relay"
+		}
+	}
+	data, err := json.Marshal(view)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
 }
 
 func currentTailnetAccounts() []*tailscaleAccountSchema {

@@ -230,6 +230,7 @@ var methodHandlers = map[CoreMethod]methodHandler{
 	startTailscaleLoginMethod:       withMessage(handleStartTailscaleLogin),
 	logoutTailscaleMethod:           withMessage(handleLogoutTailscale),
 	reconnectTailscaleMethod:        reconnectTailscaleHandler,
+	pingTailscaleMethod:             withFallible(handlePingTailscale),
 }
 
 // The host reads the result as a message: empty on success, the error text

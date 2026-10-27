@@ -7943,8 +7943,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -8203,6 +8202,16 @@ class AppLocalizations {
     return Intl.message('Log out', name: 'tailscaleLogout', desc: '', args: []);
   }
 
+  /// `Test latency`
+  String get tailscaleTest {
+    return Intl.message(
+      'Test latency',
+      name: 'tailscaleTest',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Open login page`
   String get tailscaleOpenAuthUrl {
     return Intl.message(
@@ -8308,36 +8317,6 @@ class AppLocalizations {
     return Intl.message(
       'Follow tailnet changes',
       name: 'tailscaleAutoFollow',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Re-applies the tailnet config 30 seconds after peers or routes change. This reconnects every tailnet account.`
-  String get tailscaleAutoFollowDesc {
-    return Intl.message(
-      'Re-applies the tailnet config 30 seconds after peers or routes change. This reconnects every tailnet account.',
-      name: 'tailscaleAutoFollowDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Keep the TAILSCALE compatibility group`
-  String get tailscaleLegacyAlias {
-    return Intl.message(
-      'Keep the TAILSCALE compatibility group',
-      name: 'tailscaleLegacyAlias',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Old rules and groups that point at TAILSCALE keep working. Rewrite them to TAILNET, then turn this off.`
-  String get tailscaleLegacyAliasDesc {
-    return Intl.message(
-      'Old rules and groups that point at TAILSCALE keep working. Rewrite them to TAILNET, then turn this off.',
-      name: 'tailscaleLegacyAliasDesc',
       desc: '',
       args: [],
     );

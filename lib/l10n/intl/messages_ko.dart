@@ -1533,9 +1533,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "tailnet 변경 따르기",
     ),
-    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
-      "피어나 라우트가 변경되면 30초 후 tailnet 설정을 다시 적용합니다. 모든 tailnet 계정이 다시 연결됩니다.",
-    ),
     "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage("컨트롤 서버 URL"),
     "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage("계정 삭제"),
     "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage("프록시로 연결"),
@@ -1553,12 +1550,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleHostname": MessageLookupByLibrary.simpleMessage("호스트 이름"),
     "tailscaleInactive": MessageLookupByLibrary.simpleMessage("비활성"),
     "tailscaleLabelConflict": m80,
-    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
-      "TAILSCALE 호환 그룹 유지",
-    ),
-    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
-      "TAILSCALE을 가리키던 기존 규칙과 그룹은 계속 작동합니다. TAILNET으로 바꾼 뒤 이 옵션을 끄세요.",
-    ),
     "tailscaleLogin": MessageLookupByLibrary.simpleMessage("로그인"),
     "tailscaleLogout": MessageLookupByLibrary.simpleMessage("로그아웃"),
     "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
@@ -1586,6 +1577,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
       "Tailscale IP",
     ),
+    "tailscaleTest": MessageLookupByLibrary.simpleMessage("지연 시간 테스트"),
     "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
       "적용되지 않은 변경 사항이 있습니다",
     ),

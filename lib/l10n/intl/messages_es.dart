@@ -1032,9 +1032,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Introduce el contenido de la regla",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),
@@ -1966,9 +1967,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "Seguir los cambios del tailnet",
     ),
-    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
-      "Vuelve a aplicar la configuración del tailnet 30 segundos después de que cambien los pares o las rutas. Esto reconecta todas las cuentas del tailnet.",
-    ),
     "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
       "URL del servidor de control",
     ),
@@ -1996,12 +1994,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleHostname": MessageLookupByLibrary.simpleMessage("Nombre de host"),
     "tailscaleInactive": MessageLookupByLibrary.simpleMessage("Inactivo"),
     "tailscaleLabelConflict": m80,
-    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
-      "Mantener el grupo de compatibilidad TAILSCALE",
-    ),
-    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
-      "Las reglas y grupos antiguos que apunten a TAILSCALE siguen funcionando. Reescríbelos a TAILNET y desactiva esta opción.",
-    ),
     "tailscaleLogin": MessageLookupByLibrary.simpleMessage("Iniciar sesión"),
     "tailscaleLogout": MessageLookupByLibrary.simpleMessage("Cerrar sesión"),
     "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
@@ -2033,6 +2025,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
       "Direcciones IP de Tailscale",
     ),
+    "tailscaleTest": MessageLookupByLibrary.simpleMessage("Probar latencia"),
     "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
       "Cambios sin aplicar",
     ),

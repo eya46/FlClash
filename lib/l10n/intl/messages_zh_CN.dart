@@ -1415,9 +1415,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "跟随 tailnet 变化",
     ),
-    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
-      "节点或路由变化 30 秒后重新应用 tailnet 配置，这会重连所有 tailnet 账户。",
-    ),
     "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage("控制服务器地址"),
     "tailscaleDeleteAccount": MessageLookupByLibrary.simpleMessage("删除账户"),
     "tailscaleDialerProxy": MessageLookupByLibrary.simpleMessage("经代理拨号"),
@@ -1433,12 +1430,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleHostname": MessageLookupByLibrary.simpleMessage("主机名"),
     "tailscaleInactive": MessageLookupByLibrary.simpleMessage("未激活"),
     "tailscaleLabelConflict": m80,
-    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
-      "保留 TAILSCALE 兼容组",
-    ),
-    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
-      "指向 TAILSCALE 的旧规则和旧分组继续有效。改写为 TAILNET 后即可关闭此选项。",
-    ),
     "tailscaleLogin": MessageLookupByLibrary.simpleMessage("登录"),
     "tailscaleLogout": MessageLookupByLibrary.simpleMessage("登出"),
     "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
@@ -1466,6 +1457,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
       "Tailscale IP",
     ),
+    "tailscaleTest": MessageLookupByLibrary.simpleMessage("测试延迟"),
     "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
       "有未应用的变更",
     ),

@@ -364,6 +364,13 @@ class CoreController {
     return _interface.reconnectTailscale();
   }
 
+  Future<TailscalePingResult> pingTailscale(String id, String target) async {
+    final value = await _interface.pingTailscale(id, target);
+    return TailscalePingResult.fromJson(
+      json.decode(value) as Map<String, dynamic>,
+    );
+  }
+
   Future<String> updateTailscale(TailscaleAccountsSchema schema) async {
     return _interface.updateTailscale(schema);
   }

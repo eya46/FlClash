@@ -257,22 +257,11 @@ class _TailscaleViewState extends ConsumerState<TailscaleView> {
         items: [
           ListItem.toggle(
             title: Text(appLocalizations.tailscaleAutoFollow),
-            subtitle: Text(appLocalizations.tailscaleAutoFollowDesc),
             value: accounts.autoFollow,
             onChanged: (value) {
               ref
                   .read(tailscaleAccountsProvider.notifier)
                   .update((state) => state.copyWith(autoFollow: value));
-            },
-          ),
-          ListItem.toggle(
-            title: Text(appLocalizations.tailscaleLegacyAlias),
-            subtitle: Text(appLocalizations.tailscaleLegacyAliasDesc),
-            value: accounts.legacyAlias,
-            onChanged: (value) {
-              ref
-                  .read(tailscaleAccountsProvider.notifier)
-                  .update((state) => state.copyWith(legacyAlias: value));
             },
           ),
         ],
@@ -318,6 +307,44 @@ class TailscaleAccountView extends ConsumerStatefulWidget {
 
 class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
   bool _applying = false;
+  bool _testing = false;
+  final Map<String, TailscalePingResult> _pingResults = {};
+
+  Future<void> _handleTest() async {
+    if (_testing) {
+      return;
+    }
+    final peers = [
+      for (final peer
+          in _accountOf(ref.read(tailscaleAccountsProvider), widget.accountId)
+              ?.peers ??
+              const [])
+        if (peer.enabled && peer.tailscaleIps.isNotEmpty) peer,
+    ];
+    if (peers.isEmpty) {
+      return;
+    }
+    setState(() => _testing = true);
+    try {
+      for (final peer in peers) {
+        final result = await ref
+            .read(coreHandlerProvider)
+            .pingTailscale(widget.accountId, peer.tailscaleIps.first);
+        if (!mounted) {
+          return;
+        }
+        setState(() => _pingResults[peer.key] = result);
+      }
+    } catch (error) {
+      if (mounted) {
+        context.showNotifier(error.toString(), level: MessageLevel.error);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _testing = false);
+      }
+    }
+  }
 
   void _updateAccount(
     TailscaleAccountProps Function(TailscaleAccountProps account) update,
@@ -483,6 +510,16 @@ class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
         subtitle: _statusSubtitle(appLocalizations, state),
       ),
     ];
+
+    if (state != null && state.isRunning) {
+      items.add(
+        ListItem(
+          leading: const GlyphIcon(AppGlyphs.bolt),
+          title: Text(appLocalizations.tailscaleTest),
+          onTap: _testing ? null : _handleTest,
+        ),
+      );
+    }
 
     if (state != null && state.backendState == 'NeedsLogin') {
       items.add(
@@ -744,11 +781,18 @@ class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
     TailscalePeerEntry peer,
     TailscalePeerInfo? live,
   ) {
+    final ping = _pingResults[peer.key];
     final lines = <Widget>[
       if (peer.tailscaleIps.isNotEmpty)
         Text(
           peer.tailscaleIps.join(', '),
           style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
+        ),
+      if (ping != null)
+        Text(
+          ping.error.isNotEmpty
+              ? ping.error
+              : '${ping.latencyMs} ms · ${ping.via}',
         ),
       if (live != null && live.primaryRoutes.isNotEmpty)
         Text(

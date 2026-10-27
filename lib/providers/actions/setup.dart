@@ -991,19 +991,21 @@ class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
     TailscaleAccountsState snapshot,
     TailscaleAccountsState? previous,
   ) {
-    state = snapshot;
+    state = _keepLastKnownStates(snapshot, previous);
+    final snapshotAccounts = state!.accounts;
     final accounts = ref.read(tailscaleAccountsProvider);
     if (accounts.accounts.isEmpty) {
       return;
     }
     final entriesById = {
-      for (final entry in snapshot.accounts) entry.id: entry,
+      for (final entry in snapshotAccounts) entry.id: entry,
     };
     final previousById = {
       for (final entry in previous?.accounts ?? const <TailscaleAccountState>[])
         entry.id: entry,
     };
     var changed = false;
+    var loginJustLanded = false;
     final merged = <TailscaleAccountProps>[];
     for (final account in accounts.accounts) {
       final entry = entriesById[account.id];
@@ -1011,8 +1013,12 @@ class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
       if (next != account) {
         changed = true;
       }
+      if (entry != null &&
+          entry.isRunning &&
+          previousById[account.id]?.backendState != 'Running') {
+        loginJustLanded = true;
+      }
       merged.add(next);
-      unawaited(_warmUpOutbound(previousById[account.id], entry));
     }
     if (!changed) {
       return;
@@ -1020,7 +1026,8 @@ class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
     ref.read(tailscaleAccountsProvider.notifier).value = accounts.copyWith(
       accounts: merged,
     );
-    if (ref.read(tailscaleAccountsProvider).autoFollow) {
+    // Peers and routes first arrive in the post-login snapshot; without this apply they never reach the Core.
+    if (loginJustLanded || ref.read(tailscaleAccountsProvider).autoFollow) {
       debouncer.call(FunctionTag.tailscaleAutoFollow, () async {
         if (!ref.mounted) {
           return;
@@ -1033,24 +1040,47 @@ class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
       }, duration: _tailscaleAutoFollowDelay);
     }
   }
+}
 
-  // One delay test right after login starts the lazily-created server.
-  Future<void> _warmUpOutbound(
-    TailscaleAccountState? previous,
-    TailscaleAccountState? entry,
-  ) async {
-    if (entry == null ||
-        !entry.isRunning ||
-        entry.name.isEmpty ||
-        previous?.backendState == 'Running') {
-      return;
-    }
-    try {
-      await _core.getDelay(
-        ref.read(realTestUrlProvider()),
-        entry.name,
-        const Duration(seconds: 8),
-      );
-    } catch (_) {}
+// In the restart window after a re-apply the last known state beats a blank row.
+TailscaleAccountsState _keepLastKnownStates(
+  TailscaleAccountsState snapshot,
+  TailscaleAccountsState? previous,
+) {
+  if (previous == null) {
+    return snapshot;
   }
+  final previousById = {
+    for (final entry in previous.accounts) entry.id: entry,
+  };
+  var carried = false;
+  final accounts = [
+    for (final entry in snapshot.accounts)
+      () {
+        final last = previousById[entry.id];
+        if (entry.backendState.isNotEmpty ||
+            !entry.present ||
+            last == null ||
+            last.backendState.isEmpty) {
+          return entry;
+        }
+        carried = true;
+        return TailscaleAccountState(
+          id: entry.id,
+          name: entry.name,
+          present: true,
+          backendState: last.backendState,
+          authUrl: last.authUrl,
+          tailnet: entry.tailnet,
+          magicDnsSuffix: entry.magicDnsSuffix,
+          tailscaleIps: entry.tailscaleIps,
+          selfRoutes: entry.selfRoutes,
+          peerCount: entry.peerCount,
+          onlinePeerCount: entry.onlinePeerCount,
+          peers: entry.peers,
+          error: entry.error,
+        );
+      }(),
+  ];
+  return carried ? TailscaleAccountsState(accounts: accounts) : snapshot;
 }

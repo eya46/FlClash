@@ -58,6 +58,7 @@ enum CoreMethod {
   startTailscaleLogin,
   logoutTailscale,
   reconnectTailscale,
+  pingTailscale,
 }
 
 class CoreMethodCall {

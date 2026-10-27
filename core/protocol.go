@@ -70,6 +70,7 @@ const (
 	startTailscaleLoginMethod       CoreMethod = "startTailscaleLogin"
 	logoutTailscaleMethod           CoreMethod = "logoutTailscale"
 	reconnectTailscaleMethod        CoreMethod = "reconnectTailscale"
+	pingTailscaleMethod             CoreMethod = "pingTailscale"
 )
 
 type MessageType string
@@ -184,6 +185,11 @@ type tailscaleAccountSchema struct {
 
 type tailnetAccountParams struct {
 	ID string `json:"id"`
+}
+
+type tailnetPingParams struct {
+	ID     string `json:"id"`
+	Target string `json:"target"`
 }
 
 type tunSchema struct {

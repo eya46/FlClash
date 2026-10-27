@@ -966,9 +966,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1818,9 +1819,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "Follow tailnet changes",
     ),
-    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
-      "Re-applies the tailnet config 30 seconds after peers or routes change. This reconnects every tailnet account.",
-    ),
     "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
       "Control server URL",
     ),
@@ -1848,12 +1846,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleHostname": MessageLookupByLibrary.simpleMessage("Hostname"),
     "tailscaleInactive": MessageLookupByLibrary.simpleMessage("Inactive"),
     "tailscaleLabelConflict": m80,
-    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
-      "Keep the TAILSCALE compatibility group",
-    ),
-    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
-      "Old rules and groups that point at TAILSCALE keep working. Rewrite them to TAILNET, then turn this off.",
-    ),
     "tailscaleLogin": MessageLookupByLibrary.simpleMessage("Log in"),
     "tailscaleLogout": MessageLookupByLibrary.simpleMessage("Log out"),
     "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
@@ -1885,6 +1877,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
       "Tailscale IPs",
     ),
+    "tailscaleTest": MessageLookupByLibrary.simpleMessage("Test latency"),
     "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
       "Unapplied changes",
     ),

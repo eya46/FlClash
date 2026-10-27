@@ -416,6 +416,35 @@ class TailscalePeerInfo {
   }
 }
 
+class TailscalePingResult {
+  final String error;
+  final int latencyMs;
+  final String nodeName;
+  final String via;
+  final String endpoint;
+  final String derpRegion;
+
+  const TailscalePingResult({
+    required this.error,
+    required this.latencyMs,
+    required this.nodeName,
+    required this.via,
+    required this.endpoint,
+    required this.derpRegion,
+  });
+
+  factory TailscalePingResult.fromJson(Map<String, dynamic> json) {
+    return TailscalePingResult(
+      error: json['error'] as String? ?? '',
+      latencyMs: (json['latency-ms'] as num?)?.toInt() ?? 0,
+      nodeName: json['node-name'] as String? ?? '',
+      via: json['via'] as String? ?? '',
+      endpoint: json['endpoint'] as String? ?? '',
+      derpRegion: json['derp-region'] as String? ?? '',
+    );
+  }
+}
+
 /// Keeps toggles, new entries arrive enabled, gone entries drop; outside
 /// Running the model is untouched.
 TailscaleAccountProps mergeTailscaleAccount(

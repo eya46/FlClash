@@ -101,6 +101,8 @@ mixin CoreInterface {
 
   FutureOr<String> reconnectTailscale();
 
+  FutureOr<String> pingTailscale(String id, String target);
+
   /// Only the tailnet accounts are sent; the Core leaves absent keys alone.
   FutureOr<String> updateTailscale(TailscaleAccountsSchema schema);
 
@@ -689,6 +691,14 @@ abstract class CoreHandlerInterface with CoreInterface {
   @override
   Future<String> reconnectTailscale() async {
     return _invokeMessage(method: CoreMethod.reconnectTailscale);
+  }
+
+  @override
+  Future<String> pingTailscale(String id, String target) async {
+    return _invokeMessage(
+      method: CoreMethod.pingTailscale,
+      arguments: {'id': id, 'target': target},
+    );
   }
 
   @override

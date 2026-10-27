@@ -184,7 +184,7 @@ func applyConfigLocked(params *SetupParams) error {
 	// Capture the outgoing proxy map before the apply swaps it: the tailnet
 	// sweep after hub.ApplyConfig closes the tsnet servers it displaced.
 	previousProxies := tunnel.AllProxies()
-	if injectErr := injectTailnet(cfg, params.Tailscale); injectErr != nil {
+	if injectErr := injectTailnet(cfg, params.Tailscale, tunnel.AllProxies()); injectErr != nil {
 		logError("tailnet injection not applied: %v", injectErr)
 	}
 

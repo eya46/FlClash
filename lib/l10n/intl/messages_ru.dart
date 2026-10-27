@@ -999,9 +999,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1905,9 +1906,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleAutoFollow": MessageLookupByLibrary.simpleMessage(
       "Следить за изменениями tailnet",
     ),
-    "tailscaleAutoFollowDesc": MessageLookupByLibrary.simpleMessage(
-      "Повторно применяет настройки tailnet через 30 секунд после изменения пиров или маршрутов. При этом переподключаются все аккаунты tailnet.",
-    ),
     "tailscaleControlUrl": MessageLookupByLibrary.simpleMessage(
       "Адрес control-сервера",
     ),
@@ -1937,12 +1935,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleHostname": MessageLookupByLibrary.simpleMessage("Имя хоста"),
     "tailscaleInactive": MessageLookupByLibrary.simpleMessage("Неактивно"),
     "tailscaleLabelConflict": m80,
-    "tailscaleLegacyAlias": MessageLookupByLibrary.simpleMessage(
-      "Сохранять совместимую группу TAILSCALE",
-    ),
-    "tailscaleLegacyAliasDesc": MessageLookupByLibrary.simpleMessage(
-      "Старые правила и группы со ссылками на TAILSCALE продолжат работать. Перепишите их на TAILNET и отключите эту опцию.",
-    ),
     "tailscaleLogin": MessageLookupByLibrary.simpleMessage("Войти"),
     "tailscaleLogout": MessageLookupByLibrary.simpleMessage("Выйти"),
     "tailscaleMagicDnsSuffix": MessageLookupByLibrary.simpleMessage(
@@ -1976,6 +1968,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tailscaleTailscaleIps": MessageLookupByLibrary.simpleMessage(
       "IP-адреса Tailscale",
     ),
+    "tailscaleTest": MessageLookupByLibrary.simpleMessage("Тест задержки"),
     "tailscaleUnappliedChanges": MessageLookupByLibrary.simpleMessage(
       "Есть неприменённые изменения",
     ),
