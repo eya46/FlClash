@@ -997,9 +997,7 @@ class TailscaleAccountsSnapshot extends _$TailscaleAccountsSnapshot
     if (accounts.accounts.isEmpty) {
       return;
     }
-    final entriesById = {
-      for (final entry in snapshotAccounts) entry.id: entry,
-    };
+    final entriesById = {for (final entry in snapshotAccounts) entry.id: entry};
     final previousById = {
       for (final entry in previous?.accounts ?? const <TailscaleAccountState>[])
         entry.id: entry,
@@ -1050,9 +1048,7 @@ TailscaleAccountsState _keepLastKnownStates(
   if (previous == null) {
     return snapshot;
   }
-  final previousById = {
-    for (final entry in previous.accounts) entry.id: entry,
-  };
+  final previousById = {for (final entry in previous.accounts) entry.id: entry};
   var carried = false;
   final accounts = [
     for (final entry in snapshot.accounts)

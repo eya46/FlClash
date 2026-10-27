@@ -316,8 +316,10 @@ class _TailscaleAccountViewState extends ConsumerState<TailscaleAccountView> {
     }
     final peers = [
       for (final peer
-          in _accountOf(ref.read(tailscaleAccountsProvider), widget.accountId)
-              ?.peers ??
+          in _accountOf(
+                ref.read(tailscaleAccountsProvider),
+                widget.accountId,
+              )?.peers ??
               const [])
         if (peer.enabled && peer.tailscaleIps.isNotEmpty) peer,
     ];
